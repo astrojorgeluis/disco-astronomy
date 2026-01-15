@@ -1,4 +1,4 @@
-# DISCO Astronomy 🛸
+# DISCO
 
 > **⚠️ WORK IN PROGRESS (WIP)**
 > This software is currently in early active development. Features and documentation are being updated frequently.
