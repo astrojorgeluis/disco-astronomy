@@ -1,0 +1,2 @@
+include disco/static/index.html
+recursive-include disco/static *
