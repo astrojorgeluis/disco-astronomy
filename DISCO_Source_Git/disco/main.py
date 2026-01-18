@@ -462,7 +462,7 @@ def run_pipeline(params: PipelineParams):
             "deproj": f"data:image/png;base64,{array_to_base64(deproj, cmap='inferno')}",
             "polar": f"data:image/png;base64,{array_to_base64(polar_display, cmap='inferno', stretch_val=0.1)}",
             "model": f"data:image/png;base64,{array_to_base64(mod, cmap='inferno')}",
-            "residuals": f"data:image/png;base64,{array_to_base64(res, cmap='magma', stretch_val=1.0)}"
+            "residuals": f"data:image/png;base64,{array_to_base64(res, cmap='magma', stretch_val=0.9)}"
         },
         "profile": {"radius": r_arcsec.tolist(), "intensity": tb_prof.tolist()},
         "geometry": {"fov_cartesian": fov_cartesian, "fov_polar": fov_polar, "beam": beam_info, "pixel_scale": pixel_scale},
