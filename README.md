@@ -2,6 +2,7 @@
 
 > **⚠️ WORK IN PROGRESS (WIP)**
 > This software is currently in early active development. Features and documentation are being updated frequently.
+PLEASE REMEMBER USE **pip install --upgrade disco-astronomy**
 
 **DISCO** (**D**eprojection **I**mage **S**oftware for **C**ircumstellar **O**bjects) is a specialized tool designed for the interactive analysis of astronomical FITS data, specifically focused on protoplanetary disks.
 
