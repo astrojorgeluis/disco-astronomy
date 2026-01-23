@@ -56,6 +56,24 @@ const AnalysisDashboard = ({
     const handleSaveMarker = () => { if (tempMarkerPos) { setMarkers(prev => [...prev, { x: tempMarkerPos.x, y: tempMarkerPos.y, label: newMarkerName, shape: newMarkerShape, color: newMarkerColor, view: viewType }]); } setMarkerDialogOpen(false); setTempMarkerPos(null); };
     const handleDeleteMarker = (index) => { setMarkers(prev => prev.filter((_, i) => i !== index)); };
 
+    const handleDownloadCSV = () => {
+        if (!profileData || !profileData.radius) return;
+        const { radius, intensity } = profileData;
+        const rows = [["Radius [arcsec]", "Intensity [Kelvin/Jy]"]];
+        radius.forEach((r, i) => {rows.push([r, intensity[i]]);});
+        const csvContent = rows.map(e => e.join(",")).join("\n");
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", "radial_profile.csv");
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+
     const handleMouseDown = (e) => { 
         if (activeTool !== 'inspector' || !e) return; 
         setIsDragging(true); 
@@ -247,8 +265,29 @@ const AnalysisDashboard = ({
                     {/* RADIAL PROFILE CHART */}
                     <div className="chart-container" style={{flex: 1, padding:10, minHeight:0, display:'flex', flexDirection:'column'}}>
                          <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:5}}>
-                             <div className="compact-label" style={{color:'var(--disco-warning)', display:'flex', alignItems:'center', gap:5}}><Icon icon="series-derived" size={12}/> RADIAL PROFILE</div>
-                             <HTMLSelect className="bp5-small" minimal value={useLogScale ? "log" : "lin"} onChange={(e) => setUseLogScale(e.target.value === "log")} options={[{label: "Linear", value: "lin"}, {label: "Log", value: "log"}]}/>
+                             <div className="compact-label" style={{color:'var(--disco-warning)', display:'flex', alignItems:'center', gap:5}}>
+                                <Icon icon="series-derived" size={12}/> RADIAL PROFILE
+                             </div>
+                             
+                             <div style={{display:'flex', gap: 5}}>
+                                <Button 
+                                    icon="download" 
+                                    text="CSV" 
+                                    intent="success" 
+                                    minimal={true} 
+                                    small={true}
+                                    title="Download data as CSV"
+                                    disabled={!profileData} 
+                                    onClick={handleDownloadCSV} 
+                                />
+                                <HTMLSelect 
+                                    className="bp5-small" 
+                                    minimal 
+                                    value={useLogScale ? "log" : "lin"} 
+                                    onChange={(e) => setUseLogScale(e.target.value === "log")} 
+                                    options={[{label: "Linear", value: "lin"}, {label: "Log", value: "log"}]}
+                                />
+                             </div>
                          </div>
                          <div style={{flex:1, minHeight:0}}>
                              <ResponsiveContainer width="100%" height="100%">
