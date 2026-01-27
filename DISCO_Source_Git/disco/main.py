@@ -38,7 +38,8 @@ except ImportError:
 # PATH CONFIGURATION
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, "static")
-UPLOAD_DIR = os.path.join(os.getcwd(), "disco_uploads")
+UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
+
 
 app = FastAPI()
 

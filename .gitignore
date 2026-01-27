@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+disco_astronomy.egg-info/
+
+# Node / Frontend
+node_modules/
+DISCO_Source_Git/client/dist/
+
+# Builds backend
+DISCO_Source_Git/dist/
+DISCO_Source_Git/build/
+
+# Uploads 
+DISCO_Source_Git/disco/uploads/
+
+# Build static files
+DISCO_Source_Git/disco/static/
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Entorno
+.env
+.env.*
