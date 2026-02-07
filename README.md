@@ -4,9 +4,13 @@
 > This software is currently in early active development. Features and documentation are being updated frequently.
 PLEASE REMEMBER USE **pip install --upgrade disco-astronomy**
 
+
+
 **DISCO** (**D**eprojection **I**mage **S**oftware for **C**ircumstellar **O**bjects) is a specialized tool designed for the interactive analysis of astronomical FITS data, specifically focused on protoplanetary disks.
 
 It bridges the gap between scientific Python libraries and modern web interfaces, providing a fluid experience for data visualization, deprojection, and radial profile extraction.
+
+> **If you make use of DISCO in published work, please cite this repository and acknowledge Jorge Guzmán Lazo, who developed the software within the YEMS Millennium Nucleus under the supervision of Sebastián Pérez.**
 
 ## Tech Stack
 
@@ -28,3 +32,5 @@ disco-start
 
 ## License
 This project is licensed under the MIT License.
+
+
