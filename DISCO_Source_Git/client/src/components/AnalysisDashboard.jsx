@@ -58,9 +58,9 @@ const AnalysisDashboard = ({
 
     const handleDownloadCSV = () => {
         if (!profileData || !profileData.radius) return;
-        const { radius, intensity } = profileData;
-        const rows = [["Radius [arcsec]", "Intensity [Kelvin/Jy]"]];
-        radius.forEach((r, i) => {rows.push([r, intensity[i]]);});
+        const { radius, intensity, raw_intensity } = profileData;
+        const rows = [["Radius [arcsec]", "Intensity [Jy/beam]", "Brightness Temp [K]"]];
+        radius.forEach((r, i) => {const rawVal = raw_intensity ? raw_intensity[i] : 0; const tbVal = intensity[i]; rows.push([r, intensity[i], tbVal]);});
         const csvContent = rows.map(e => e.join(",")).join("\n");
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);

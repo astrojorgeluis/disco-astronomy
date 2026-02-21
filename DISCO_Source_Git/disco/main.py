@@ -425,7 +425,7 @@ def run_pipeline(params: PipelineParams):
 
     state.results = {'data': dc_view, 'deproj': deproj, 'polar': polar_display, 'model': mod, 'residuals': res}
     state.extents = {'data': ext_cartesian, 'deproj': ext_cartesian, 'model': ext_cartesian, 'residuals': ext_cartesian, 'polar': ext_polar}
-    state.profile_data = {'radius': r_arcsec.tolist(), 'tb': tb_prof.tolist()}
+    state.profile_data = {'radius': r_arcsec.tolist(), 'tb': tb_prof.tolist(), 'raw': prof_display.tolist()}
     
     # GAUSSIAN FITTING
     fit_stats = None
@@ -465,7 +465,7 @@ def run_pipeline(params: PipelineParams):
             "model": f"data:image/png;base64,{array_to_base64(mod, cmap='inferno')}",
             "residuals": f"data:image/png;base64,{array_to_base64(res, cmap='magma', stretch_val=0.9)}"
         },
-        "profile": {"radius": r_arcsec.tolist(), "intensity": tb_prof.tolist()},
+        "profile": {"radius": r_arcsec.tolist(), "intensity": tb_prof.tolist(), "raw_intensity": prof_display.tolist()},
         "geometry": {"fov_cartesian": fov_cartesian, "fov_polar": fov_polar, "beam": beam_info, "pixel_scale": pixel_scale},
         "fit": fit_stats 
     }
