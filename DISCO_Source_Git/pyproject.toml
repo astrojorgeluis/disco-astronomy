@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "disco-astronomy"
-version = "1.0.3"
+version = "1.0.4"
 description = "Herramienta de análisis de discos protoplanetarios"
 authors = [
   { name="astrojorgeluis", email="jorge.guzman.l@usach.cl" },
