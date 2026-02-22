@@ -60,7 +60,7 @@ const AnalysisDashboard = ({
         if (!profileData || !profileData.radius) return;
         const { radius, intensity, raw_intensity } = profileData;
         const rows = [["Radius [arcsec]", "Intensity [Jy/beam]", "Brightness Temp [K]"]];
-        radius.forEach((r, i) => {const rawVal = raw_intensity ? raw_intensity[i] : 0; const tbVal = intensity[i]; rows.push([r, intensity[i], tbVal]);});
+        radius.forEach((r, i) => {const rawVal = raw_intensity ? raw_intensity[i] : 0; const tbVal = intensity[i]; rows.push([r, rawVal, tbVal]);});
         const csvContent = rows.map(e => e.join(",")).join("\n");
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);

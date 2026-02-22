@@ -425,7 +425,8 @@ def run_pipeline(params: PipelineParams):
 
     state.results = {'data': dc_view, 'deproj': deproj, 'polar': polar_display, 'model': mod, 'residuals': res}
     state.extents = {'data': ext_cartesian, 'deproj': ext_cartesian, 'model': ext_cartesian, 'residuals': ext_cartesian, 'polar': ext_polar}
-    state.profile_data = {'radius': r_arcsec.tolist(), 'tb': tb_prof.tolist(), 'raw': prof_display.tolist()}
+    prof_jy = prof_display / 1000.0
+    state.profile_data = {'radius': r_arcsec.tolist(), 'tb': tb_prof.tolist(), 'raw': prof_jy.tolist()}
     
     # GAUSSIAN FITTING
     fit_stats = None
@@ -465,7 +466,7 @@ def run_pipeline(params: PipelineParams):
             "model": f"data:image/png;base64,{array_to_base64(mod, cmap='inferno')}",
             "residuals": f"data:image/png;base64,{array_to_base64(res, cmap='magma', stretch_val=0.9)}"
         },
-        "profile": {"radius": r_arcsec.tolist(), "intensity": tb_prof.tolist(), "raw_intensity": prof_display.tolist()},
+        "profile": {"radius": r_arcsec.tolist(), "intensity": tb_prof.tolist(), "raw_intensity": prof_jy.tolist()},
         "geometry": {"fov_cartesian": fov_cartesian, "fov_polar": fov_polar, "beam": beam_info, "pixel_scale": pixel_scale},
         "fit": fit_stats 
     }
@@ -666,11 +667,16 @@ app.mount("/assets", StaticFiles(directory=os.path.join(STATIC_DIR, "assets")), 
 
 @app.get("/{full_path:path}")
 async def serve_react_app(full_path: str):
-
     potential_file = os.path.join(STATIC_DIR, full_path)
     if os.path.isfile(potential_file):
-        return FileResponse(potential_file)
-    return FileResponse(os.path.join(STATIC_DIR, "index.html"))
+        response = FileResponse(potential_file)
+    else:
+        response = FileResponse(os.path.join(STATIC_DIR, "index.html"))
+    
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
 # ENTRY POINT FOR PIP SCRIPT
 
