@@ -10,25 +10,27 @@ authors = [
   { name="astrojorgeluis", email="jorge.guzman.l@usach.cl" },
 ]
 readme = "README.md"
-requires-python = ">=3.9, <3.14"
+requires-python = ">=3.9"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "fastapi>=0.128.0, <1.0.0",
-    "uvicorn[standard]>=0.40.0, <1.0.0",
-    "python-multipart>=0.0.21, <1.0.0",
-    "numpy>=2.2.6, <3.0.0",
-    "astropy>=6.1.7, <7.0.0",
-    "scipy>=1.15.3, <2.0.0",
-    "matplotlib>=3.10.8, <4.0.0",
-    "astroquery>=0.4.11, <1.0.0"
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.29.0",
+    "python-multipart",
+    "astropy>=6.0.0",
+    "scipy>=1.11.0",
+    "matplotlib>=3.8.0",
+    "astroquery>=0.4.7",
+    "numpy<2.0.0",      
+    "torch>=2.0.0",       
+    "tqdm>=4.66.0"        
 ]
 
 [project.scripts]
-disco-start = "disco.main:start_server"
+disco-start = "disco.main:run"
 
 [tool.setuptools.packages.find]
 where = ["."]

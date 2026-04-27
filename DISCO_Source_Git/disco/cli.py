@@ -6,6 +6,7 @@ import warnings
 import argparse
 import csv
 import numpy as np
+import torch   
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -529,7 +530,8 @@ def main():
     args = parser.parse_args()
 
     cnn_model  = None
-    model_path = "disco_model_stable.pth"
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    model_path = os.path.join(BASE_DIR, "models", "disco_model_stable.pth")
 
     if os.path.exists(model_path):
         try:
