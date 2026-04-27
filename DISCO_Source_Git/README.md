@@ -40,7 +40,7 @@ utomatically queries object metadata (distance, spectral type) via the CDS SIMBA
 
 ## Two Modes of Operation
 
-| Feature | CLI Pipeline (`disco-start`) | GUI (`disco-start` with no args) |
+| Feature | CLI Pipeline (`disco-start`) | GUI (`disco-start gui`) |
 |---|---|---|
 | DiscoNet (CNN) | ✅ | ❌ |
 | Interactive visualization | ❌ | ✅ |
@@ -81,7 +81,7 @@ pip install --upgrade disco-astronomy
 Launch the web interface for interactive, user-friendly analysis:
 
 ```bash
-disco-start
+disco-start gui
 ```
 
 This opens a local server with a React-based UI for loading FITS files, adjusting parameters visually, and inspecting radial profiles in real time.
