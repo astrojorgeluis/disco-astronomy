@@ -29,6 +29,8 @@ from scipy.ndimage import map_coordinates
 from scipy.optimize import minimize, curve_fit
 from astropy.visualization import ImageNormalize, AsinhStretch, LogStretch, LinearStretch, SqrtStretch
 
+from disco.core.optimization import geometric_loss
+
 try:
     from astroquery.simbad import Simbad
     ASTROQUERY_AVAILABLE = True
@@ -48,7 +50,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 class GlobalState:
     data = None
     header = None
@@ -145,49 +146,6 @@ def array_to_base64(data_array, cmap='magma', stretch_val=0.03):
 def gaussian(x, a, x0, sigma, c):
     return a * np.exp(-(x - x0) ** 2 / (2 * sigma ** 2)) + c
 
-def geometric_loss(params, image, local_cx, local_cy, crop_rad, rmin_pix, rmax_pix, dim=200, order=1):
-    incl, pa = params
-    if not (0 <= incl < 90):
-        return 1e12
-
-    x = np.arange(dim) - dim / 2
-    X, Y = np.meshgrid(x, x)
-
-    incl_rad = np.radians(incl)
-    pa_rad = np.radians(pa)
-
-    Xc = X * np.cos(incl_rad)
-    Xrot = np.cos(pa_rad) * Xc + np.sin(pa_rad) * Y
-    Yrot = -np.sin(pa_rad) * Xc + np.cos(pa_rad) * Y
-
-    scale = (crop_rad * 2) / dim
-    coords = [Yrot * scale + local_cy, -Xrot * scale + local_cx]
-    deproj = map_coordinates(image, coords, order=order, mode='constant', cval=0.0)
-
-    r_steps, th_steps = int(dim / 2), 180
-    r = np.linspace(0, dim / 2, r_steps)
-    th = np.linspace(-np.pi, np.pi, th_steps)
-    R, TH = np.meshgrid(r, th)
-    Xd = R * np.cos(TH) + dim / 2
-    Yd = R * np.sin(TH) + dim / 2
-
-    polar = map_coordinates(deproj, [Yd, Xd], order=1, mode='constant', cval=0.0)
-
-    scale_polar = r_steps / crop_rad
-    idx_min = int(rmin_pix * scale_polar)
-    idx_max = int(rmax_pix * scale_polar)
-
-    idx_min = max(0, idx_min)
-    idx_max = min(r_steps, idx_max)
-
-    if idx_max <= idx_min + 2:
-        idx_min, idx_max = 0, r_steps
-
-    polar_crop = polar[:, idx_min:idx_max]
-    profile = np.mean(polar_crop, axis=0)
-    model = np.tile(profile, (th_steps, 1))
-    residual = np.sum((polar_crop - model) ** 2)
-    return residual
 
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
@@ -281,7 +239,8 @@ def optimize_geometry(params: OptimizeParams):
     rmin_pix = params.fit_rmin / pixel_scale
     rmax_pix = params.fit_rmax / pixel_scale
 
-    best_guess = [params.incl, params.pa]
+    # AÑADIDO: Agregamos 0.0 y 0.0 para dx y dy
+    best_guess = [params.incl, params.pa, 0.0, 0.0]
 
     test_incls = [10, 30, 50, 70]
     test_pas = range(0, 180, 30)
@@ -290,26 +249,30 @@ def optimize_geometry(params: OptimizeParams):
 
     for ti in test_incls:
         for tp in test_pas:
-            l = geometric_loss([ti, tp], dc, local_c_x, local_c_y, crop_rad, rmin_pix, rmax_pix, dim=100, order=1)
+            # AÑADIDO: Agregamos 0.0 y 0.0 en el loop de prueba
+            l = geometric_loss([ti, tp, 0.0, 0.0], dc, local_c_x, local_c_y, crop_rad, rmin_pix, rmax_pix, dim=100, order=1)
             if l < min_loss:
                 min_loss = l
-                best_guess = [ti, tp]
+                best_guess = [ti, tp, 0.0, 0.0]
 
     res = minimize(
         geometric_loss,
         best_guess,
         args=(dc, local_c_x, local_c_y, crop_rad, rmin_pix, rmax_pix, 400, 3),
         method='Nelder-Mead',
-        bounds=[(0, 85), (0, 180)],
+        # AÑADIDO: Ajustamos los límites (bounds) para incluir los 4 parámetros
+        bounds=[(0, 85), (0, 180), (-10, 10), (-10, 10)],
         tol=0.01
     )
 
-    best_incl, best_pa = res.x
+    # AÑADIDO: Extraemos los 4 valores (aunque la GUI solo use incl y pa)
+    best_incl, best_pa, best_dx, best_dy = res.x
     best_pa = best_pa % 180
     if best_pa < 0:
         best_pa += 180
 
     return {"optimized_incl": float(best_incl), "optimized_pa": float(best_pa)}
+
 
 @app.post("/run_pipeline")
 def run_pipeline(params: PipelineParams):
