@@ -21,7 +21,7 @@ DISCO is an open-source tool for the interactive and automated analysis of proto
 
 It bridges scientific Python libraries with a modern web interface, offering two complementary modes of operation: a **CLI pipeline** for batch processing and a **GUI** for interactive exploration.
 
-> **Citation:** If you use DISCO in published work, please cite this repository and acknowledge **Jorge Luis Guzmán Lazo**, who developed the software within the [YEMS Millennium Nucleus](https://www.milenioyems.cl/) under the supervision of **Sebastián Pérez**.
+> **Citation:** If you use DISCO in published work, please cite this repository and acknowledge **Jorge Luis Guzmán Lazo**, who developed the software within the [YEMS Millennium Nucleus](https://www.milenioyems.cl/) under the supervision of **Sebastián Pérez Marquez** and **Camilo Gonzalez Ruilova**.
 
 ---
 
