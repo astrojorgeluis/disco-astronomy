@@ -21,6 +21,7 @@ dist/
 
 # Uploads 
 DISCO_Source_Git/disco/uploads/
+DISCO_Source_Git/.disco_uploads/
 
 # Build static files
 DISCO_Source_Git/disco/static/

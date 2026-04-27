@@ -83,6 +83,11 @@ def wipe_session_logic():
 
 wipe_session_logic()
 
+@app.on_event("shutdown")
+def cleanup_on_shutdown():
+    print("\n[INFO] Cleaning directory and temporary files...")
+    wipe_session_logic()
+
 @app.post("/reset_session")
 def reset_session_endpoint():
     wipe_session_logic()
