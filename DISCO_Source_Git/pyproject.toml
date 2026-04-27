@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "disco-astronomy"
-version = "1.0.6"
-description = "Herramienta de análisis de discos protoplanetarios"
+version = "1.1.0"
+description = "Deprojection Image Software for Circumstellar Objects"
 authors = [
   { name="astrojorgeluis", email="jorge.guzman.l@usach.cl" },
 ]

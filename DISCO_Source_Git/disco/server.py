@@ -39,7 +39,7 @@ except ImportError:
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, "static")
-UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
+UPLOAD_DIR = os.path.join(os.getcwd(), ".disco_uploads")
 
 app = FastAPI()
 
@@ -667,10 +667,15 @@ def open_browser_delayed():
     webbrowser.open("http://localhost:8000")
 
 def start_server():
-    print("DISCO server running at http://localhost:8000")
-    print("Press Ctrl+C to stop the server")
+    print("\n" + "="*50)
+    print("        DISCO GUI IS RUNNING")
+    print("   Open: http://localhost:8000")
+    print("   Press Ctrl+C to stop the server safely")
+    print("="*50 + "\n")
+    
     threading.Thread(target=open_browser_delayed).start()
-    uvicorn.run(app, host="0.0.0.0", port=8000, log_level="info")
+    uvicorn.run(app, host="0.0.0.0", port=8000, log_level="warning")
+    print("\n  DISCO server closed. See you next time!")
 
 if __name__ == "__main__":
     start_server()

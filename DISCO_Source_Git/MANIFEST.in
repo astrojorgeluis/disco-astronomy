@@ -1,2 +1,3 @@
 include disco/static/index.html
 recursive-include disco/static *
+recursive-include disco/models *
