@@ -95,6 +95,8 @@ Toggle between different visualization states of the disk:
 * **Residuals:** The remaining flux after subtracting the model from the deprojected image, useful for spotting spirals or localized asymmetries.
 * **Polar:** The image mapped into polar coordinates (Radius vs. Azimuth).
 
+![GUI Screenshot Tools](https://raw.githubusercontent.com/astrojorgeluis/disco-astronomy/main/DISCO_Source_Git/assets/gui_screenshot_tools.png)
+
 **Interactive Analysis Tools**
 * **Auto-Tune Geometry:** A one-click execution that runs the DiscoNet CNN in the background to automatically predict and apply the optimal center offset, inclination, and position angle.
 * **Cursor Probe (Inspector):** Hovering over the 2D image perfectly syncs with the 1D charts, showing you the exact Radius, Intensity (in Kelvin), and X/Y offsets.
