@@ -86,6 +86,37 @@ disco-start gui
 
 This opens a local server with a React-based UI for loading FITS files, adjusting parameters visually, and inspecting radial profiles in real time.
 
+![GUI Screenshot](https://raw.githubusercontent.com/astrojorgeluis/disco-astronomy/main/DISCO_Source_Git/assets/gui_screenshot.png)
+
+**View Modes**
+Toggle between different visualization states of the disk:
+* **Deproj:** The deprojected (face-on) image based on current geometric parameters.
+* **Model:** The synthetic symmetrical model generated from the radial profile.
+* **Residuals:** The remaining flux after subtracting the model from the deprojected image, useful for spotting spirals or localized asymmetries.
+* **Polar:** The image mapped into polar coordinates (Radius vs. Azimuth).
+
+**Interactive Analysis Tools**
+* **Auto-Tune Geometry:** A one-click execution that runs the DiscoNet CNN in the background to automatically predict and apply the optimal center offset, inclination, and position angle.
+* **Cursor Probe (Inspector):** Hovering over the 2D image perfectly syncs with the 1D charts, showing you the exact Radius, Intensity (in Kelvin), and X/Y offsets.
+* **Fit Range Selection:** Click and drag directly on the Radial Profile chart to select a specific radial range for Gaussian ring fitting. The stats widget will automatically update with the **Peak Radius** and **FWHM**.
+* **Custom Markers:** Pinpoint specific morphological features. Click "Add Marker" to place customized annotations (shapes, colors, and labels) directly onto the FITS image.
+
+**Real-Time Charts (1D Plots)**
+* **Radial Profile:** Displays Intensity vs. Radius. Supports toggling between Linear and Logarithmic scales. 
+* **Cumulative Flux:** An area chart showing the enclosed flux percentage as a function of radius.
+
+**Display Configuration**
+* **Colormaps & Stretch:** Change colormaps (`magma`, `inferno`, `viridis`, etc.) and stretch functions (`asinh`, `linear`, `log`, `sqrt`) on the fly.
+* **Intensity Limits:** Manually set `Vmin`/`Vmax` values or use the Auto-percentile button to enhance faint disk structures.
+* **Overlays:** Toggle axes, colorbars, and adjustable intensity contours.
+
+**Export & Integration**
+* **Download FITS:** Save the currently viewed state (e.g., the residual map) as a standard `.fits` file.
+* **CSV Export:** Download the precise 1D radial profile data points (Radius, Intensity, Brightness Temperature) directly to your machine.
+* **Matplotlib Widget:** Pop out the current view into an interactive, native Matplotlib window for publication-ready plotting.
+---
+
+
 ### Automated CLI Pipeline
 
 For batch processing of one or more targets:
