@@ -91,16 +91,16 @@ This opens a local server with a React-based UI for loading FITS files, adjustin
 **View Modes**
 Toggle between different visualization states of the disk:
 * **Deproj:** The deprojected (face-on) image based on current geometric parameters.
-* **Model:** The synthetic symmetrical model generated from the radial profile.
+* **Model:** The synthetic symmetrical model.
 * **Residuals:** The remaining flux after subtracting the model from the deprojected image, useful for spotting spirals or localized asymmetries.
 * **Polar:** The image mapped into polar coordinates (Radius vs. Azimuth).
 
 ![GUI Screenshot Tools](https://raw.githubusercontent.com/astrojorgeluis/disco-astronomy/main/DISCO_Source_Git/assets/gui_screenshot_tools.png)
 
 **Interactive Analysis Tools**
-* **Auto-Tune Geometry:** A one-click execution that runs the DiscoNet CNN in the background to automatically predict and apply the optimal center offset, inclination, and position angle.
+* **Auto-Tune Geometry:** A one-click execution that runs the mathematical optimization in the background to automatically predict and apply the optimal center offset, inclination, and position angle.
 * **Cursor Probe (Inspector):** Hovering over the 2D image perfectly syncs with the 1D charts, showing you the exact Radius, Intensity (in Kelvin), and X/Y offsets.
-* **Fit Range Selection:** Click and drag directly on the Radial Profile chart to select a specific radial range for Gaussian ring fitting. The stats widget will automatically update with the **Peak Radius** and **FWHM**.
+* **Fit Range Selection:** Click and drag directly on the chart to select a specific radial range for Gaussian ring fitting. The stats widget will automatically update with the **Peak Radius** and **FWHM**.
 * **Custom Markers:** Pinpoint specific morphological features. Click "Add Marker" to place customized annotations (shapes, colors, and labels) directly onto the FITS image.
 
 **Real-Time Charts (1D Plots)**
