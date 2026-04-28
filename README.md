@@ -114,6 +114,8 @@ Toggle between different visualization states of the disk:
 * **Download FITS:** Save the currently viewed state (e.g., the residual map) as a standard `.fits` file.
 * **CSV Export:** Download the precise 1D radial profile data points (Radius, Intensity, Brightness Temperature) directly to your machine.
 * **Matplotlib Widget:** Pop out the current view into an interactive, native Matplotlib window for publication-ready plotting.
+---
+
 
 ### Automated CLI Pipeline
 
