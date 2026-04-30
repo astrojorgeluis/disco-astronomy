@@ -244,7 +244,6 @@ def optimize_geometry(params: OptimizeParams):
     rmin_pix = params.fit_rmin / pixel_scale
     rmax_pix = params.fit_rmax / pixel_scale
 
-    # AÑADIDO: Agregamos 0.0 y 0.0 para dx y dy
     best_guess = [params.incl, params.pa, 0.0, 0.0]
 
     test_incls = [10, 30, 50, 70]
@@ -254,7 +253,6 @@ def optimize_geometry(params: OptimizeParams):
 
     for ti in test_incls:
         for tp in test_pas:
-            # AÑADIDO: Agregamos 0.0 y 0.0 en el loop de prueba
             l = geometric_loss([ti, tp, 0.0, 0.0], dc, local_c_x, local_c_y, crop_rad, rmin_pix, rmax_pix, dim=100, order=1)
             if l < min_loss:
                 min_loss = l
@@ -265,12 +263,10 @@ def optimize_geometry(params: OptimizeParams):
         best_guess,
         args=(dc, local_c_x, local_c_y, crop_rad, rmin_pix, rmax_pix, 400, 3),
         method='Nelder-Mead',
-        # AÑADIDO: Ajustamos los límites (bounds) para incluir los 4 parámetros
         bounds=[(0, 85), (0, 180), (-10, 10), (-10, 10)],
         tol=0.01
     )
 
-    # AÑADIDO: Extraemos los 4 valores (aunque la GUI solo use incl y pa)
     best_incl, best_pa, best_dx, best_dy = res.x
     best_pa = best_pa % 180
     if best_pa < 0:

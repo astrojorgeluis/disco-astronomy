@@ -218,10 +218,7 @@ def run_pipeline(files_to_process, group_name, output_dir, args, cnn_model):
                                     ref_ra, ref_dec, pmra_gaia, pmdec_gaia, dt_yr
                                 )
                         px, py = icrs_to_pixel(item["header"], apply_ra, apply_dec)
-                        #px, py = refine_center_geometry(
-                        #    item["data"], item["header"], item["pixel_scale"],
-                        #    px, py, incl, pa, final_rmin, geom_rout
-                        #)
+                    
                         item["cx"], item["cy"] = px, py
                     except Exception:
                         item["cx"] += dx
