@@ -118,7 +118,7 @@ const AnalysisDashboard = ({
         if (overrideParams.hasOwnProperty('vmax_percentile')) { payload.vmax_percentile = overrideParams.vmax_percentile; payload.vmin = null; payload.vmax = null; } 
         else { let valMin = parseFloat(manualMinStr); let valMax = parseFloat(manualMaxStr); if (isNaN(valMin)) valMin = 0.0; if (isNaN(valMax)) valMax = 4.0; payload.vmin = valMin; payload.vmax = valMax; payload.vmax_percentile = null; }
         setVizParams(prev => ({ ...prev, cmap: baseCmap, stretch: finalStretch, vmax_percentile: payload.vmax_percentile || prev.vmax_percentile, contours: payload.contours, contour_levels: payload.contour_levels }));
-        try { const response = await fetch('http://localhost:8000/render_plot', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); if (!response.ok) return; const data = await response.json(); if (data.image) setCurrentImages(prev => ({ ...prev, [viewType]: data.image })); if (data.stats) { data.stats.cmap_used = finalCmap; setVizStats(data.stats); setManualMinStr(String(data.stats.vmin_used)); setManualMaxStr(String(data.stats.vmax_used)); } } catch (e) { console.error("Viz Error:", e); }
+        try { const response = await fetch('/render_plot', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); if (!response.ok) return; const data = await response.json(); if (data.image) setCurrentImages(prev => ({ ...prev, [viewType]: data.image })); if (data.stats) { data.stats.cmap_used = finalCmap; setVizStats(data.stats); setManualMinStr(String(data.stats.vmin_used)); setManualMaxStr(String(data.stats.vmax_used)); } } catch (e) { console.error("Viz Error:", e); }
     };
 
     useEffect(() => { updateVisualization(); }, [invertCmap]);
@@ -233,7 +233,7 @@ const AnalysisDashboard = ({
                 <div style={{flex:1}} />
                 <ButtonGroup minimal>
                     <Button icon="chart" small text="Matplotlib" onClick={() => onOpenMatplotlib(viewType)} />
-                    <Button icon="download" small title="Save FITS" onClick={() => window.open(`http://localhost:8000/download_fits?type=${viewType}`, '_blank')}/>
+                    <Button icon="download" small title="Save FITS" onClick={() => window.open(`/download_fits?type=${viewType}`, '_blank')}/>
                 </ButtonGroup>
             </div>
             

@@ -90,7 +90,9 @@ def predict_with_cnn(data, header, pixel_scale, cx, cy, search_rad, model):
         if mx > 0:
             beam_map = (g / mx).astype(np.float32)
 
-    beam_fwhm_as = bmaj_arcsec if bmaj_arcsec > 0 else (pixel_scale * 6)
+    if bmaj_arcsec <= 0:
+        raise ValueError("The FITS file does not contain valid beam information (BMAJ). CNN inference requires known resolution.")
+    beam_fwhm_as = bmaj_arcsec
     scale_val    = float(np.clip(beam_fwhm_as / (field_as + 1e-6), 0, 1))
     scale_map    = np.full((IMG_SIZE, IMG_SIZE), scale_val, dtype=np.float32)
 

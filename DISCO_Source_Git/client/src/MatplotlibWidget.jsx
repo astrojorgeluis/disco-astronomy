@@ -54,7 +54,7 @@ const MatplotlibWidget = ({ defaultType = 'data' }) => {
         setLoading(true);
         setErrorMsg(null);
         try {
-            const response = await fetch('http://localhost:8000/render_plot', {
+            const response = await fetch('/render_plot', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(options)

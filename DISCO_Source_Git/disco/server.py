@@ -45,7 +45,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:8000", "http://127.0.0.1:8000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -115,7 +115,6 @@ class PipelineParams(BaseModel):
     pa: float
     incl: float
     rout: float
-    contrast: float = 2.0
     fit_rmin: float = 0.0
     fit_rmax: float = 0.0
 

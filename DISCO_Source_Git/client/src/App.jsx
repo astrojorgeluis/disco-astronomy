@@ -145,7 +145,7 @@ function App() {
   const handleExit = async () => {
       if (!window.confirm("Close session? Unsaved data will be lost.")) return;
       try {
-          await fetch('http://localhost:8000/reset_session', { method: 'POST' });
+          await fetch('/reset_session', { method: 'POST' });
           setFilename("No Data Loaded"); setImageSrc(null); setResults(null); setProfileData(null); setFitStats(null); setHeaderInfo([]); setSimbadResults(null); setGeometry(null); setImgDimensions(null);
           setParams({ incl: 0, pa: 0, cx: 300, cy: 300, rout: 1.2, fit_rmin: 0.0, fit_rmax: 0.0 });
           showToast({ message: "Session closed.", intent: "success", icon: "trash" });
@@ -153,8 +153,8 @@ function App() {
   };
 
   useEffect(() => {
-      fetch('http://localhost:8000/reset_session', { method: 'POST' }).catch(e => console.warn("Cleanup failed", e));
-      const handleTabClose = () => { navigator.sendBeacon('http://localhost:8000/reset_session'); };
+      fetch('/reset_session', { method: 'POST' }).catch(e => console.warn("Cleanup failed", e));
+      const handleTabClose = () => { navigator.sendBeacon('/reset_session'); };
       window.addEventListener('beforeunload', handleTabClose);
       return () => window.removeEventListener('beforeunload', handleTabClose);
   }, []); 
@@ -179,7 +179,7 @@ function App() {
   const handleRunSimbad = async () => {
       setIsSimbadLoading(true);
       try {
-          const response = await fetch('http://localhost:8000/query_simbad');
+          const response = await fetch('/query_simbad');
           if (!response.ok) throw new Error("Error querying Simbad");
           const data = await response.json();
           if (data.found) {
@@ -212,20 +212,20 @@ function App() {
                 const targetFile = session.filename || session.file_path; 
                 if (targetFile) {
                     try {
-                        const response = await fetch('http://localhost:8000/load_local', {
+                        const response = await fetch('/load_local', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ filename: targetFile })
                         });
                         if (response.ok) {
                             const data = await response.json();
-                            const previewRes = await fetch('http://localhost:8000/preview');
+                            const previewRes = await fetch('/preview');
                             const previewData = await previewRes.json();
                             setImageSrc(previewData.image);
                             setImgDimensions({ width: data.shape[1], height: data.shape[0] });
                             setFilename(data.filename);
                             setPixelScale(data.pixel_scale); 
-                            const headerRes = await fetch('http://localhost:8000/get_header');
+                            const headerRes = await fetch('/get_header');
                             const headerData = await headerRes.json();
                             setHeaderInfo(headerData.header || []);
                         }
@@ -245,10 +245,10 @@ function App() {
     formData.append("file", file);
 
     try {
-        const uploadResponse = await fetch('http://localhost:8000/upload', { method: 'POST', body: formData });
+        const uploadResponse = await fetch('/upload', { method: 'POST', body: formData });
         if (!uploadResponse.ok) throw new Error("Upload failed");
         const uploadData = await uploadResponse.json();
-        const previewResponse = await fetch('http://localhost:8000/preview');
+        const previewResponse = await fetch('/preview');
         if (!previewResponse.ok) throw new Error("Preview failed");
         const previewData = await previewResponse.json();
         setImageSrc(previewData.image);
@@ -259,7 +259,7 @@ function App() {
         const scale = uploadData.pixel_scale || 0.03;
         setPixelScale(scale);
         try {
-            const headerRes = await fetch('http://localhost:8000/get_header');
+            const headerRes = await fetch('/get_header');
             const headerData = await headerRes.json();
             setHeaderInfo(headerData.header || []);
         } catch(e) { console.error("Header fetch error", e); }
@@ -288,7 +288,7 @@ function App() {
       if (!imageSrc) return;
       setIsAutoTuning(true);
       try {
-          const response = await fetch('http://localhost:8000/optimize_geometry', {
+          const response = await fetch('/optimize_geometry', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ cx: params.cx, cy: params.cy, pa: params.pa, incl: params.incl, rout: params.rout, fit_rmin: params.fit_rmin, fit_rmax: params.fit_rmax })
@@ -314,7 +314,7 @@ function App() {
     if (!isAuto) setIsPipelineLoading(true);
     const activeParams = overrideParams ? { ...params, ...overrideParams } : params;
     try {
-        const response = await fetch('http://localhost:8000/run_pipeline', {
+        const response = await fetch('/run_pipeline', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ filepath: "", cx: activeParams.cx, cy: activeParams.cy, pa: activeParams.pa, incl: activeParams.incl, rout: activeParams.rout, contrast: 2.0, fit_rmin: activeParams.fit_rmin, fit_rmax: activeParams.fit_rmax })
