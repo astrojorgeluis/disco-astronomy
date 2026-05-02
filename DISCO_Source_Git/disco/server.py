@@ -21,6 +21,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import Response, FileResponse
 from pydantic import BaseModel
+import socket
 
 from astropy.io import fits
 from astropy.wcs import WCS
@@ -45,7 +46,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8000", "http://127.0.0.1:8000"],
+    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -662,20 +663,30 @@ async def serve_react_app(full_path: str):
     response.headers["Expires"] = "0"
     return response
 
-def open_browser_delayed():
-    time.sleep(1.5)
-    webbrowser.open("http://localhost:8000")
+def get_free_port():
+    port = 8000
+    while True:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            if s.connect_ex(('localhost', port)) != 0:
+                return port
+            port += 1
 
 def start_server():
+    port = get_free_port()
+    url = f"http://localhost:{port}"
+    
     print("\n" + "="*50)
     print("        DISCO GUI IS RUNNING")
-    print("   Open: http://localhost:8000")
+    print(f"   URL: {url}")
     print("   Press Ctrl+C to stop the server safely")
     print("="*50 + "\n")
     
-    threading.Thread(target=open_browser_delayed).start()
-    uvicorn.run(app, host="0.0.0.0", port=8000, log_level="warning")
-    print("\n  DISCO server closed. See you next time!")
+    def open_browser():
+        time.sleep(1.5)
+        webbrowser.open(url)
+
+    threading.Thread(target=open_browser, daemon=True).start()
+    uvicorn.run(app, host="0.0.0.0", port=port, log_level="warning")
 
 if __name__ == "__main__":
     start_server()
