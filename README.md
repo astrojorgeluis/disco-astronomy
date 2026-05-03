@@ -63,7 +63,7 @@ Guzmán-Lazo, J. L. (2026). *DISCO: Deprojection Image Software for Circumstella
 
 ### BibTeX
 ```bibtex
-@software{guzman_lazo_2026_19999240,
+@software{guzman_lazo_2026_19999239,
   author    = {Guzmán-Lazo, Jorge Luis},
   title     = {DISCO: Deprojection Image Software for Circumstellar Objects},
   year      = {2026},
