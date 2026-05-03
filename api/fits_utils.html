@@ -1,0 +1,725 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>disco.core.fits_utils &mdash; DISCO v1.1.7</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_disco.css?v=499842b1" />
+
+  
+    <link rel="shortcut icon" href="../_static/disco_icon.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=370aedac"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="disco.core.cnn_inference" href="cnn_inference.html" />
+    <link rel="prev" title="Graphical User Interface" href="../gui.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/disco_icon.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installation-from-pypi">Installation from PyPI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#keeping-disco-up-to-date">Keeping DISCO up to date</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#included-static-assets">Included Static Assets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#interactive-gui-mode">Interactive GUI Mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#automated-cli-mode">Automated CLI Mode</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../architecture.html#repository-structure">Repository Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../architecture.html#module-relationships">Module Relationships</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../architecture.html#operational-modes">Operational Modes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../architecture.html#cli-pipeline-disco-start-identifier">CLI Pipeline (<code class="docutils literal notranslate"><span class="pre">disco-start</span> <span class="pre">&lt;identifier</span> <span class="pre">...&gt;</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../architecture.html#gui-server-disco-start-gui">GUI Server (<code class="docutils literal notranslate"><span class="pre">disco-start</span> <span class="pre">gui</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../architecture.html#frontend-build-pipeline">Frontend Build Pipeline</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline.html">Pipeline Description</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../pipeline.html#group-discovery">Group Discovery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pipeline.html#phase-1-fits-ingestion">Phase 1 — FITS Ingestion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pipeline.html#phase-2-geometry-optimisation">Phase 2 — Geometry Optimisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pipeline.html#phase-3-uncertainty-estimation">Phase 3 — Uncertainty Estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pipeline.html#phase-4-profile-extraction-and-beam-homogenisation">Phase 4 — Profile Extraction and Beam Homogenisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pipeline.html#phase-5-output-serialisation">Phase 5 — Output Serialisation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">Command-Line Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html#synopsis">Synopsis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html#positional-arguments">Positional Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html#optional-arguments">Optional Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html#usage-examples">Usage Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html#cnn-model-loading">CNN Model Loading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../gui.html">Graphical User Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../gui.html#application-layout">Application Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui.html#file-loading">File Loading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui.html#geometry-controls-controls-panel">Geometry Controls (CONTROLS panel)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui.html#auto-tune-geometry">Auto-Tune Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui.html#analysis-dashboard-analysis-panel">Analysis Dashboard (ANALYSIS panel)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gui.html#view-modes">View Modes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gui.html#display-settings">Display Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gui.html#d-profile-chart">1D Profile Chart</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gui.html#cursor-probe">Cursor Probe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gui.html#ring-fit-statistics">Ring Fit Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gui.html#cumulative-flux-chart">Cumulative Flux Chart</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gui.html#custom-markers">Custom Markers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../gui.html#export-functions">Export Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui.html#simbad-query">SIMBAD Query</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">disco.core.fits_utils</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#beam-utilities">Beam Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#disco.core.fits_utils.get_alma_beam"><code class="docutils literal notranslate"><span class="pre">get_alma_beam()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#disco.core.fits_utils.deconvolve_beams"><code class="docutils literal notranslate"><span class="pre">deconvolve_beams()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#disco.core.fits_utils.make_gaussian_kernel_casa"><code class="docutils literal notranslate"><span class="pre">make_gaussian_kernel_casa()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#centroid-and-parameter-detection">Centroid and Parameter Detection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#disco.core.fits_utils.find_center_robust"><code class="docutils literal notranslate"><span class="pre">find_center_robust()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#disco.core.fits_utils.auto_detect_parameters"><code class="docutils literal notranslate"><span class="pre">auto_detect_parameters()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#disco.core.fits_utils.refine_center_local"><code class="docutils literal notranslate"><span class="pre">refine_center_local()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#profile-extraction">Profile Extraction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#disco.core.fits_utils.extract_profile"><code class="docutils literal notranslate"><span class="pre">extract_profile()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#disco.core.fits_utils.measure_rout_deproj"><code class="docutils literal notranslate"><span class="pre">measure_rout_deproj()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#disco.core.fits_utils.save_debug_deproj_center"><code class="docutils literal notranslate"><span class="pre">save_debug_deproj_center()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#wcs-and-coordinate-utilities">WCS and Coordinate Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#disco.core.fits_utils.deg_to_sex"><code class="docutils literal notranslate"><span class="pre">deg_to_sex()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#disco.core.fits_utils.pixel_to_icrs"><code class="docutils literal notranslate"><span class="pre">pixel_to_icrs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#disco.core.fits_utils.icrs_to_pixel"><code class="docutils literal notranslate"><span class="pre">icrs_to_pixel()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#disco.core.fits_utils.get_obs_epoch"><code class="docutils literal notranslate"><span class="pre">get_obs_epoch()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#gaia-proper-motion">Gaia Proper Motion</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#disco.core.fits_utils.query_gaia_proper_motion"><code class="docutils literal notranslate"><span class="pre">query_gaia_proper_motion()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#disco.core.fits_utils.apply_proper_motion_correction"><code class="docutils literal notranslate"><span class="pre">apply_proper_motion_correction()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cnn_inference.html"><code class="docutils literal notranslate"><span class="pre">disco.core.cnn_inference</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cnn_inference.html#architecture">Architecture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cnn_inference.html#disco.core.cnn_inference.ResBlock"><code class="docutils literal notranslate"><span class="pre">ResBlock</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cnn_inference.html#disco.core.cnn_inference.ResBlock.forward"><code class="docutils literal notranslate"><span class="pre">ResBlock.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cnn_inference.html#disco.core.cnn_inference.DiscoNet"><code class="docutils literal notranslate"><span class="pre">DiscoNet</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cnn_inference.html#disco.core.cnn_inference.DiscoNet.forward"><code class="docutils literal notranslate"><span class="pre">DiscoNet.forward()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cnn_inference.html#output-encoding">Output Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cnn_inference.html#inference-function">Inference Function</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cnn_inference.html#disco.core.cnn_inference.predict_with_cnn"><code class="docutils literal notranslate"><span class="pre">predict_with_cnn()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="optimization.html"><code class="docutils literal notranslate"><span class="pre">disco.core.optimization</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="optimization.html#geometric-loss-function">Geometric Loss Function</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="optimization.html#disco.core.optimization.geometric_loss"><code class="docutils literal notranslate"><span class="pre">geometric_loss()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="optimization.html#hybrid-geometry-optimiser">Hybrid Geometry Optimiser</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="optimization.html#disco.core.optimization.auto_tune_geometry_hybrid"><code class="docutils literal notranslate"><span class="pre">auto_tune_geometry_hybrid()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="optimization.html#uncertainty-estimation">Uncertainty Estimation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="optimization.html#disco.core.optimization.estimate_geometry_errors"><code class="docutils literal notranslate"><span class="pre">estimate_geometry_errors()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="optimization.html#centre-refinement">Centre Refinement</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="optimization.html#disco.core.optimization.refine_center_geometry"><code class="docutils literal notranslate"><span class="pre">refine_center_geometry()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="server.html"><code class="docutils literal notranslate"><span class="pre">disco.server</span></code> — HTTP API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="server.html#global-state">Global State</a></li>
+<li class="toctree-l2"><a class="reference internal" href="server.html#pydantic-request-models">Pydantic Request Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="server.html#disco.server.PlotParams"><code class="docutils literal notranslate"><span class="pre">PlotParams</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="server.html#disco.server.PipelineParams"><code class="docutils literal notranslate"><span class="pre">PipelineParams</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="server.html#disco.server.OptimizeParams"><code class="docutils literal notranslate"><span class="pre">OptimizeParams</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="server.html#disco.server.LoadLocalParams"><code class="docutils literal notranslate"><span class="pre">LoadLocalParams</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="server.html#endpoints">Endpoints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="server.html#session-management">Session Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="server.html#file-loading">File Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="server.html#pipeline-and-optimisation">Pipeline and Optimisation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="server.html#rendering">Rendering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="server.html#download-and-metadata">Download and Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="server.html#static-file-serving">Static File Serving</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="server.html#server-lifecycle">Server Lifecycle</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="server.html#disco.server.start_server"><code class="docutils literal notranslate"><span class="pre">start_server()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cli_module.html"><code class="docutils literal notranslate"><span class="pre">disco.cli</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cli_module.html#disco.cli.discover_groups"><code class="docutils literal notranslate"><span class="pre">discover_groups()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_module.html#disco.cli.run_pipeline"><code class="docutils literal notranslate"><span class="pre">run_pipeline()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_module.html#disco.cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="main.html"><code class="docutils literal notranslate"><span class="pre">disco.main</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="main.html#disco.main.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Supplementary</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../training.html">DiscoNet Training Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../training.html#step-1-catalogue-generation-training-generate-catalogue-py">Step 1: Catalogue Generation (<code class="docutils literal notranslate"><span class="pre">training/generate_catalogue.py</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../training.html#step-2-fits-simulation-training-simulate-catalogue-py">Step 2: FITS Simulation (<code class="docutils literal notranslate"><span class="pre">training/simulate_catalogue.py</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../training.html#step-3-model-training-training-train-model-py">Step 3: Model Training (<code class="docutils literal notranslate"><span class="pre">training/train_model.py</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../file_io.html">File Input and Output</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../file_io.html#fits-input">FITS Input</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../file_io.html#cli-output-files">CLI Output Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../file_io.html#radial-profile-plot">Radial Profile Plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../file_io.html#csv-exports-csv-on">CSV Exports (<code class="docutils literal notranslate"><span class="pre">--csv</span> <span class="pre">on</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../file_io.html#debug-output-debug-on">Debug Output (<code class="docutils literal notranslate"><span class="pre">--debug</span> <span class="pre">on</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../file_io.html#gui-session-files">GUI Session Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../file_io.html#gui-fits-downloads">GUI FITS Downloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../file_io.html#gui-csv-export">GUI CSV Export</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-1-7-current">Version 1.1.7 (current)</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DISCO</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><code class="docutils literal notranslate"><span class="pre">disco.core.fits_utils</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-disco.core.fits_utils">
+<span id="disco-core-fits-utils"></span><span id="api-fits-utils"></span><h1><code class="docutils literal notranslate"><span class="pre">disco.core.fits_utils</span></code><a class="headerlink" href="#module-disco.core.fits_utils" title="Link to this heading"></a></h1>
+<p>This module provides all FITS-level I/O functions and astrometric utilities
+used by the CLI pipeline and, indirectly, by the GUI backend. It handles beam
+convolution kernels, robust centroid detection, parameter auto-detection,
+radial profile extraction, WCS conversions, and Gaia DR3 proper-motion
+retrieval.</p>
+<p>The availability of <code class="docutils literal notranslate"><span class="pre">astroquery</span></code> is detected at import time and stored in
+the module-level flag <code class="docutils literal notranslate"><span class="pre">_ASTROQUERY_AVAILABLE</span></code>. When <code class="docutils literal notranslate"><span class="pre">astroquery</span></code> is
+absent, the Gaia-related functions are no-ops returning <code class="docutils literal notranslate"><span class="pre">(None,</span> <span class="pre">None,</span> <span class="pre">None)</span></code>.</p>
+<hr class="docutils" />
+<section id="beam-utilities">
+<h2>Beam Utilities<a class="headerlink" href="#beam-utilities" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="disco.core.fits_utils.get_alma_beam">
+<span class="sig-prename descclassname"><span class="pre">disco.core.fits_utils.</span></span><span class="sig-name descname"><span class="pre">get_alma_beam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigma_maj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bpa_rad</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/core/fits_utils.html#get_alma_beam"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.core.fits_utils.get_alma_beam" title="Link to this definition"></a></dt>
+<dd><p>Construct a 2D elliptical Gaussian beam kernel on a grid of half-width
+<code class="docutils literal notranslate"><span class="pre">size</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sigma_maj</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Major-axis Gaussian sigma in pixels.</p></li>
+<li><p><strong>sigma_min</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Minor-axis Gaussian sigma in pixels.</p></li>
+<li><p><strong>bpa_rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Beam position angle in radians.</p></li>
+<li><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Half-width of the kernel (kernel shape is
+<code class="docutils literal notranslate"><span class="pre">(2*size+1,</span> <span class="pre">2*size+1)</span></code>). Default: 15.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Normalised 2D kernel array.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="disco.core.fits_utils.deconvolve_beams">
+<span class="sig-prename descclassname"><span class="pre">disco.core.fits_utils.</span></span><span class="sig-name descname"><span class="pre">deconvolve_beams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bmaj_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bmin_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pa_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bmaj_i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bmin_i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pa_i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/core/fits_utils.html#deconvolve_beams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.core.fits_utils.deconvolve_beams" title="Link to this definition"></a></dt>
+<dd><p>Compute the convolution kernel required to convolve an image with beam
+<span class="math notranslate nohighlight">\((b_{\rm maj,i}, b_{\rm min,i}, \phi_i)\)</span> to the target beam
+<span class="math notranslate nohighlight">\((b_{\rm maj,t}, b_{\rm min,t}, \phi_t)\)</span>.</p>
+<p>The deconvolution is performed analytically via covariance matrix
+subtraction: <span class="math notranslate nohighlight">\(\Sigma_c = \Sigma_t - \Sigma_i\)</span>, followed by
+eigendecomposition to recover the convolution kernel axes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bmaj_t</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Target beam major axis in arcseconds.</p></li>
+<li><p><strong>bmin_t</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Target beam minor axis in arcseconds.</p></li>
+<li><p><strong>pa_t</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Target beam position angle in degrees.</p></li>
+<li><p><strong>bmaj_i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Input beam major axis in arcseconds.</p></li>
+<li><p><strong>bmin_i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Input beam minor axis in arcseconds.</p></li>
+<li><p><strong>pa_i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Input beam position angle in degrees.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(bmaj_c,</span> <span class="pre">bmin_c,</span> <span class="pre">pa_c)</span></code> — the convolution kernel major
+axis (arcsec), minor axis (arcsec), and position angle (degrees).
+Returns <code class="docutils literal notranslate"><span class="pre">(None,</span> <span class="pre">None,</span> <span class="pre">None)</span></code> if the covariance difference has
+a negative eigenvalue (target beam smaller than input beam).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>] or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[None, None, None]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="disco.core.fits_utils.make_gaussian_kernel_casa">
+<span class="sig-prename descclassname"><span class="pre">disco.core.fits_utils.</span></span><span class="sig-name descname"><span class="pre">make_gaussian_kernel_casa</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bmaj_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bmin_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pa_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_scale</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/core/fits_utils.html#make_gaussian_kernel_casa"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.core.fits_utils.make_gaussian_kernel_casa" title="Link to this definition"></a></dt>
+<dd><p>Build a 2D elliptical Gaussian convolution kernel in pixel space from
+beam parameters in arcseconds.</p>
+<p>The kernel size is <span class="math notranslate nohighlight">\(\lceil 5\sigma_{\rm maj} \rceil\)</span> pixels
+(odd-sized). Normalised to unit sum.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bmaj_c</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Kernel major axis FWHM in arcseconds.</p></li>
+<li><p><strong>bmin_c</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Kernel minor axis FWHM in arcseconds.</p></li>
+<li><p><strong>pa_c</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Kernel position angle in degrees.</p></li>
+<li><p><strong>pixel_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Pixel scale in arcseconds per pixel.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Normalised 2D kernel array.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<hr class="docutils" />
+<section id="centroid-and-parameter-detection">
+<h2>Centroid and Parameter Detection<a class="headerlink" href="#centroid-and-parameter-detection" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="disco.core.fits_utils.find_center_robust">
+<span class="sig-prename descclassname"><span class="pre">disco.core.fits_utils.</span></span><span class="sig-name descname"><span class="pre">find_center_robust</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/core/fits_utils.html#find_center_robust"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.core.fits_utils.find_center_robust" title="Link to this definition"></a></dt>
+<dd><p>Robustly estimate the disk centroid by Gaussian-smoothing a central
+crop of the image and computing the centre of mass of the thresholded
+(&gt; 20% of peak) emission region. If the filled region is significantly
+larger than the detected region (indicating a cavity), the geometric
+bounding-box midpoint is used instead.</p>
+<p>The search radius is fixed at 3 arcsec from the array centre.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><em>numpy.ndarray</em></a>) – 2D image array.</p></li>
+<li><p><strong>pixel_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Pixel scale in arcseconds per pixel.</p></li>
+<li><p><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – FITS header dictionary (used to read <code class="docutils literal notranslate"><span class="pre">BMAJ</span></code>).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(cx,</span> <span class="pre">cy)</span></code> — pixel coordinates of the estimated centroid.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="disco.core.fits_utils.auto_detect_parameters">
+<span class="sig-prename descclassname"><span class="pre">disco.core.fits_utils.</span></span><span class="sig-name descname"><span class="pre">auto_detect_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cy</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/core/fits_utils.html#auto_detect_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.core.fits_utils.auto_detect_parameters" title="Link to this definition"></a></dt>
+<dd><p>Automatically estimate the inner radius, outer radius, and beam major
+axis from the image data and FITS header.</p>
+<p>The outer radius is determined by scanning the azimuthally-averaged
+(non-deprojected) radial profile for the last bin exceeding
+<span class="math notranslate nohighlight">\(3\sigma_{\rm edge}\)</span>, with a gap tolerance of 0.3 arcsec.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><em>numpy.ndarray</em></a>) – 2D image array.</p></li>
+<li><p><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – FITS header.</p></li>
+<li><p><strong>pixel_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Arcsec per pixel.</p></li>
+<li><p><strong>cx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centroid x-coordinate in pixels.</p></li>
+<li><p><strong>cy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centroid y-coordinate in pixels.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(rmin,</span> <span class="pre">rout,</span> <span class="pre">bmaj)</span></code> in arcseconds.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="disco.core.fits_utils.refine_center_local">
+<span class="sig-prename descclassname"><span class="pre">disco.core.fits_utils.</span></span><span class="sig-name descname"><span class="pre">refine_center_local</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cx_init</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cy_init</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/core/fits_utils.html#refine_center_local"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.core.fits_utils.refine_center_local" title="Link to this definition"></a></dt>
+<dd><p>Refine a centroid estimate by Gaussian-smoothing a small crop around
+the initial position and computing the centre of mass of the
+thresholded emission. The search radius is <span class="math notranslate nohighlight">\(0.6\,b_{\rm maj}\)</span> or
+a minimum of 0.15 arcsec. If the refined position moves by more than the
+search radius, the initial estimate is returned unchanged.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><em>numpy.ndarray</em></a>) – 2D image array.</p></li>
+<li><p><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – FITS header.</p></li>
+<li><p><strong>pixel_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Arcsec per pixel.</p></li>
+<li><p><strong>cx_init</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Initial centroid x in pixels.</p></li>
+<li><p><strong>cy_init</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Initial centroid y in pixels.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(cx,</span> <span class="pre">cy)</span></code> refined centroid in pixels.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<hr class="docutils" />
+<section id="profile-extraction">
+<h2>Profile Extraction<a class="headerlink" href="#profile-extraction" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="disco.core.fits_utils.extract_profile">
+<span class="sig-prename descclassname"><span class="pre">disco.core.fits_utils.</span></span><span class="sig-name descname"><span class="pre">extract_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pa</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_arcsec</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/core/fits_utils.html#extract_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.core.fits_utils.extract_profile" title="Link to this definition"></a></dt>
+<dd><p>Extract the azimuthally-averaged brightness temperature radial profile
+from a FITS image, given the disk geometry.</p>
+<p>The procedure is:</p>
+<ol class="arabic simple">
+<li><p>A <span class="math notranslate nohighlight">\(1000 \times 1000\)</span> deprojected image is generated by
+bilinear resampling (<code class="docutils literal notranslate"><span class="pre">map_coordinates</span></code>, order 3) applying the
+inclination and position angle transform.</p></li>
+<li><p>The deprojected image is resampled into polar coordinates
+(<span class="math notranslate nohighlight">\(R \in [0, 500\,\text{pix}]\)</span>, <span class="math notranslate nohighlight">\(\theta \in [-180°, 180°]\)</span>).</p></li>
+<li><p>The azimuthal mean and standard deviation are computed.</p></li>
+<li><p>The uncertainty profile accounts for the effective number of
+independent beams per annulus.</p></li>
+<li><p>If a valid rest frequency and beam geometry are available, the profile
+is converted to brightness temperature <span class="math notranslate nohighlight">\(T_b\)</span> [K].</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><em>numpy.ndarray</em></a>) – 2D image array (in mJy/beam or equivalent).</p></li>
+<li><p><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – FITS header (used for <code class="docutils literal notranslate"><span class="pre">BMAJ</span></code>, <code class="docutils literal notranslate"><span class="pre">BMIN</span></code>, <code class="docutils literal notranslate"><span class="pre">RESTFRQ</span></code>).</p></li>
+<li><p><strong>incl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Inclination in degrees.</p></li>
+<li><p><strong>pa</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Position angle in degrees.</p></li>
+<li><p><strong>pixel_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Arcsec per pixel.</p></li>
+<li><p><strong>cx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centroid x in pixels.</p></li>
+<li><p><strong>cy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centroid y in pixels.</p></li>
+<li><p><strong>limit_arcsec</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Maximum radius for the returned profile.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(r_arcsec,</span> <span class="pre">tb_prof,</span> <span class="pre">tb_err)</span></code> — radius array, brightness
+temperature profile, and 1-sigma uncertainty, all clipped to
+<code class="docutils literal notranslate"><span class="pre">limit_arcsec</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)">numpy.ndarray</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="disco.core.fits_utils.measure_rout_deproj">
+<span class="sig-prename descclassname"><span class="pre">disco.core.fits_utils.</span></span><span class="sig-name descname"><span class="pre">measure_rout_deproj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pa</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/core/fits_utils.html#measure_rout_deproj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.core.fits_utils.measure_rout_deproj" title="Link to this definition"></a></dt>
+<dd><p>Estimate the outer disk radius from the deprojected azimuthally-averaged
+profile. The profile is computed in pixel bins of width one pixel scale.
+The outer radius is defined as the last bin where the smoothed profile
+exceeds <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">×</span> <span class="pre">RMS</span></code>, with a gap tolerance of 0.5 arcsec, plus a margin
+of <span class="math notranslate nohighlight">\(\max(b_{\rm maj}, 3\,\delta_{\rm pix}, 0.03\,\text{arcsec})\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><em>numpy.ndarray</em></a>) – 2D image array.</p></li>
+<li><p><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – FITS header.</p></li>
+<li><p><strong>pixel_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Arcsec per pixel.</p></li>
+<li><p><strong>cx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centroid x in pixels.</p></li>
+<li><p><strong>cy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centroid y in pixels.</p></li>
+<li><p><strong>incl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Inclination in degrees.</p></li>
+<li><p><strong>pa</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Position angle in degrees.</p></li>
+<li><p><strong>rmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Inner radius in arcseconds (bins below this are skipped).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Estimated outer radius in arcseconds, clipped to [0.10, 8.0].</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="disco.core.fits_utils.save_debug_deproj_center">
+<span class="sig-prename descclassname"><span class="pre">disco.core.fits_utils.</span></span><span class="sig-name descname"><span class="pre">save_debug_deproj_center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pa</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rout_arcsec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_png</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/core/fits_utils.html#save_debug_deproj_center"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.core.fits_utils.save_debug_deproj_center" title="Link to this definition"></a></dt>
+<dd><p>Save a diagnostic PNG showing the deprojected image with the optimised
+centroid (cross marker) and outer radius (dashed cyan circle) overlaid.
+Generated when <code class="docutils literal notranslate"><span class="pre">--debug</span> <span class="pre">on</span></code> is specified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><em>numpy.ndarray</em></a>) – 2D image array.</p></li>
+<li><p><strong>cx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centroid x in pixels.</p></li>
+<li><p><strong>cy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centroid y in pixels.</p></li>
+<li><p><strong>incl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Inclination in degrees.</p></li>
+<li><p><strong>pa</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Position angle in degrees.</p></li>
+<li><p><strong>rout_arcsec</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Outer radius in arcseconds.</p></li>
+<li><p><strong>pixel_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Arcsec per pixel.</p></li>
+<li><p><strong>out_png</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Output file path.</p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Plot title string.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<hr class="docutils" />
+<section id="wcs-and-coordinate-utilities">
+<h2>WCS and Coordinate Utilities<a class="headerlink" href="#wcs-and-coordinate-utilities" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="disco.core.fits_utils.deg_to_sex">
+<span class="sig-prename descclassname"><span class="pre">disco.core.fits_utils.</span></span><span class="sig-name descname"><span class="pre">deg_to_sex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/core/fits_utils.html#deg_to_sex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.core.fits_utils.deg_to_sex" title="Link to this definition"></a></dt>
+<dd><p>Convert a decimal degree value to a sexagesimal string of the form
+<code class="docutils literal notranslate"><span class="pre">±DDD:MM:SS.sss</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>deg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Decimal degrees.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Sexagesimal string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="disco.core.fits_utils.pixel_to_icrs">
+<span class="sig-prename descclassname"><span class="pre">disco.core.fits_utils.</span></span><span class="sig-name descname"><span class="pre">pixel_to_icrs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">header</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cy</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/core/fits_utils.html#pixel_to_icrs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.core.fits_utils.pixel_to_icrs" title="Link to this definition"></a></dt>
+<dd><p>Convert pixel coordinates to ICRS (RA, Dec) using the FITS WCS.
+Uses <code class="docutils literal notranslate"><span class="pre">astropy.wcs.WCS.celestial</span></code> to handle cubes with degenerate axes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – FITS header containing WCS keywords.</p></li>
+<li><p><strong>cx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Column (x) coordinate in pixels.</p></li>
+<li><p><strong>cy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Row (y) coordinate in pixels.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(ra_deg,</span> <span class="pre">dec_deg)</span></code> in decimal degrees (ICRS).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="disco.core.fits_utils.icrs_to_pixel">
+<span class="sig-prename descclassname"><span class="pre">disco.core.fits_utils.</span></span><span class="sig-name descname"><span class="pre">icrs_to_pixel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">header</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ra_deg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_deg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/core/fits_utils.html#icrs_to_pixel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.core.fits_utils.icrs_to_pixel" title="Link to this definition"></a></dt>
+<dd><p>Convert ICRS sky coordinates to pixel coordinates using the FITS WCS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – FITS header.</p></li>
+<li><p><strong>ra_deg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Right ascension in decimal degrees.</p></li>
+<li><p><strong>dec_deg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Declination in decimal degrees.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y)</span></code> pixel coordinates.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="disco.core.fits_utils.get_obs_epoch">
+<span class="sig-prename descclassname"><span class="pre">disco.core.fits_utils.</span></span><span class="sig-name descname"><span class="pre">get_obs_epoch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">header</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/core/fits_utils.html#get_obs_epoch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.core.fits_utils.get_obs_epoch" title="Link to this definition"></a></dt>
+<dd><p>Extract the observation epoch from the FITS header. Reads <code class="docutils literal notranslate"><span class="pre">DATE-OBS</span></code>
+(ISO-T format) or <code class="docutils literal notranslate"><span class="pre">MJD-OBS</span></code> (Modified Julian Date).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – FITS header.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Observation epoch as an <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.time.Time.html#astropy.time.Time" title="(in Astropy v7.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">astropy.time.Time</span></code></a> object,
+or <code class="docutils literal notranslate"><span class="pre">None</span></code> if neither keyword is present or parseable.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.time.Time.html#astropy.time.Time" title="(in Astropy v7.2)">astropy.time.Time</a> or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<hr class="docutils" />
+<section id="gaia-proper-motion">
+<h2>Gaia Proper Motion<a class="headerlink" href="#gaia-proper-motion" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="disco.core.fits_utils.query_gaia_proper_motion">
+<span class="sig-prename descclassname"><span class="pre">disco.core.fits_utils.</span></span><span class="sig-name descname"><span class="pre">query_gaia_proper_motion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ra_deg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_deg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_radius_arcsec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/core/fits_utils.html#query_gaia_proper_motion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.core.fits_utils.query_gaia_proper_motion" title="Link to this definition"></a></dt>
+<dd><p>Query the Gaia DR3 catalogue (<code class="docutils literal notranslate"><span class="pre">gaiadr3.gaia_source</span></code>) for the nearest
+source within <code class="docutils literal notranslate"><span class="pre">search_radius_arcsec</span></code> arcseconds of the supplied position.
+Returns the proper motion of the nearest source with valid <code class="docutils literal notranslate"><span class="pre">pmra</span></code> and
+<code class="docutils literal notranslate"><span class="pre">pmdec</span></code> values.</p>
+<p>Requires <code class="docutils literal notranslate"><span class="pre">astroquery</span></code> to be installed. Returns <code class="docutils literal notranslate"><span class="pre">(None,</span> <span class="pre">None,</span> <span class="pre">None)</span></code>
+if the library is unavailable or no match is found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ra_deg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Right ascension in decimal degrees (ICRS).</p></li>
+<li><p><strong>dec_deg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Declination in decimal degrees (ICRS).</p></li>
+<li><p><strong>search_radius_arcsec</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Cone search radius. Default: 3.0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(pmra_masyr,</span> <span class="pre">pmdec_masyr,</span> <span class="pre">separation_arcsec)</span></code> for the
+nearest matched Gaia source, or <code class="docutils literal notranslate"><span class="pre">(None,</span> <span class="pre">None,</span> <span class="pre">None)</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>] or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[None, None, None]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="disco.core.fits_utils.apply_proper_motion_correction">
+<span class="sig-prename descclassname"><span class="pre">disco.core.fits_utils.</span></span><span class="sig-name descname"><span class="pre">apply_proper_motion_correction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ra_deg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_deg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pmra_masyr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pmdec_masyr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt_yr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/core/fits_utils.html#apply_proper_motion_correction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.core.fits_utils.apply_proper_motion_correction" title="Link to this definition"></a></dt>
+<dd><p>Apply a proper-motion correction to a sky position, propagating it
+by <code class="docutils literal notranslate"><span class="pre">dt_yr</span></code> years.</p>
+<div class="math notranslate nohighlight">
+\[\Delta\alpha = \frac{\mu_\alpha^* \, \Delta t}{\cos\delta \times 3.6 \times 10^6}, \qquad
+\Delta\delta  = \frac{\mu_\delta \, \Delta t}{3.6 \times 10^6}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ra_deg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Original right ascension in decimal degrees.</p></li>
+<li><p><strong>dec_deg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Original declination in decimal degrees.</p></li>
+<li><p><strong>pmra_masyr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Proper motion in RA (mas/yr), including cos(δ) factor.</p></li>
+<li><p><strong>pmdec_masyr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Proper motion in Dec (mas/yr).</p></li>
+<li><p><strong>dt_yr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Time baseline in years.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(ra_corrected_deg,</span> <span class="pre">dec_corrected_deg)</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../gui.html" class="btn btn-neutral float-left" title="Graphical User Interface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cnn_inference.html" class="btn btn-neutral float-right" title="disco.core.cnn_inference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Jorge Luis Guzmán Lazo.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

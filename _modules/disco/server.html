@@ -1,0 +1,1006 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>disco.server &mdash; DISCO v1.1.7</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom_disco.css?v=4652740b" />
+
+  
+    <link rel="shortcut icon" href="../../_static/disco_icon.png"/>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=370aedac"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/disco_icon.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installation-from-pypi">Installation from PyPI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#keeping-disco-up-to-date">Keeping DISCO up to date</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#included-static-assets">Included Static Assets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#interactive-gui-mode">Interactive GUI Mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#automated-cli-mode">Automated CLI Mode</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../architecture.html">Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../architecture.html#repository-structure">Repository Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../architecture.html#module-relationships">Module Relationships</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../architecture.html#operational-modes">Operational Modes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../architecture.html#cli-pipeline-disco-start-identifier">CLI Pipeline (<code class="docutils literal notranslate"><span class="pre">disco-start</span> <span class="pre">&lt;identifier</span> <span class="pre">...&gt;</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../architecture.html#gui-server-disco-start-gui">GUI Server (<code class="docutils literal notranslate"><span class="pre">disco-start</span> <span class="pre">gui</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../architecture.html#frontend-build-pipeline">Frontend Build Pipeline</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../pipeline.html">Pipeline Description</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../pipeline.html#group-discovery">Group Discovery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../pipeline.html#phase-1-fits-ingestion">Phase 1 — FITS Ingestion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../pipeline.html#phase-2-geometry-optimisation">Phase 2 — Geometry Optimisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../pipeline.html#phase-3-uncertainty-estimation">Phase 3 — Uncertainty Estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../pipeline.html#phase-4-profile-extraction-and-beam-homogenisation">Phase 4 — Profile Extraction and Beam Homogenisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../pipeline.html#phase-5-output-serialisation">Phase 5 — Output Serialisation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli.html">Command-Line Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../cli.html#synopsis">Synopsis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli.html#positional-arguments">Positional Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli.html#optional-arguments">Optional Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli.html#usage-examples">Usage Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli.html#cnn-model-loading">CNN Model Loading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../gui.html">Graphical User Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../gui.html#application-layout">Application Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gui.html#file-loading">File Loading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gui.html#geometry-controls-controls-panel">Geometry Controls (CONTROLS panel)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gui.html#auto-tune-geometry">Auto-Tune Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gui.html#analysis-dashboard-analysis-panel">Analysis Dashboard (ANALYSIS panel)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../gui.html#view-modes">View Modes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gui.html#display-settings">Display Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gui.html#d-profile-chart">1D Profile Chart</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gui.html#cursor-probe">Cursor Probe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gui.html#ring-fit-statistics">Ring Fit Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gui.html#cumulative-flux-chart">Cumulative Flux Chart</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gui.html#custom-markers">Custom Markers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../gui.html#export-functions">Export Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gui.html#simbad-query">SIMBAD Query</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/fits_utils.html"><code class="docutils literal notranslate"><span class="pre">disco.core.fits_utils</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/fits_utils.html#beam-utilities">Beam Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/fits_utils.html#disco.core.fits_utils.get_alma_beam"><code class="docutils literal notranslate"><span class="pre">get_alma_beam()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/fits_utils.html#disco.core.fits_utils.deconvolve_beams"><code class="docutils literal notranslate"><span class="pre">deconvolve_beams()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/fits_utils.html#disco.core.fits_utils.make_gaussian_kernel_casa"><code class="docutils literal notranslate"><span class="pre">make_gaussian_kernel_casa()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/fits_utils.html#centroid-and-parameter-detection">Centroid and Parameter Detection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/fits_utils.html#disco.core.fits_utils.find_center_robust"><code class="docutils literal notranslate"><span class="pre">find_center_robust()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/fits_utils.html#disco.core.fits_utils.auto_detect_parameters"><code class="docutils literal notranslate"><span class="pre">auto_detect_parameters()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/fits_utils.html#disco.core.fits_utils.refine_center_local"><code class="docutils literal notranslate"><span class="pre">refine_center_local()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/fits_utils.html#profile-extraction">Profile Extraction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/fits_utils.html#disco.core.fits_utils.extract_profile"><code class="docutils literal notranslate"><span class="pre">extract_profile()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/fits_utils.html#disco.core.fits_utils.measure_rout_deproj"><code class="docutils literal notranslate"><span class="pre">measure_rout_deproj()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/fits_utils.html#disco.core.fits_utils.save_debug_deproj_center"><code class="docutils literal notranslate"><span class="pre">save_debug_deproj_center()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/fits_utils.html#wcs-and-coordinate-utilities">WCS and Coordinate Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/fits_utils.html#disco.core.fits_utils.deg_to_sex"><code class="docutils literal notranslate"><span class="pre">deg_to_sex()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/fits_utils.html#disco.core.fits_utils.pixel_to_icrs"><code class="docutils literal notranslate"><span class="pre">pixel_to_icrs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/fits_utils.html#disco.core.fits_utils.icrs_to_pixel"><code class="docutils literal notranslate"><span class="pre">icrs_to_pixel()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/fits_utils.html#disco.core.fits_utils.get_obs_epoch"><code class="docutils literal notranslate"><span class="pre">get_obs_epoch()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/fits_utils.html#gaia-proper-motion">Gaia Proper Motion</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/fits_utils.html#disco.core.fits_utils.query_gaia_proper_motion"><code class="docutils literal notranslate"><span class="pre">query_gaia_proper_motion()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/fits_utils.html#disco.core.fits_utils.apply_proper_motion_correction"><code class="docutils literal notranslate"><span class="pre">apply_proper_motion_correction()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/cnn_inference.html"><code class="docutils literal notranslate"><span class="pre">disco.core.cnn_inference</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cnn_inference.html#architecture">Architecture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/cnn_inference.html#disco.core.cnn_inference.ResBlock"><code class="docutils literal notranslate"><span class="pre">ResBlock</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/cnn_inference.html#disco.core.cnn_inference.ResBlock.forward"><code class="docutils literal notranslate"><span class="pre">ResBlock.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/cnn_inference.html#disco.core.cnn_inference.DiscoNet"><code class="docutils literal notranslate"><span class="pre">DiscoNet</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/cnn_inference.html#disco.core.cnn_inference.DiscoNet.forward"><code class="docutils literal notranslate"><span class="pre">DiscoNet.forward()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cnn_inference.html#output-encoding">Output Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cnn_inference.html#inference-function">Inference Function</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/cnn_inference.html#disco.core.cnn_inference.predict_with_cnn"><code class="docutils literal notranslate"><span class="pre">predict_with_cnn()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/optimization.html"><code class="docutils literal notranslate"><span class="pre">disco.core.optimization</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/optimization.html#geometric-loss-function">Geometric Loss Function</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/optimization.html#disco.core.optimization.geometric_loss"><code class="docutils literal notranslate"><span class="pre">geometric_loss()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/optimization.html#hybrid-geometry-optimiser">Hybrid Geometry Optimiser</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/optimization.html#disco.core.optimization.auto_tune_geometry_hybrid"><code class="docutils literal notranslate"><span class="pre">auto_tune_geometry_hybrid()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/optimization.html#uncertainty-estimation">Uncertainty Estimation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/optimization.html#disco.core.optimization.estimate_geometry_errors"><code class="docutils literal notranslate"><span class="pre">estimate_geometry_errors()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/optimization.html#centre-refinement">Centre Refinement</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/optimization.html#disco.core.optimization.refine_center_geometry"><code class="docutils literal notranslate"><span class="pre">refine_center_geometry()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/server.html"><code class="docutils literal notranslate"><span class="pre">disco.server</span></code> — HTTP API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/server.html#global-state">Global State</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/server.html#pydantic-request-models">Pydantic Request Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/server.html#disco.server.PlotParams"><code class="docutils literal notranslate"><span class="pre">PlotParams</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/server.html#disco.server.PipelineParams"><code class="docutils literal notranslate"><span class="pre">PipelineParams</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/server.html#disco.server.OptimizeParams"><code class="docutils literal notranslate"><span class="pre">OptimizeParams</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/server.html#disco.server.LoadLocalParams"><code class="docutils literal notranslate"><span class="pre">LoadLocalParams</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/server.html#endpoints">Endpoints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/server.html#session-management">Session Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/server.html#file-loading">File Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/server.html#pipeline-and-optimisation">Pipeline and Optimisation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/server.html#rendering">Rendering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/server.html#download-and-metadata">Download and Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/server.html#static-file-serving">Static File Serving</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/server.html#server-lifecycle">Server Lifecycle</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/server.html#disco.server.start_server"><code class="docutils literal notranslate"><span class="pre">start_server()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/cli_module.html"><code class="docutils literal notranslate"><span class="pre">disco.cli</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cli_module.html#disco.cli.discover_groups"><code class="docutils literal notranslate"><span class="pre">discover_groups()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cli_module.html#disco.cli.run_pipeline"><code class="docutils literal notranslate"><span class="pre">run_pipeline()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cli_module.html#disco.cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/main.html"><code class="docutils literal notranslate"><span class="pre">disco.main</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/main.html#disco.main.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Supplementary</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../training.html">DiscoNet Training Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../training.html#step-1-catalogue-generation-training-generate-catalogue-py">Step 1: Catalogue Generation (<code class="docutils literal notranslate"><span class="pre">training/generate_catalogue.py</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../training.html#step-2-fits-simulation-training-simulate-catalogue-py">Step 2: FITS Simulation (<code class="docutils literal notranslate"><span class="pre">training/simulate_catalogue.py</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../training.html#step-3-model-training-training-train-model-py">Step 3: Model Training (<code class="docutils literal notranslate"><span class="pre">training/train_model.py</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../file_io.html">File Input and Output</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../file_io.html#fits-input">FITS Input</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../file_io.html#cli-output-files">CLI Output Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../file_io.html#radial-profile-plot">Radial Profile Plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../file_io.html#csv-exports-csv-on">CSV Exports (<code class="docutils literal notranslate"><span class="pre">--csv</span> <span class="pre">on</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../file_io.html#debug-output-debug-on">Debug Output (<code class="docutils literal notranslate"><span class="pre">--debug</span> <span class="pre">on</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../file_io.html#gui-session-files">GUI Session Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../file_io.html#gui-fits-downloads">GUI FITS Downloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../file_io.html#gui-csv-export">GUI CSV Export</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../changelog.html#version-1-1-7-current">Version 1.1.7 (current)</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">DISCO</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">disco.server</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for disco.server</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">base64</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">webbrowser</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">uvicorn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;Agg&#39;</span><span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.patches</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ellipse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.ticker</span><span class="w"> </span><span class="kn">import</span> <span class="n">FixedLocator</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span><span class="p">,</span> <span class="n">HTTPException</span><span class="p">,</span> <span class="n">UploadFile</span><span class="p">,</span> <span class="n">File</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi.middleware.cors</span><span class="w"> </span><span class="kn">import</span> <span class="n">CORSMiddleware</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi.staticfiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">StaticFiles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi.responses</span><span class="w"> </span><span class="kn">import</span> <span class="n">Response</span><span class="p">,</span> <span class="n">FileResponse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">socket</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">fits</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.wcs</span><span class="w"> </span><span class="kn">import</span> <span class="n">WCS</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.ndimage</span><span class="w"> </span><span class="kn">import</span> <span class="n">map_coordinates</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">minimize</span><span class="p">,</span> <span class="n">curve_fit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.visualization</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageNormalize</span><span class="p">,</span> <span class="n">AsinhStretch</span><span class="p">,</span> <span class="n">LogStretch</span><span class="p">,</span> <span class="n">LinearStretch</span><span class="p">,</span> <span class="n">SqrtStretch</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">disco.core.optimization</span><span class="w"> </span><span class="kn">import</span> <span class="n">geometric_loss</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">astroquery.simbad</span><span class="w"> </span><span class="kn">import</span> <span class="n">Simbad</span>
+    <span class="n">ASTROQUERY_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">ASTROQUERY_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="n">BASE_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+<span class="n">STATIC_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">BASE_DIR</span><span class="p">,</span> <span class="s2">&quot;static&quot;</span><span class="p">)</span>
+<span class="n">UPLOAD_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s2">&quot;.disco_uploads&quot;</span><span class="p">)</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">add_middleware</span><span class="p">(</span>
+    <span class="n">CORSMiddleware</span><span class="p">,</span>
+    <span class="n">allow_origin_regex</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;https?://(localhost|127\.0\.0\.1)(:\d+)?&quot;</span><span class="p">,</span>
+    <span class="n">allow_credentials</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">allow_methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">],</span>
+    <span class="n">allow_headers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GlobalState</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">extents</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">profile_data</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="n">state</span> <span class="o">=</span> <span class="n">GlobalState</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">wipe_session_logic</span><span class="p">():</span>
+    <span class="n">state</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">state</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">state</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">state</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">state</span><span class="o">.</span><span class="n">extents</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">state</span><span class="o">.</span><span class="n">profile_data</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">UPLOAD_DIR</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">UPLOAD_DIR</span><span class="p">):</span>
+            <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">UPLOAD_DIR</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">islink</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">UPLOAD_DIR</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">wipe_session_logic</span><span class="p">()</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s2">&quot;shutdown&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cleanup_on_shutdown</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[INFO] Cleaning directory and temporary files...&quot;</span><span class="p">)</span>
+    <span class="n">wipe_session_logic</span><span class="p">()</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/reset_session&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">reset_session_endpoint</span><span class="p">():</span>
+    <span class="n">wipe_session_logic</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;Session cleared&quot;</span><span class="p">}</span>
+
+<div class="viewcode-block" id="PlotParams">
+<a class="viewcode-back" href="../../api/server.html#disco.server.PlotParams">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PlotParams</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">cmap</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;magma&#39;</span>
+    <span class="n">stretch</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;asinh&#39;</span>
+    <span class="n">vmax_percentile</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">vmin</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">vmax</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">contours</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">contour_levels</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">show_beam</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">show_grid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">show_axes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">show_colorbar</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">dpi</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">150</span></div>
+
+
+<div class="viewcode-block" id="PipelineParams">
+<a class="viewcode-back" href="../../api/server.html#disco.server.PipelineParams">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PipelineParams</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">cx</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">cy</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">pa</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">incl</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">rout</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">fit_rmin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">fit_rmax</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span></div>
+
+
+<div class="viewcode-block" id="OptimizeParams">
+<a class="viewcode-back" href="../../api/server.html#disco.server.OptimizeParams">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OptimizeParams</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">cx</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">cy</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">pa</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">incl</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">rout</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">fit_rmin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">fit_rmax</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span></div>
+
+
+<div class="viewcode-block" id="LoadLocalParams">
+<a class="viewcode-back" href="../../api/server.html#disco.server.LoadLocalParams">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LoadLocalParams</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span></div>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">array_to_base64</span><span class="p">(</span><span class="n">data_array</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;magma&#39;</span><span class="p">,</span> <span class="n">stretch_val</span><span class="o">=</span><span class="mf">0.03</span><span class="p">):</span>
+    <span class="n">mx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">data_array</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">mx</span><span class="p">)</span> <span class="ow">or</span> <span class="n">mx</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">mx</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">norm</span> <span class="o">=</span> <span class="n">ImageNormalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">mx</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="n">AsinhStretch</span><span class="p">(</span><span class="n">stretch_val</span><span class="p">))</span>
+
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">data_array</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">)</span>
+
+    <span class="n">buf</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;png&#39;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">,</span> <span class="n">pad_inches</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+    <span class="n">buf</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">buf</span><span class="o">.</span><span class="n">read</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">gaussian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">x0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="n">c</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/upload&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">upload_file</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">UploadFile</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="o">...</span><span class="p">)):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">UPLOAD_DIR</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">file_location</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">UPLOAD_DIR</span><span class="p">,</span> <span class="n">file</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_location</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copyfileobj</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">buffer</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file_location</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdul</span><span class="p">:</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">hdul</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="n">hdul</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">file_location</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.1</span><span class="p">:</span>
+                <span class="n">state</span><span class="o">.</span><span class="n">data</span> <span class="o">*=</span> <span class="mi">1000</span>
+            <span class="n">cdelt</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CDELT2&#39;</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">)</span>
+            <span class="n">pixel_scale</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">cdelt</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3600</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;filename&quot;</span><span class="p">:</span> <span class="n">file</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;loaded&quot;</span><span class="p">,</span> <span class="s2">&quot;shape&quot;</span><span class="p">:</span> <span class="n">state</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">&quot;pixel_scale&quot;</span><span class="p">:</span> <span class="n">pixel_scale</span><span class="p">}</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/load_local&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_local</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="n">LoadLocalParams</span><span class="p">):</span>
+    <span class="n">clean_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">UPLOAD_DIR</span><span class="p">,</span> <span class="n">clean_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">404</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;File not found&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdul</span><span class="p">:</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">hdul</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="n">hdul</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">file_path</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.1</span><span class="p">:</span>
+                <span class="n">state</span><span class="o">.</span><span class="n">data</span> <span class="o">*=</span> <span class="mi">1000</span>
+            <span class="n">cdelt</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CDELT2&#39;</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">)</span>
+            <span class="n">pixel_scale</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">cdelt</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3600</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;loaded&quot;</span><span class="p">,</span> <span class="s2">&quot;filename&quot;</span><span class="p">:</span> <span class="n">clean_name</span><span class="p">,</span> <span class="s2">&quot;shape&quot;</span><span class="p">:</span> <span class="n">state</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">&quot;pixel_scale&quot;</span><span class="p">:</span> <span class="n">pixel_scale</span><span class="p">}</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/preview&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_preview</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">404</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;No data&quot;</span><span class="p">)</span>
+    <span class="n">img_b64</span> <span class="o">=</span> <span class="n">array_to_base64</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">stretch_val</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;image&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;data:image/png;base64,</span><span class="si">{</span><span class="n">img_b64</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/get_header&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_header</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;header&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+    <span class="n">header_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;COMMENT&#39;</span> <span class="ow">or</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;HISTORY&#39;</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">header_list</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="n">key</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="s2">&quot;comment&quot;</span><span class="p">:</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">comments</span><span class="p">[</span><span class="n">key</span><span class="p">]})</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;header&quot;</span><span class="p">:</span> <span class="n">header_list</span><span class="p">}</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/optimize_geometry&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">optimize_geometry</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="n">OptimizeParams</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;No Data&quot;</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">data</span>
+    <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="n">eff_cy</span> <span class="o">=</span> <span class="n">ny</span> <span class="o">-</span> <span class="n">params</span><span class="o">.</span><span class="n">cy</span>
+    <span class="n">eff_cx</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">cx</span>
+
+    <span class="n">pad</span> <span class="o">=</span> <span class="mi">1000</span>
+    <span class="n">d_pad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pad</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">,</span> <span class="n">constant_values</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">real_cy_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">eff_cy</span><span class="p">)</span> <span class="o">+</span> <span class="n">pad</span>
+    <span class="n">real_cx_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">eff_cx</span><span class="p">)</span> <span class="o">+</span> <span class="n">pad</span>
+
+    <span class="n">offset_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">eff_cy</span> <span class="o">+</span> <span class="n">pad</span><span class="p">)</span> <span class="o">-</span> <span class="n">real_cy_int</span>
+    <span class="n">offset_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">eff_cx</span> <span class="o">+</span> <span class="n">pad</span><span class="p">)</span> <span class="o">-</span> <span class="n">real_cx_int</span>
+
+    <span class="n">pixel_scale</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CDELT2&#39;</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">))</span> <span class="o">*</span> <span class="mi">3600</span>
+
+    <span class="n">search_rad</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">rout</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">fit_rmax</span><span class="p">)</span>
+    <span class="n">search_rad_pix</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">search_rad</span> <span class="o">/</span> <span class="n">pixel_scale</span><span class="p">)</span>
+    <span class="n">crop_rad</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">search_rad_pix</span> <span class="o">*</span> <span class="mf">1.2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span>
+
+    <span class="n">dc</span> <span class="o">=</span> <span class="n">d_pad</span><span class="p">[</span><span class="n">real_cy_int</span> <span class="o">-</span> <span class="n">crop_rad</span><span class="p">:</span> <span class="n">real_cy_int</span> <span class="o">+</span> <span class="n">crop_rad</span><span class="p">,</span> <span class="n">real_cx_int</span> <span class="o">-</span> <span class="n">crop_rad</span><span class="p">:</span> <span class="n">real_cx_int</span> <span class="o">+</span> <span class="n">crop_rad</span><span class="p">]</span>
+
+    <span class="n">local_c_y</span> <span class="o">=</span> <span class="n">crop_rad</span> <span class="o">+</span> <span class="n">offset_y</span>
+    <span class="n">local_c_x</span> <span class="o">=</span> <span class="n">crop_rad</span> <span class="o">+</span> <span class="n">offset_x</span>
+
+    <span class="n">rmin_pix</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">fit_rmin</span> <span class="o">/</span> <span class="n">pixel_scale</span>
+    <span class="n">rmax_pix</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">fit_rmax</span> <span class="o">/</span> <span class="n">pixel_scale</span>
+
+    <span class="n">best_guess</span> <span class="o">=</span> <span class="p">[</span><span class="n">params</span><span class="o">.</span><span class="n">incl</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">pa</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
+
+    <span class="n">test_incls</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">70</span><span class="p">]</span>
+    <span class="n">test_pas</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+
+    <span class="n">min_loss</span> <span class="o">=</span> <span class="n">geometric_loss</span><span class="p">(</span><span class="n">best_guess</span><span class="p">,</span> <span class="n">dc</span><span class="p">,</span> <span class="n">local_c_x</span><span class="p">,</span> <span class="n">local_c_y</span><span class="p">,</span> <span class="n">crop_rad</span><span class="p">,</span> <span class="n">rmin_pix</span><span class="p">,</span> <span class="n">rmax_pix</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">ti</span> <span class="ow">in</span> <span class="n">test_incls</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">tp</span> <span class="ow">in</span> <span class="n">test_pas</span><span class="p">:</span>
+            <span class="n">l</span> <span class="o">=</span> <span class="n">geometric_loss</span><span class="p">([</span><span class="n">ti</span><span class="p">,</span> <span class="n">tp</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="n">dc</span><span class="p">,</span> <span class="n">local_c_x</span><span class="p">,</span> <span class="n">local_c_y</span><span class="p">,</span> <span class="n">crop_rad</span><span class="p">,</span> <span class="n">rmin_pix</span><span class="p">,</span> <span class="n">rmax_pix</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">l</span> <span class="o">&lt;</span> <span class="n">min_loss</span><span class="p">:</span>
+                <span class="n">min_loss</span> <span class="o">=</span> <span class="n">l</span>
+                <span class="n">best_guess</span> <span class="o">=</span> <span class="p">[</span><span class="n">ti</span><span class="p">,</span> <span class="n">tp</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span>
+        <span class="n">geometric_loss</span><span class="p">,</span>
+        <span class="n">best_guess</span><span class="p">,</span>
+        <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">dc</span><span class="p">,</span> <span class="n">local_c_x</span><span class="p">,</span> <span class="n">local_c_y</span><span class="p">,</span> <span class="n">crop_rad</span><span class="p">,</span> <span class="n">rmin_pix</span><span class="p">,</span> <span class="n">rmax_pix</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+        <span class="n">method</span><span class="o">=</span><span class="s1">&#39;Nelder-Mead&#39;</span><span class="p">,</span>
+        <span class="n">bounds</span><span class="o">=</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">85</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)],</span>
+        <span class="n">tol</span><span class="o">=</span><span class="mf">0.01</span>
+    <span class="p">)</span>
+
+    <span class="n">best_incl</span><span class="p">,</span> <span class="n">best_pa</span><span class="p">,</span> <span class="n">best_dx</span><span class="p">,</span> <span class="n">best_dy</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">x</span>
+    <span class="n">best_pa</span> <span class="o">=</span> <span class="n">best_pa</span> <span class="o">%</span> <span class="mi">180</span>
+    <span class="k">if</span> <span class="n">best_pa</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">best_pa</span> <span class="o">+=</span> <span class="mi">180</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;optimized_incl&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">best_incl</span><span class="p">),</span> <span class="s2">&quot;optimized_pa&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">best_pa</span><span class="p">)}</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/run_pipeline&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">run_pipeline</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="n">PipelineParams</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;No FITS data loaded.&quot;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">data</span>
+    <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="n">eff_cy</span> <span class="o">=</span> <span class="n">ny</span> <span class="o">-</span> <span class="n">params</span><span class="o">.</span><span class="n">cy</span>
+    <span class="n">eff_cx</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">cx</span>
+
+    <span class="n">pa_rad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">pa</span><span class="p">)</span>
+    <span class="n">incl_rad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">incl</span><span class="p">)</span>
+    <span class="n">pixel_scale</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CDELT2&#39;</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">))</span> <span class="o">*</span> <span class="mi">3600</span>
+
+    <span class="n">crop_size</span> <span class="o">=</span> <span class="mi">2000</span>
+    <span class="n">crop_rad</span> <span class="o">=</span> <span class="n">crop_size</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="n">pad</span> <span class="o">=</span> <span class="n">crop_rad</span>
+    <span class="n">d_pad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pad</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">,</span> <span class="n">constant_values</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">y_start_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">eff_cy</span><span class="p">)</span> <span class="o">+</span> <span class="n">pad</span> <span class="o">-</span> <span class="n">crop_rad</span>
+    <span class="n">x_start_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">eff_cx</span><span class="p">)</span> <span class="o">+</span> <span class="n">pad</span> <span class="o">-</span> <span class="n">crop_rad</span>
+
+    <span class="n">local_cy</span> <span class="o">=</span> <span class="p">(</span><span class="n">eff_cy</span> <span class="o">+</span> <span class="n">pad</span><span class="p">)</span> <span class="o">-</span> <span class="n">y_start_int</span>
+    <span class="n">local_cx</span> <span class="o">=</span> <span class="p">(</span><span class="n">eff_cx</span> <span class="o">+</span> <span class="n">pad</span><span class="p">)</span> <span class="o">-</span> <span class="n">x_start_int</span>
+
+    <span class="n">dc</span> <span class="o">=</span> <span class="n">d_pad</span><span class="p">[</span><span class="n">y_start_int</span><span class="p">:</span> <span class="n">y_start_int</span> <span class="o">+</span> <span class="n">crop_size</span><span class="p">,</span> <span class="n">x_start_int</span><span class="p">:</span> <span class="n">x_start_int</span> <span class="o">+</span> <span class="n">crop_size</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">dc</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="n">crop_size</span><span class="p">,</span> <span class="n">crop_size</span><span class="p">):</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">crop_size</span><span class="p">,</span> <span class="n">crop_size</span><span class="p">))</span>
+        <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">temp</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">h</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="n">dc</span>
+        <span class="n">dc</span> <span class="o">=</span> <span class="n">temp</span>
+
+    <span class="n">beam_info</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;BMAJ&#39;</span> <span class="ow">in</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="p">:</span>
+            <span class="n">beam_info</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;major&quot;</span><span class="p">:</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;BMAJ&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3600</span><span class="p">,</span>
+                <span class="s2">&quot;minor&quot;</span><span class="p">:</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;BMIN&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3600</span><span class="p">,</span>
+                <span class="s2">&quot;pa&quot;</span><span class="p">:</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;BPA&#39;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+            <span class="p">}</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="n">dim</span> <span class="o">=</span> <span class="mi">1000</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span> <span class="o">-</span> <span class="mi">500</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="n">Xc</span> <span class="o">=</span> <span class="n">X</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">incl_rad</span><span class="p">)</span>
+    <span class="n">Xrot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">pa_rad</span><span class="p">)</span> <span class="o">*</span> <span class="n">Xc</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">pa_rad</span><span class="p">)</span> <span class="o">*</span> <span class="n">Y</span>
+    <span class="n">Yrot</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">pa_rad</span><span class="p">)</span> <span class="o">*</span> <span class="n">Xc</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">pa_rad</span><span class="p">)</span> <span class="o">*</span> <span class="n">Y</span>
+
+    <span class="n">coords_deproj</span> <span class="o">=</span> <span class="p">[</span><span class="n">Yrot</span> <span class="o">+</span> <span class="n">local_cy</span><span class="p">,</span> <span class="o">-</span><span class="n">Xrot</span> <span class="o">+</span> <span class="n">local_cx</span><span class="p">]</span>
+    <span class="n">deproj</span> <span class="o">=</span> <span class="n">map_coordinates</span><span class="p">(</span><span class="n">dc</span><span class="p">,</span> <span class="n">coords_deproj</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">cval</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">deproj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fliplr</span><span class="p">(</span><span class="n">deproj</span><span class="p">)</span>
+
+    <span class="n">max_radius_pix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+    <span class="n">n_steps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">max_radius_pix</span><span class="p">)</span>
+    <span class="n">r_full</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_radius_pix</span><span class="p">,</span> <span class="n">n_steps</span><span class="p">)</span>
+    <span class="n">th</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">361</span><span class="p">)</span>
+    <span class="n">R</span><span class="p">,</span> <span class="n">TH</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">r_full</span><span class="p">,</span> <span class="n">th</span><span class="p">)</span>
+    <span class="n">Xd</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">TH</span><span class="p">))</span>
+    <span class="n">Yd</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">TH</span><span class="p">))</span>
+    <span class="n">coords_polar</span> <span class="o">=</span> <span class="p">[</span><span class="n">Yd</span> <span class="o">+</span> <span class="mi">500</span><span class="p">,</span> <span class="n">Xd</span> <span class="o">+</span> <span class="mi">500</span><span class="p">]</span>
+    <span class="n">polar_full</span> <span class="o">=</span> <span class="n">map_coordinates</span><span class="p">(</span><span class="n">deproj</span><span class="p">,</span> <span class="n">coords_polar</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">polar_full</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flipud</span><span class="p">(</span><span class="n">polar_full</span><span class="p">)</span>
+
+    <span class="n">prof_full</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">polar_full</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">d_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">X</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">Y</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">mod</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">d_map</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">r_full</span><span class="p">,</span> <span class="n">prof_full</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span>
+    <span class="n">resi</span> <span class="o">=</span> <span class="n">deproj</span> <span class="o">-</span> <span class="n">mod</span>
+
+    <span class="n">rout_pix</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">rout</span> <span class="o">/</span> <span class="n">pixel_scale</span>
+    <span class="n">limit_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">r_full</span><span class="p">,</span> <span class="n">rout_pix</span><span class="p">)</span>
+    <span class="n">limit_idx</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">limit_idx</span><span class="p">,</span> <span class="n">n_steps</span><span class="p">)</span>
+    <span class="n">polar_display</span> <span class="o">=</span> <span class="n">polar_full</span><span class="p">[:,</span> <span class="p">:</span><span class="n">limit_idx</span><span class="p">]</span>
+    <span class="n">prof_display</span> <span class="o">=</span> <span class="n">prof_full</span><span class="p">[:</span><span class="n">limit_idx</span><span class="p">]</span>
+    <span class="n">r_display</span> <span class="o">=</span> <span class="n">r_full</span><span class="p">[:</span><span class="n">limit_idx</span><span class="p">]</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">bmaj</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;BMAJ&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3600</span>
+        <span class="n">bmin</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;BMIN&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3600</span>
+        <span class="n">restfrq</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;RESTFRQ&#39;</span><span class="p">,</span> <span class="mf">230e9</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">bmaj</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">bmin</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">beam_sr</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">bmaj</span> <span class="o">*</span> <span class="n">bmin</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)))</span> <span class="o">/</span> <span class="mi">206265</span> <span class="o">**</span> <span class="mi">2</span>
+            <span class="n">kB</span> <span class="o">=</span> <span class="mf">1.38e-16</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="mf">3e10</span>
+            <span class="n">tb_prof</span> <span class="o">=</span> <span class="p">(</span><span class="n">c</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="mf">1e-23</span> <span class="o">*</span> <span class="n">prof_display</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">kB</span> <span class="o">*</span> <span class="n">restfrq</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">beam_sr</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tb_prof</span> <span class="o">=</span> <span class="n">prof_display</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">tb_prof</span> <span class="o">=</span> <span class="n">prof_display</span>
+
+    <span class="n">r_arcsec</span> <span class="o">=</span> <span class="n">r_display</span> <span class="o">*</span> <span class="n">pixel_scale</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">crop_rad</span> <span class="o">-</span> <span class="mi">500</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">crop_rad</span> <span class="o">+</span> <span class="mi">500</span>
+    <span class="n">dc_view</span> <span class="o">=</span> <span class="n">dc</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
+
+    <span class="n">fov_arcsec</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="n">pixel_scale</span>
+    <span class="n">limit_arcsec</span> <span class="o">=</span> <span class="n">fov_arcsec</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">ext_cartesian</span> <span class="o">=</span> <span class="p">[</span><span class="n">limit_arcsec</span><span class="p">,</span> <span class="o">-</span><span class="n">limit_arcsec</span><span class="p">,</span> <span class="o">-</span><span class="n">limit_arcsec</span><span class="p">,</span> <span class="n">limit_arcsec</span><span class="p">]</span>
+    <span class="n">ext_polar</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">rout</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">]</span>
+
+    <span class="n">state</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">dc_view</span><span class="p">,</span> <span class="s1">&#39;deproj&#39;</span><span class="p">:</span> <span class="n">deproj</span><span class="p">,</span> <span class="s1">&#39;polar&#39;</span><span class="p">:</span> <span class="n">polar_display</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="n">mod</span><span class="p">,</span> <span class="s1">&#39;residuals&#39;</span><span class="p">:</span> <span class="n">resi</span><span class="p">}</span>
+    <span class="n">state</span><span class="o">.</span><span class="n">extents</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">ext_cartesian</span><span class="p">,</span> <span class="s1">&#39;deproj&#39;</span><span class="p">:</span> <span class="n">ext_cartesian</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="n">ext_cartesian</span><span class="p">,</span> <span class="s1">&#39;residuals&#39;</span><span class="p">:</span> <span class="n">ext_cartesian</span><span class="p">,</span> <span class="s1">&#39;polar&#39;</span><span class="p">:</span> <span class="n">ext_polar</span><span class="p">}</span>
+    <span class="n">prof_jy</span> <span class="o">=</span> <span class="n">prof_display</span> <span class="o">/</span> <span class="mf">1000.0</span>
+    <span class="n">state</span><span class="o">.</span><span class="n">profile_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="n">r_arcsec</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="s1">&#39;tb&#39;</span><span class="p">:</span> <span class="n">tb_prof</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="s1">&#39;raw&#39;</span><span class="p">:</span> <span class="n">prof_jy</span><span class="o">.</span><span class="n">tolist</span><span class="p">()}</span>
+
+    <span class="n">fit_stats</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">fit_rmax</span> <span class="o">&gt;</span> <span class="n">params</span><span class="o">.</span><span class="n">fit_rmin</span> <span class="ow">and</span> <span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">fit_rmax</span> <span class="o">-</span> <span class="n">params</span><span class="o">.</span><span class="n">fit_rmin</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.05</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">r_arcsec</span> <span class="o">&gt;=</span> <span class="n">params</span><span class="o">.</span><span class="n">fit_rmin</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">r_arcsec</span> <span class="o">&lt;=</span> <span class="n">params</span><span class="o">.</span><span class="n">fit_rmax</span><span class="p">)</span>
+            <span class="n">x_region</span> <span class="o">=</span> <span class="n">r_arcsec</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+            <span class="n">y_region</span> <span class="o">=</span> <span class="n">tb_prof</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_region</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span>
+                <span class="n">idx_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y_region</span><span class="p">)</span>
+                <span class="n">amp_guess</span> <span class="o">=</span> <span class="n">y_region</span><span class="p">[</span><span class="n">idx_max</span><span class="p">]</span>
+                <span class="n">mean_guess</span> <span class="o">=</span> <span class="n">x_region</span><span class="p">[</span><span class="n">idx_max</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">amp_guess</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">sigma_guess</span> <span class="o">=</span> <span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">fit_rmax</span> <span class="o">-</span> <span class="n">params</span><span class="o">.</span><span class="n">fit_rmin</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span>
+                    <span class="n">p0</span> <span class="o">=</span> <span class="p">[</span><span class="n">amp_guess</span><span class="p">,</span> <span class="n">mean_guess</span><span class="p">,</span> <span class="n">sigma_guess</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
+                    <span class="n">popt</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span><span class="n">gaussian</span><span class="p">,</span> <span class="n">x_region</span><span class="p">,</span> <span class="n">y_region</span><span class="p">,</span> <span class="n">p0</span><span class="o">=</span><span class="n">p0</span><span class="p">,</span> <span class="n">maxfev</span><span class="o">=</span><span class="mi">2000</span><span class="p">)</span>
+                    <span class="n">fwhm</span> <span class="o">=</span> <span class="mf">2.355</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">popt</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                    <span class="n">fit_stats</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;peak_radius&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">popt</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                        <span class="s2">&quot;fwhm&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">fwhm</span><span class="p">),</span>
+                        <span class="s2">&quot;peak_intensity&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">popt</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="p">}</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">fit_stats</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">fov_cartesian</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="n">pixel_scale</span>
+    <span class="n">fov_polar</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">rout</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;images&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;data:image/png;base64,</span><span class="si">{</span><span class="n">array_to_base64</span><span class="p">(</span><span class="n">dc_view</span><span class="p">,</span><span class="w"> </span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;deproj&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;data:image/png;base64,</span><span class="si">{</span><span class="n">array_to_base64</span><span class="p">(</span><span class="n">deproj</span><span class="p">,</span><span class="w"> </span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;polar&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;data:image/png;base64,</span><span class="si">{</span><span class="n">array_to_base64</span><span class="p">(</span><span class="n">polar_display</span><span class="p">,</span><span class="w"> </span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">stretch_val</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;data:image/png;base64,</span><span class="si">{</span><span class="n">array_to_base64</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span><span class="w"> </span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;residuals&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;data:image/png;base64,</span><span class="si">{</span><span class="n">array_to_base64</span><span class="p">(</span><span class="n">resi</span><span class="p">,</span><span class="w"> </span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;magma&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">stretch_val</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;profile&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;radius&quot;</span><span class="p">:</span> <span class="n">r_arcsec</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="s2">&quot;intensity&quot;</span><span class="p">:</span> <span class="n">tb_prof</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="s2">&quot;raw_intensity&quot;</span><span class="p">:</span> <span class="n">prof_jy</span><span class="o">.</span><span class="n">tolist</span><span class="p">()},</span>
+        <span class="s2">&quot;geometry&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;fov_cartesian&quot;</span><span class="p">:</span> <span class="n">fov_cartesian</span><span class="p">,</span> <span class="s2">&quot;fov_polar&quot;</span><span class="p">:</span> <span class="n">fov_polar</span><span class="p">,</span> <span class="s2">&quot;beam&quot;</span><span class="p">:</span> <span class="n">beam_info</span><span class="p">,</span> <span class="s2">&quot;pixel_scale&quot;</span><span class="p">:</span> <span class="n">pixel_scale</span><span class="p">},</span>
+        <span class="s2">&quot;fit&quot;</span><span class="p">:</span> <span class="n">fit_stats</span>
+    <span class="p">}</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/render_plot&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">render_plot</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="n">PlotParams</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;polar&#39;</span><span class="p">,</span> <span class="s1">&#39;profile&#39;</span><span class="p">]:</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">dpi</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">dpi</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;profile&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">profile_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Profile data not available.&quot;</span><span class="p">)</span>
+
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s1">&#39;white&#39;</span><span class="p">)</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">profile_data</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">])</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">profile_data</span><span class="p">[</span><span class="s1">&#39;tb&#39;</span><span class="p">])</span>
+        <span class="n">safe_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">y</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">y</span><span class="p">,</span> <span class="mf">1e-10</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">safe_y</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+
+        <span class="n">vmin</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">vmin</span>
+        <span class="n">vmax</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">vmax</span>
+        <span class="k">if</span> <span class="n">vmin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">vmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">safe_y</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">safe_y</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.1</span>
+        <span class="k">if</span> <span class="n">vmax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">safe_y</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">safe_y</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">100</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Radius [arcsec]&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Tb [K]&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">direction</span><span class="o">=</span><span class="s1">&#39;in&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">show_grid</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+
+        <span class="n">title_txt</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">title</span> <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">title</span> <span class="k">else</span> <span class="s2">&quot;Radial Profile&quot;</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title_txt</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+
+        <span class="n">buf</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;png&#39;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">,</span> <span class="n">pad_inches</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+        <span class="n">buf</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">img_b64</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">buf</span><span class="o">.</span><span class="n">read</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;image&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;data:image/png;base64,</span><span class="si">{</span><span class="n">img_b64</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;stats&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">safe_y</span><span class="p">)),</span>
+                <span class="s2">&quot;max&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">safe_y</span><span class="p">)),</span>
+                <span class="s2">&quot;vmin_used&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">vmin</span><span class="p">),</span>
+                <span class="s2">&quot;vmax_used&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">vmax</span><span class="p">),</span>
+                <span class="s2">&quot;cmap_used&quot;</span><span class="p">:</span> <span class="n">params</span><span class="o">.</span><span class="n">cmap</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+    <span class="n">image_data</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">results</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="n">state</span><span class="o">.</span><span class="n">results</span><span class="p">:</span>
+        <span class="n">image_data</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">params</span><span class="o">.</span><span class="n">type</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">params</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;data&#39;</span> <span class="ow">and</span> <span class="n">state</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">image_data</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="k">if</span> <span class="n">image_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Data for &#39;</span><span class="si">{</span><span class="n">params</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">&#39; not available.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">show_axes</span><span class="p">:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s1">&#39;white&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+
+    <span class="n">vmin</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">vmin</span>
+    <span class="n">vmax</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">vmax</span>
+
+    <span class="k">if</span> <span class="n">vmin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;residuals&#39;</span><span class="p">:</span>
+            <span class="n">limit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">image_data</span><span class="p">),</span> <span class="mi">100</span><span class="p">)</span>
+            <span class="n">vmin</span> <span class="o">=</span> <span class="o">-</span><span class="n">limit</span>
+            <span class="n">vmax</span> <span class="o">=</span> <span class="n">limit</span> <span class="k">if</span> <span class="n">vmax</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">vmax</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">vmin</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="k">if</span> <span class="n">vmax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s1">&#39;residuals&#39;</span><span class="p">:</span>
+            <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">image_data</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">vmax</span> <span class="o">&lt;=</span> <span class="n">vmin</span><span class="p">:</span>
+        <span class="n">vmax</span> <span class="o">=</span> <span class="n">vmin</span> <span class="o">+</span> <span class="mf">1e-10</span>
+
+    <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">stretch</span> <span class="o">==</span> <span class="s1">&#39;log&#39;</span><span class="p">:</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">ImageNormalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="n">LogStretch</span><span class="p">())</span>
+    <span class="k">elif</span> <span class="n">params</span><span class="o">.</span><span class="n">stretch</span> <span class="o">==</span> <span class="s1">&#39;linear&#39;</span><span class="p">:</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">ImageNormalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="n">LinearStretch</span><span class="p">())</span>
+    <span class="k">elif</span> <span class="n">params</span><span class="o">.</span><span class="n">stretch</span> <span class="o">==</span> <span class="s1">&#39;sqrt&#39;</span><span class="p">:</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">ImageNormalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="n">SqrtStretch</span><span class="p">())</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">ImageNormalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="n">AsinhStretch</span><span class="p">(</span><span class="mf">0.02</span><span class="p">))</span>
+
+    <span class="n">aspect</span> <span class="o">=</span> <span class="s1">&#39;auto&#39;</span> <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;polar&#39;</span> <span class="k">else</span> <span class="s1">&#39;equal&#39;</span>
+    <span class="n">extent</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">extents</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image_data</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">cmap</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="n">aspect</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">show_axes</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">title</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">titles</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="s2">&quot;Input Data&quot;</span><span class="p">,</span> <span class="s1">&#39;deproj&#39;</span><span class="p">:</span> <span class="s2">&quot;Deprojected View&quot;</span><span class="p">,</span> <span class="s1">&#39;polar&#39;</span><span class="p">:</span> <span class="s2">&quot;Polar Map&quot;</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="s2">&quot;Azimuthal Model&quot;</span><span class="p">,</span> <span class="s1">&#39;residuals&#39;</span><span class="p">:</span> <span class="s2">&quot;Residual Map&quot;</span><span class="p">}</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">titles</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()),</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">direction</span><span class="o">=</span><span class="s1">&#39;in&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;polar&#39;</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Radius [arcsec]&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Azimuth [deg]&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;RA Offset [arcsec]&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Dec Offset [arcsec]&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">show_grid</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">show_colorbar</span><span class="p">:</span>
+            <span class="n">cbar</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.046</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.04</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">vmax</span> <span class="o">&lt;=</span> <span class="mi">10</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">stretch</span> <span class="o">==</span> <span class="s1">&#39;asinh&#39;</span><span class="p">:</span>
+                <span class="n">cbar</span><span class="o">.</span><span class="n">locator</span> <span class="o">=</span> <span class="n">FixedLocator</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">])</span>
+                <span class="n">cbar</span><span class="o">.</span><span class="n">update_ticks</span><span class="p">()</span>
+            <span class="n">cbar</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s1">&#39;Intensity&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+            <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">contours</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">image_data</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">contour_levels</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">show_beam</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s1">&#39;polar&#39;</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">show_axes</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;BMAJ&#39;</span> <span class="ow">in</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="p">:</span>
+                <span class="n">bmaj</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;BMAJ&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3600</span>
+                <span class="n">bmin</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;BMIN&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3600</span>
+                <span class="n">bpa</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;BPA&#39;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">extent</span><span class="p">:</span>
+                    <span class="n">width_phys</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">extent</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">extent</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">height_phys</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">extent</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">extent</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                    <span class="n">bx</span> <span class="o">=</span> <span class="n">extent</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">width_phys</span> <span class="o">*</span> <span class="mf">0.1</span>
+                    <span class="n">by</span> <span class="o">=</span> <span class="n">extent</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">height_phys</span> <span class="o">*</span> <span class="mf">0.1</span>
+                    <span class="n">beam_patch</span> <span class="o">=</span> <span class="n">Ellipse</span><span class="p">((</span><span class="n">bx</span><span class="p">,</span> <span class="n">by</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">bmin</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">bmaj</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">bpa</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">beam_patch</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="n">buf</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
+    <span class="n">is_transparent</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">params</span><span class="o">.</span><span class="n">show_axes</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;png&#39;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">,</span> <span class="n">pad_inches</span><span class="o">=</span><span class="mf">0.1</span> <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">show_axes</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span> <span class="n">transparent</span><span class="o">=</span><span class="n">is_transparent</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+    <span class="n">buf</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">img_b64</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">buf</span><span class="o">.</span><span class="n">read</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;image&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;data:image/png;base64,</span><span class="si">{</span><span class="n">img_b64</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;stats&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">image_data</span><span class="p">)),</span>
+            <span class="s2">&quot;max&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">image_data</span><span class="p">)),</span>
+            <span class="s2">&quot;vmin_used&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">vmin</span><span class="p">),</span>
+            <span class="s2">&quot;vmax_used&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">vmax</span><span class="p">),</span>
+            <span class="s2">&quot;cmap_used&quot;</span><span class="p">:</span> <span class="n">params</span><span class="o">.</span><span class="n">cmap</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/download_fits&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">download_fits</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">type</span> <span class="ow">in</span> <span class="n">state</span><span class="o">.</span><span class="n">results</span><span class="p">:</span>
+        <span class="n">data_to_save</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;data&#39;</span> <span class="ow">and</span> <span class="n">state</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data_to_save</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">data</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Data not found&quot;</span><span class="p">)</span>
+    <span class="n">hdu</span> <span class="o">=</span> <span class="n">fits</span><span class="o">.</span><span class="n">PrimaryHDU</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data_to_save</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="p">)</span>
+    <span class="n">buf</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
+    <span class="n">hdu</span><span class="o">.</span><span class="n">writeto</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span>
+    <span class="n">buf</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">buf</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">media_type</span><span class="o">=</span><span class="s2">&quot;application/octet-stream&quot;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Disposition&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;attachment; filename=result_</span><span class="si">{</span><span class="nb">type</span><span class="si">}</span><span class="s2">.fits&quot;</span><span class="p">})</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/query_simbad&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">query_simbad</span><span class="p">():</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ASTROQUERY_AVAILABLE</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">501</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Librería &#39;astroquery&#39; no instalada.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;No header loaded.&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">wcs</span> <span class="o">=</span> <span class="n">WCS</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">wcs</span><span class="o">.</span><span class="n">naxis</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">wcs</span> <span class="o">=</span> <span class="n">wcs</span><span class="o">.</span><span class="n">celestial</span>
+        <span class="n">nx</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;NAXIS1&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">ny</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;NAXIS2&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">center_sky</span> <span class="o">=</span> <span class="n">wcs</span><span class="o">.</span><span class="n">pixel_to_world</span><span class="p">(</span><span class="n">nx</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">ny</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">custom_simbad</span> <span class="o">=</span> <span class="n">Simbad</span><span class="p">()</span>
+        <span class="n">custom_simbad</span><span class="o">.</span><span class="n">add_votable_fields</span><span class="p">(</span><span class="s1">&#39;otype&#39;</span><span class="p">,</span> <span class="s1">&#39;flux(V)&#39;</span><span class="p">,</span> <span class="s1">&#39;distance&#39;</span><span class="p">)</span>
+        <span class="n">result_table</span> <span class="o">=</span> <span class="n">custom_simbad</span><span class="o">.</span><span class="n">query_region</span><span class="p">(</span><span class="n">center_sky</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">arcmin</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result_table</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;found&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+        <span class="n">json_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">result_table</span><span class="p">:</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">result_table</span><span class="o">.</span><span class="n">colnames</span><span class="p">:</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">col</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">is_masked</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                <span class="n">item</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+            <span class="n">json_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;found&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">json_data</span><span class="p">}</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="s2">&quot;/assets&quot;</span><span class="p">,</span> <span class="n">StaticFiles</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">STATIC_DIR</span><span class="p">,</span> <span class="s2">&quot;assets&quot;</span><span class="p">)),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;assets&quot;</span><span class="p">)</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/{full_path:path}&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">serve_react_app</span><span class="p">(</span><span class="n">full_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">potential_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">STATIC_DIR</span><span class="p">,</span> <span class="n">full_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">potential_file</span><span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">FileResponse</span><span class="p">(</span><span class="n">potential_file</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">FileResponse</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">STATIC_DIR</span><span class="p">,</span> <span class="s2">&quot;index.html&quot;</span><span class="p">))</span>
+
+    <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;Cache-Control&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;no-cache, no-store, must-revalidate, max-age=0&quot;</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;Pragma&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;no-cache&quot;</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;Expires&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span>
+    <span class="k">return</span> <span class="n">response</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_free_port</span><span class="p">():</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="mi">8000</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span> <span class="k">as</span> <span class="n">s</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">connect_ex</span><span class="p">((</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">port</span>
+            <span class="n">port</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="start_server">
+<a class="viewcode-back" href="../../api/server.html#disco.server.start_server">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">start_server</span><span class="p">():</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="n">get_free_port</span><span class="p">()</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;http://localhost:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span><span class="o">*</span><span class="mi">50</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;        DISCO GUI IS RUNNING&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   URL: </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   Press Ctrl+C to stop the server safely&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="o">*</span><span class="mi">50</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">open_browser</span><span class="p">():</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.5</span><span class="p">)</span>
+        <span class="n">webbrowser</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+    <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">open_browser</span><span class="p">,</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="s2">&quot;warning&quot;</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">start_server</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Jorge Luis Guzmán Lazo.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

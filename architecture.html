@@ -1,0 +1,420 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Architecture &mdash; DISCO v1.1.7</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/custom_disco.css?v=499842b1" />
+
+  
+    <link rel="shortcut icon" href="_static/disco_icon.png"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=370aedac"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Pipeline Description" href="pipeline.html" />
+    <link rel="prev" title="Quick Start" href="quickstart.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/disco_icon.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installation-from-pypi">Installation from PyPI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#keeping-disco-up-to-date">Keeping DISCO up to date</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#included-static-assets">Included Static Assets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#interactive-gui-mode">Interactive GUI Mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#automated-cli-mode">Automated CLI Mode</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#repository-structure">Repository Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-relationships">Module Relationships</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#operational-modes">Operational Modes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cli-pipeline-disco-start-identifier">CLI Pipeline (<code class="docutils literal notranslate"><span class="pre">disco-start</span> <span class="pre">&lt;identifier</span> <span class="pre">...&gt;</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui-server-disco-start-gui">GUI Server (<code class="docutils literal notranslate"><span class="pre">disco-start</span> <span class="pre">gui</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#frontend-build-pipeline">Frontend Build Pipeline</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.html">Pipeline Description</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.html#group-discovery">Group Discovery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.html#phase-1-fits-ingestion">Phase 1 — FITS Ingestion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.html#phase-2-geometry-optimisation">Phase 2 — Geometry Optimisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.html#phase-3-uncertainty-estimation">Phase 3 — Uncertainty Estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.html#phase-4-profile-extraction-and-beam-homogenisation">Phase 4 — Profile Extraction and Beam Homogenisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.html#phase-5-output-serialisation">Phase 5 — Output Serialisation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">Command-Line Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#synopsis">Synopsis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#positional-arguments">Positional Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#optional-arguments">Optional Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#usage-examples">Usage Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#cnn-model-loading">CNN Model Loading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">Graphical User Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#application-layout">Application Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#file-loading">File Loading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#geometry-controls-controls-panel">Geometry Controls (CONTROLS panel)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#auto-tune-geometry">Auto-Tune Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#analysis-dashboard-analysis-panel">Analysis Dashboard (ANALYSIS panel)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gui.html#view-modes">View Modes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui.html#display-settings">Display Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui.html#d-profile-chart">1D Profile Chart</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui.html#cursor-probe">Cursor Probe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui.html#ring-fit-statistics">Ring Fit Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui.html#cumulative-flux-chart">Cumulative Flux Chart</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gui.html#custom-markers">Custom Markers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#export-functions">Export Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#simbad-query">SIMBAD Query</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/fits_utils.html"><code class="docutils literal notranslate"><span class="pre">disco.core.fits_utils</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/fits_utils.html#beam-utilities">Beam Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.get_alma_beam"><code class="docutils literal notranslate"><span class="pre">get_alma_beam()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.deconvolve_beams"><code class="docutils literal notranslate"><span class="pre">deconvolve_beams()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.make_gaussian_kernel_casa"><code class="docutils literal notranslate"><span class="pre">make_gaussian_kernel_casa()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/fits_utils.html#centroid-and-parameter-detection">Centroid and Parameter Detection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.find_center_robust"><code class="docutils literal notranslate"><span class="pre">find_center_robust()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.auto_detect_parameters"><code class="docutils literal notranslate"><span class="pre">auto_detect_parameters()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.refine_center_local"><code class="docutils literal notranslate"><span class="pre">refine_center_local()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/fits_utils.html#profile-extraction">Profile Extraction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.extract_profile"><code class="docutils literal notranslate"><span class="pre">extract_profile()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.measure_rout_deproj"><code class="docutils literal notranslate"><span class="pre">measure_rout_deproj()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.save_debug_deproj_center"><code class="docutils literal notranslate"><span class="pre">save_debug_deproj_center()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/fits_utils.html#wcs-and-coordinate-utilities">WCS and Coordinate Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.deg_to_sex"><code class="docutils literal notranslate"><span class="pre">deg_to_sex()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.pixel_to_icrs"><code class="docutils literal notranslate"><span class="pre">pixel_to_icrs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.icrs_to_pixel"><code class="docutils literal notranslate"><span class="pre">icrs_to_pixel()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.get_obs_epoch"><code class="docutils literal notranslate"><span class="pre">get_obs_epoch()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/fits_utils.html#gaia-proper-motion">Gaia Proper Motion</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.query_gaia_proper_motion"><code class="docutils literal notranslate"><span class="pre">query_gaia_proper_motion()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.apply_proper_motion_correction"><code class="docutils literal notranslate"><span class="pre">apply_proper_motion_correction()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/cnn_inference.html"><code class="docutils literal notranslate"><span class="pre">disco.core.cnn_inference</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/cnn_inference.html#architecture">Architecture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/cnn_inference.html#disco.core.cnn_inference.ResBlock"><code class="docutils literal notranslate"><span class="pre">ResBlock</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/cnn_inference.html#disco.core.cnn_inference.ResBlock.forward"><code class="docutils literal notranslate"><span class="pre">ResBlock.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/cnn_inference.html#disco.core.cnn_inference.DiscoNet"><code class="docutils literal notranslate"><span class="pre">DiscoNet</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/cnn_inference.html#disco.core.cnn_inference.DiscoNet.forward"><code class="docutils literal notranslate"><span class="pre">DiscoNet.forward()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/cnn_inference.html#output-encoding">Output Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/cnn_inference.html#inference-function">Inference Function</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/cnn_inference.html#disco.core.cnn_inference.predict_with_cnn"><code class="docutils literal notranslate"><span class="pre">predict_with_cnn()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/optimization.html"><code class="docutils literal notranslate"><span class="pre">disco.core.optimization</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/optimization.html#geometric-loss-function">Geometric Loss Function</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/optimization.html#disco.core.optimization.geometric_loss"><code class="docutils literal notranslate"><span class="pre">geometric_loss()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/optimization.html#hybrid-geometry-optimiser">Hybrid Geometry Optimiser</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/optimization.html#disco.core.optimization.auto_tune_geometry_hybrid"><code class="docutils literal notranslate"><span class="pre">auto_tune_geometry_hybrid()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/optimization.html#uncertainty-estimation">Uncertainty Estimation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/optimization.html#disco.core.optimization.estimate_geometry_errors"><code class="docutils literal notranslate"><span class="pre">estimate_geometry_errors()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/optimization.html#centre-refinement">Centre Refinement</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/optimization.html#disco.core.optimization.refine_center_geometry"><code class="docutils literal notranslate"><span class="pre">refine_center_geometry()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/server.html"><code class="docutils literal notranslate"><span class="pre">disco.server</span></code> — HTTP API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/server.html#global-state">Global State</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/server.html#pydantic-request-models">Pydantic Request Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/server.html#disco.server.PlotParams"><code class="docutils literal notranslate"><span class="pre">PlotParams</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/server.html#disco.server.PipelineParams"><code class="docutils literal notranslate"><span class="pre">PipelineParams</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/server.html#disco.server.OptimizeParams"><code class="docutils literal notranslate"><span class="pre">OptimizeParams</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/server.html#disco.server.LoadLocalParams"><code class="docutils literal notranslate"><span class="pre">LoadLocalParams</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/server.html#endpoints">Endpoints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/server.html#session-management">Session Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/server.html#file-loading">File Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/server.html#pipeline-and-optimisation">Pipeline and Optimisation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/server.html#rendering">Rendering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/server.html#download-and-metadata">Download and Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/server.html#static-file-serving">Static File Serving</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/server.html#server-lifecycle">Server Lifecycle</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/server.html#disco.server.start_server"><code class="docutils literal notranslate"><span class="pre">start_server()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/cli_module.html"><code class="docutils literal notranslate"><span class="pre">disco.cli</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.discover_groups"><code class="docutils literal notranslate"><span class="pre">discover_groups()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.run_pipeline"><code class="docutils literal notranslate"><span class="pre">run_pipeline()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/main.html"><code class="docutils literal notranslate"><span class="pre">disco.main</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/main.html#disco.main.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Supplementary</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="training.html">DiscoNet Training Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="training.html#step-1-catalogue-generation-training-generate-catalogue-py">Step 1: Catalogue Generation (<code class="docutils literal notranslate"><span class="pre">training/generate_catalogue.py</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training.html#step-2-fits-simulation-training-simulate-catalogue-py">Step 2: FITS Simulation (<code class="docutils literal notranslate"><span class="pre">training/simulate_catalogue.py</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training.html#step-3-model-training-training-train-model-py">Step 3: Model Training (<code class="docutils literal notranslate"><span class="pre">training/train_model.py</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file_io.html">File Input and Output</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_io.html#fits-input">FITS Input</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_io.html#cli-output-files">CLI Output Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file_io.html#radial-profile-plot">Radial Profile Plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file_io.html#csv-exports-csv-on">CSV Exports (<code class="docutils literal notranslate"><span class="pre">--csv</span> <span class="pre">on</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file_io.html#debug-output-debug-on">Debug Output (<code class="docutils literal notranslate"><span class="pre">--debug</span> <span class="pre">on</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_io.html#gui-session-files">GUI Session Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_io.html#gui-fits-downloads">GUI FITS Downloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_io.html#gui-csv-export">GUI CSV Export</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-1-7-current">Version 1.1.7 (current)</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DISCO</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Architecture</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="architecture">
+<span id="id1"></span><h1>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h1>
+<section id="repository-structure">
+<h2>Repository Structure<a class="headerlink" href="#repository-structure" title="Link to this heading"></a></h2>
+<p>The DISCO repository is organised into three top-level namespaces:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>disco-astronomy/
+├── disco/                     # Installable Python package
+│   ├── __init__.py
+│   ├── main.py                # Entry-point dispatcher (disco-start)
+│   ├── cli.py                 # Automated pipeline (CLI mode)
+│   ├── server.py              # FastAPI backend (GUI mode)
+│   ├── static/                # Pre-built React frontend (bundled asset)
+│   ├── models/                # Serialised DiscoNet weights (bundled asset)
+│   └── core/
+│       ├── __init__.py
+│       ├── cnn_inference.py   # DiscoNet architecture &amp; inference helper
+│       ├── fits_utils.py      # FITS I/O, beam utilities, WCS helpers
+│       └── optimization.py    # Geometric loss &amp; hybrid optimiser
+├── client/                    # React frontend source (Vite project)
+│   └── src/
+│       ├── App.jsx            # Root component, mosaic layout, global state
+│       ├── main.jsx           # React DOM mount point
+│       ├── InteractiveViewer.jsx
+│       ├── SimpleImageViewer.jsx
+│       ├── MatplotlibWidget.jsx
+│       └── components/
+│           └── AnalysisDashboard.jsx
+├── training/                  # Training utilities (not installed)
+│   ├── generate_catalogue.py  # Synthetic disk parameter catalogue
+│   ├── simulate_catalogue.py  # FITS model simulation via CASA
+│   └── train_model.py         # DiscoNet training loop
+├── pyproject.toml
+├── MANIFEST.in
+└── README.md
+</pre></div>
+</div>
+</section>
+<section id="module-relationships">
+<h2>Module Relationships<a class="headerlink" href="#module-relationships" title="Link to this heading"></a></h2>
+<p>The following diagram summarises the runtime dependency graph between
+the primary Python modules.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>disco-start (console_scripts entry point)
+    └── disco.main:run()
+            ├── GUI branch ──────────────────────────────────────────────┐
+            │       disco.server (FastAPI app)                           │
+            │           ├── disco.core.optimization.geometric_loss       │
+            │           └── astroquery.simbad (optional)                 │
+            └── CLI branch                                               │
+                    disco.cli:main()                                     │
+                        ├── disco.core.cnn_inference                     │
+                        │       DiscoNet, predict_with_cnn               │
+                        ├── disco.core.optimization                      │
+                        │       geometric_loss                           │
+                        │       auto_tune_geometry_hybrid                │
+                        │       estimate_geometry_errors                 │
+                        │       refine_center_geometry                   │
+                        └── disco.core.fits_utils                        │
+                                get_alma_beam                            │
+                                deconvolve_beams                         │
+                                make_gaussian_kernel_casa                │
+                                find_center_robust                       │
+                                auto_detect_parameters                   │
+                                extract_profile                          │
+                                save_debug_deproj_center                 │
+                                measure_rout_deproj                      │
+                                refine_center_local                      │
+                                deg_to_sex                               │
+                                pixel_to_icrs / icrs_to_pixel            │
+                                get_obs_epoch                            │
+                                query_gaia_proper_motion                 │
+                                apply_proper_motion_correction           │
+                                                                         │
+React SPA (served from disco/static/) ←────────────────────────────────┘
+    communicates via HTTP with disco.server on localhost:8000
+</pre></div>
+</div>
+</section>
+<section id="operational-modes">
+<h2>Operational Modes<a class="headerlink" href="#operational-modes" title="Link to this heading"></a></h2>
+<section id="cli-pipeline-disco-start-identifier">
+<h3>CLI Pipeline (<code class="docutils literal notranslate"><span class="pre">disco-start</span> <span class="pre">&lt;identifier</span> <span class="pre">...&gt;</span></code>)<a class="headerlink" href="#cli-pipeline-disco-start-identifier" title="Link to this heading"></a></h3>
+<p>The CLI pipeline (implemented in <a class="reference internal" href="api/cli_module.html#module-disco.cli" title="disco.cli: Automated CLI pipeline for batch FITS processing."><code class="xref py py-mod docutils literal notranslate"><span class="pre">disco.cli</span></code></a>) operates entirely
+server-side without any browser interaction. It discovers FITS files
+in the current working directory, groups them by source prefix and
+spectral band, and processes each group through a five-phase sequence.
+The CNN model is loaded once at startup and reused across all groups.
+Results are written to disk as PNG figures and, optionally, CSV files.</p>
+</section>
+<section id="gui-server-disco-start-gui">
+<h3>GUI Server (<code class="docutils literal notranslate"><span class="pre">disco-start</span> <span class="pre">gui</span></code>)<a class="headerlink" href="#gui-server-disco-start-gui" title="Link to this heading"></a></h3>
+<p>In GUI mode, <a class="reference internal" href="api/server.html#disco.server.start_server" title="disco.server.start_server"><code class="xref py py-func docutils literal notranslate"><span class="pre">disco.server.start_server()</span></code></a> initialises a FastAPI
+application backed by Uvicorn. A global singleton <code class="docutils literal notranslate"><span class="pre">state</span></code> object
+(an instance of <code class="docutils literal notranslate"><span class="pre">GlobalState</span></code>) holds the currently-loaded FITS array,
+header, and pipeline results in memory for the duration of the session.
+The React single-page application communicates with the backend exclusively
+through REST endpoints documented in <a class="reference internal" href="api/server.html#api-server"><span class="std std-ref">disco.server — HTTP API Reference</span></a>.</p>
+<p>The React build artefact is served as static content from <code class="docutils literal notranslate"><span class="pre">disco/static/</span></code>
+via FastAPI’s <code class="docutils literal notranslate"><span class="pre">StaticFiles</span></code> mount and a catch-all route that returns
+<code class="docutils literal notranslate"><span class="pre">index.html</span></code> for any unmatched path, enabling client-side routing.</p>
+</section>
+</section>
+<section id="frontend-build-pipeline">
+<h2>Frontend Build Pipeline<a class="headerlink" href="#frontend-build-pipeline" title="Link to this heading"></a></h2>
+<p>The React application (located in <code class="docutils literal notranslate"><span class="pre">client/</span></code>) is built with
+<a class="reference external" href="https://vitejs.dev/">Vite</a>. The <code class="docutils literal notranslate"><span class="pre">vite.config.js</span></code> configures the
+output directory as <code class="docutils literal notranslate"><span class="pre">../disco/static</span></code>, replacing the installed static
+assets in place:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># From client/</span>
+npm<span class="w"> </span>run<span class="w"> </span>build:disco
+<span class="c1"># Equivalent to: npm run build &amp;&amp; shx rm -rf ../disco/static &amp;&amp; shx cp -r dist ../disco/static</span>
+</pre></div>
+</div>
+<p>The resulting bundle is shipped as part of the <code class="docutils literal notranslate"><span class="pre">disco-astronomy</span></code> PyPI
+distribution via the <code class="docutils literal notranslate"><span class="pre">MANIFEST.in</span></code> directive
+<code class="docutils literal notranslate"><span class="pre">recursive-include</span> <span class="pre">disco/static</span> <span class="pre">*</span></code>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quickstart.html" class="btn btn-neutral float-left" title="Quick Start" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.html" class="btn btn-neutral float-right" title="Pipeline Description" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Jorge Luis Guzmán Lazo.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

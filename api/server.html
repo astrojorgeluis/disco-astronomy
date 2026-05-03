@@ -1,0 +1,778 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>disco.server — HTTP API Reference &mdash; DISCO v1.1.7</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_disco.css?v=499842b1" />
+
+  
+    <link rel="shortcut icon" href="../_static/disco_icon.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=370aedac"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="disco.cli" href="cli_module.html" />
+    <link rel="prev" title="disco.core.optimization" href="optimization.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/disco_icon.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installation-from-pypi">Installation from PyPI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#keeping-disco-up-to-date">Keeping DISCO up to date</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#included-static-assets">Included Static Assets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#interactive-gui-mode">Interactive GUI Mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#automated-cli-mode">Automated CLI Mode</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../architecture.html#repository-structure">Repository Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../architecture.html#module-relationships">Module Relationships</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../architecture.html#operational-modes">Operational Modes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../architecture.html#cli-pipeline-disco-start-identifier">CLI Pipeline (<code class="docutils literal notranslate"><span class="pre">disco-start</span> <span class="pre">&lt;identifier</span> <span class="pre">...&gt;</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../architecture.html#gui-server-disco-start-gui">GUI Server (<code class="docutils literal notranslate"><span class="pre">disco-start</span> <span class="pre">gui</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../architecture.html#frontend-build-pipeline">Frontend Build Pipeline</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline.html">Pipeline Description</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../pipeline.html#group-discovery">Group Discovery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pipeline.html#phase-1-fits-ingestion">Phase 1 — FITS Ingestion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pipeline.html#phase-2-geometry-optimisation">Phase 2 — Geometry Optimisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pipeline.html#phase-3-uncertainty-estimation">Phase 3 — Uncertainty Estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pipeline.html#phase-4-profile-extraction-and-beam-homogenisation">Phase 4 — Profile Extraction and Beam Homogenisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pipeline.html#phase-5-output-serialisation">Phase 5 — Output Serialisation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">Command-Line Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html#synopsis">Synopsis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html#positional-arguments">Positional Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html#optional-arguments">Optional Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html#usage-examples">Usage Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html#cnn-model-loading">CNN Model Loading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../gui.html">Graphical User Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../gui.html#application-layout">Application Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui.html#file-loading">File Loading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui.html#geometry-controls-controls-panel">Geometry Controls (CONTROLS panel)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui.html#auto-tune-geometry">Auto-Tune Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui.html#analysis-dashboard-analysis-panel">Analysis Dashboard (ANALYSIS panel)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gui.html#view-modes">View Modes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gui.html#display-settings">Display Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gui.html#d-profile-chart">1D Profile Chart</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gui.html#cursor-probe">Cursor Probe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gui.html#ring-fit-statistics">Ring Fit Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gui.html#cumulative-flux-chart">Cumulative Flux Chart</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gui.html#custom-markers">Custom Markers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../gui.html#export-functions">Export Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui.html#simbad-query">SIMBAD Query</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="fits_utils.html"><code class="docutils literal notranslate"><span class="pre">disco.core.fits_utils</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fits_utils.html#beam-utilities">Beam Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.get_alma_beam"><code class="docutils literal notranslate"><span class="pre">get_alma_beam()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.deconvolve_beams"><code class="docutils literal notranslate"><span class="pre">deconvolve_beams()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.make_gaussian_kernel_casa"><code class="docutils literal notranslate"><span class="pre">make_gaussian_kernel_casa()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="fits_utils.html#centroid-and-parameter-detection">Centroid and Parameter Detection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.find_center_robust"><code class="docutils literal notranslate"><span class="pre">find_center_robust()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.auto_detect_parameters"><code class="docutils literal notranslate"><span class="pre">auto_detect_parameters()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.refine_center_local"><code class="docutils literal notranslate"><span class="pre">refine_center_local()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="fits_utils.html#profile-extraction">Profile Extraction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.extract_profile"><code class="docutils literal notranslate"><span class="pre">extract_profile()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.measure_rout_deproj"><code class="docutils literal notranslate"><span class="pre">measure_rout_deproj()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.save_debug_deproj_center"><code class="docutils literal notranslate"><span class="pre">save_debug_deproj_center()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="fits_utils.html#wcs-and-coordinate-utilities">WCS and Coordinate Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.deg_to_sex"><code class="docutils literal notranslate"><span class="pre">deg_to_sex()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.pixel_to_icrs"><code class="docutils literal notranslate"><span class="pre">pixel_to_icrs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.icrs_to_pixel"><code class="docutils literal notranslate"><span class="pre">icrs_to_pixel()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.get_obs_epoch"><code class="docutils literal notranslate"><span class="pre">get_obs_epoch()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="fits_utils.html#gaia-proper-motion">Gaia Proper Motion</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.query_gaia_proper_motion"><code class="docutils literal notranslate"><span class="pre">query_gaia_proper_motion()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.apply_proper_motion_correction"><code class="docutils literal notranslate"><span class="pre">apply_proper_motion_correction()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cnn_inference.html"><code class="docutils literal notranslate"><span class="pre">disco.core.cnn_inference</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cnn_inference.html#architecture">Architecture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cnn_inference.html#disco.core.cnn_inference.ResBlock"><code class="docutils literal notranslate"><span class="pre">ResBlock</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cnn_inference.html#disco.core.cnn_inference.ResBlock.forward"><code class="docutils literal notranslate"><span class="pre">ResBlock.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cnn_inference.html#disco.core.cnn_inference.DiscoNet"><code class="docutils literal notranslate"><span class="pre">DiscoNet</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cnn_inference.html#disco.core.cnn_inference.DiscoNet.forward"><code class="docutils literal notranslate"><span class="pre">DiscoNet.forward()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cnn_inference.html#output-encoding">Output Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cnn_inference.html#inference-function">Inference Function</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cnn_inference.html#disco.core.cnn_inference.predict_with_cnn"><code class="docutils literal notranslate"><span class="pre">predict_with_cnn()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="optimization.html"><code class="docutils literal notranslate"><span class="pre">disco.core.optimization</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="optimization.html#geometric-loss-function">Geometric Loss Function</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="optimization.html#disco.core.optimization.geometric_loss"><code class="docutils literal notranslate"><span class="pre">geometric_loss()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="optimization.html#hybrid-geometry-optimiser">Hybrid Geometry Optimiser</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="optimization.html#disco.core.optimization.auto_tune_geometry_hybrid"><code class="docutils literal notranslate"><span class="pre">auto_tune_geometry_hybrid()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="optimization.html#uncertainty-estimation">Uncertainty Estimation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="optimization.html#disco.core.optimization.estimate_geometry_errors"><code class="docutils literal notranslate"><span class="pre">estimate_geometry_errors()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="optimization.html#centre-refinement">Centre Refinement</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="optimization.html#disco.core.optimization.refine_center_geometry"><code class="docutils literal notranslate"><span class="pre">refine_center_geometry()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">disco.server</span></code> — HTTP API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#global-state">Global State</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pydantic-request-models">Pydantic Request Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#disco.server.PlotParams"><code class="docutils literal notranslate"><span class="pre">PlotParams</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#disco.server.PipelineParams"><code class="docutils literal notranslate"><span class="pre">PipelineParams</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#disco.server.OptimizeParams"><code class="docutils literal notranslate"><span class="pre">OptimizeParams</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#disco.server.LoadLocalParams"><code class="docutils literal notranslate"><span class="pre">LoadLocalParams</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#endpoints">Endpoints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#session-management">Session Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#file-loading">File Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pipeline-and-optimisation">Pipeline and Optimisation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rendering">Rendering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#download-and-metadata">Download and Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#static-file-serving">Static File Serving</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#server-lifecycle">Server Lifecycle</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#disco.server.start_server"><code class="docutils literal notranslate"><span class="pre">start_server()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cli_module.html"><code class="docutils literal notranslate"><span class="pre">disco.cli</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cli_module.html#disco.cli.discover_groups"><code class="docutils literal notranslate"><span class="pre">discover_groups()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_module.html#disco.cli.run_pipeline"><code class="docutils literal notranslate"><span class="pre">run_pipeline()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_module.html#disco.cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="main.html"><code class="docutils literal notranslate"><span class="pre">disco.main</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="main.html#disco.main.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Supplementary</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../training.html">DiscoNet Training Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../training.html#step-1-catalogue-generation-training-generate-catalogue-py">Step 1: Catalogue Generation (<code class="docutils literal notranslate"><span class="pre">training/generate_catalogue.py</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../training.html#step-2-fits-simulation-training-simulate-catalogue-py">Step 2: FITS Simulation (<code class="docutils literal notranslate"><span class="pre">training/simulate_catalogue.py</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../training.html#step-3-model-training-training-train-model-py">Step 3: Model Training (<code class="docutils literal notranslate"><span class="pre">training/train_model.py</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../file_io.html">File Input and Output</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../file_io.html#fits-input">FITS Input</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../file_io.html#cli-output-files">CLI Output Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../file_io.html#radial-profile-plot">Radial Profile Plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../file_io.html#csv-exports-csv-on">CSV Exports (<code class="docutils literal notranslate"><span class="pre">--csv</span> <span class="pre">on</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../file_io.html#debug-output-debug-on">Debug Output (<code class="docutils literal notranslate"><span class="pre">--debug</span> <span class="pre">on</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../file_io.html#gui-session-files">GUI Session Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../file_io.html#gui-fits-downloads">GUI FITS Downloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../file_io.html#gui-csv-export">GUI CSV Export</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-1-7-current">Version 1.1.7 (current)</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DISCO</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><code class="docutils literal notranslate"><span class="pre">disco.server</span></code> — HTTP API Reference</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-disco.server">
+<span id="disco-server-http-api-reference"></span><span id="api-server"></span><h1><code class="docutils literal notranslate"><span class="pre">disco.server</span></code> — HTTP API Reference<a class="headerlink" href="#module-disco.server" title="Link to this heading"></a></h1>
+<p>The GUI backend is implemented as a FastAPI application (<code class="docutils literal notranslate"><span class="pre">app</span></code>) served by
+Uvicorn on <code class="docutils literal notranslate"><span class="pre">http://0.0.0.0:8000</span></code>. The application maintains a single
+in-memory session via the module-level singleton <code class="docutils literal notranslate"><span class="pre">state</span></code> (an instance of
+<code class="docutils literal notranslate"><span class="pre">GlobalState</span></code>). All state is cleared on startup and on server shutdown.</p>
+<p>CORS is enabled for all origins (<code class="docutils literal notranslate"><span class="pre">allow_origins=[&quot;*&quot;]</span></code>) to permit
+access from the bundled React application.</p>
+<hr class="docutils" />
+<section id="global-state">
+<h2>Global State<a class="headerlink" href="#global-state" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">GlobalState</span></code> class holds the current session data:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Attribute</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">data</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span> <span class="pre">|</span> <span class="pre">None</span></code> — the currently-loaded 2D FITS image.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">header</span></code></p></td>
+<td><p>FITS header object, or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">filename</span></code></p></td>
+<td><p>Resolved file path of the loaded FITS file, or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">results</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dict</span></code> — pipeline output images keyed by type
+(<code class="docutils literal notranslate"><span class="pre">&quot;deproj&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;model&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;residuals&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;polar&quot;</span></code>).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">extents</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dict</span></code> — Matplotlib <code class="docutils literal notranslate"><span class="pre">extent</span></code> (physical axis limits) for each
+image type, used for correct axis labelling.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">profile_data</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dict</span> <span class="pre">|</span> <span class="pre">None</span></code> — radial profile data with keys <code class="docutils literal notranslate"><span class="pre">&quot;radius&quot;</span></code> and
+<code class="docutils literal notranslate"><span class="pre">&quot;tb&quot;</span></code> (brightness temperature profile).</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<hr class="docutils" />
+<section id="pydantic-request-models">
+<h2>Pydantic Request Models<a class="headerlink" href="#pydantic-request-models" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="disco.server.PlotParams">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disco.server.</span></span><span class="sig-name descname"><span class="pre">PlotParams</span></span><a class="reference internal" href="../_modules/disco/server.html#PlotParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.server.PlotParams" title="Link to this definition"></a></dt>
+<dd><p>Request body for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/render_plot</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Image type to render. One of:
+<code class="docutils literal notranslate"><span class="pre">&quot;data&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;deproj&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;model&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;residuals&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;polar&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;profile&quot;</span></code>.</p></li>
+<li><p><strong>cmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Matplotlib colormap name. Default: <code class="docutils literal notranslate"><span class="pre">&quot;magma&quot;</span></code>.</p></li>
+<li><p><strong>stretch</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Intensity stretch. One of: <code class="docutils literal notranslate"><span class="pre">&quot;asinh&quot;</span></code> (default),
+<code class="docutils literal notranslate"><span class="pre">&quot;log&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;linear&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;sqrt&quot;</span></code>.</p></li>
+<li><p><strong>vmax_percentile</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> | </em><em>None</em>) – If set, the vmax is computed as
+this percentile of the image data.</p></li>
+<li><p><strong>vmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> | </em><em>None</em>) – Manual lower intensity limit.</p></li>
+<li><p><strong>vmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> | </em><em>None</em>) – Manual upper intensity limit.</p></li>
+<li><p><strong>contours</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Overlay contours. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>contour_levels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of contour levels. Default: 5.</p></li>
+<li><p><strong>show_beam</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Overlay beam ellipse. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>show_grid</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Overlay grid lines. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>show_axes</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Show axes and labels. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>show_colorbar</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Show colorbar. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> | </em><em>None</em>) – Optional plot title.</p></li>
+<li><p><strong>dpi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Figure DPI. Default: 150.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="disco.server.PipelineParams">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disco.server.</span></span><span class="sig-name descname"><span class="pre">PipelineParams</span></span><a class="reference internal" href="../_modules/disco/server.html#PipelineParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.server.PipelineParams" title="Link to this definition"></a></dt>
+<dd><p>Request body for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/run_pipeline</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Disk centre x-coordinate in pixels.</p></li>
+<li><p><strong>cy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Disk centre y-coordinate in pixels (GUI convention:
+measured from the top of the image).</p></li>
+<li><p><strong>pa</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Position angle in degrees.</p></li>
+<li><p><strong>incl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Inclination in degrees.</p></li>
+<li><p><strong>rout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Outer disk radius in arcseconds.</p></li>
+<li><p><strong>fit_rmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Inner radius for Gaussian ring fitting. Default: 0.0.</p></li>
+<li><p><strong>fit_rmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Outer radius for Gaussian ring fitting. Default: 0.0.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="disco.server.OptimizeParams">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disco.server.</span></span><span class="sig-name descname"><span class="pre">OptimizeParams</span></span><a class="reference internal" href="../_modules/disco/server.html#OptimizeParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.server.OptimizeParams" title="Link to this definition"></a></dt>
+<dd><p>Request body for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/optimize_geometry</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centre x in pixels.</p></li>
+<li><p><strong>cy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centre y in pixels.</p></li>
+<li><p><strong>pa</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current position angle in degrees.</p></li>
+<li><p><strong>incl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current inclination in degrees.</p></li>
+<li><p><strong>rout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Outer radius in arcseconds.</p></li>
+<li><p><strong>fit_rmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Inner fitting radius in arcseconds. Default: 0.0.</p></li>
+<li><p><strong>fit_rmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Outer fitting radius in arcseconds. Default: 0.0.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="disco.server.LoadLocalParams">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disco.server.</span></span><span class="sig-name descname"><span class="pre">LoadLocalParams</span></span><a class="reference internal" href="../_modules/disco/server.html#LoadLocalParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.server.LoadLocalParams" title="Link to this definition"></a></dt>
+<dd><p>Request body for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/load_local</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Base filename (not a full path) to load from
+the upload directory <code class="docutils literal notranslate"><span class="pre">.disco_uploads/</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<hr class="docutils" />
+<section id="endpoints">
+<h2>Endpoints<a class="headerlink" href="#endpoints" title="Link to this heading"></a></h2>
+<section id="session-management">
+<h3>Session Management<a class="headerlink" href="#session-management" title="Link to this heading"></a></h3>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--reset_session">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/reset_session</span></span><a class="headerlink" href="#post--reset_session" title="Link to this definition"></a></dt>
+<dd><p>Clears all session state (<code class="docutils literal notranslate"><span class="pre">GlobalState</span></code> fields reset to <code class="docutils literal notranslate"><span class="pre">None</span></code> /
+empty) and deletes all files in the <code class="docutils literal notranslate"><span class="pre">.disco_uploads/</span></code> directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/200">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">{&quot;status&quot;:</span> <span class="pre">&quot;Session</span> <span class="pre">cleared&quot;}</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="file-loading">
+<h3>File Loading<a class="headerlink" href="#file-loading" title="Link to this heading"></a></h3>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--upload">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/upload</span></span><a class="headerlink" href="#post--upload" title="Link to this definition"></a></dt>
+<dd><p>Accept a multipart FITS file upload, save it to <code class="docutils literal notranslate"><span class="pre">.disco_uploads/</span></code>,
+load the primary HDU into <code class="docutils literal notranslate"><span class="pre">state.data</span></code> and <code class="docutils literal notranslate"><span class="pre">state.header</span></code>, and
+return basic image metadata.</p>
+<p>If the data maximum is below 0.1, the array is multiplied by 1 000
+(Jy/beam → mJy/beam normalisation).</p>
+<p><strong>Form field:</strong> <code class="docutils literal notranslate"><span class="pre">file</span></code> — the FITS file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/200">200 OK</a></span> – JSON object with keys:
+<code class="docutils literal notranslate"><span class="pre">filename</span></code> (str), <code class="docutils literal notranslate"><span class="pre">status</span></code> (<code class="docutils literal notranslate"><span class="pre">&quot;loaded&quot;</span></code>),
+<code class="docutils literal notranslate"><span class="pre">shape</span></code> (list[int, int]),
+<code class="docutils literal notranslate"><span class="pre">pixel_scale</span></code> (float, arcsec/pixel).</p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/500">500 Internal Server Error</a></span> – On any read or FITS parse error.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http post">
+<dt class="sig sig-object http" id="post--load_local">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/load_local</span></span><a class="headerlink" href="#post--load_local" title="Link to this definition"></a></dt>
+<dd><p>Load a previously-uploaded FITS file from <code class="docutils literal notranslate"><span class="pre">.disco_uploads/</span></code> by
+base filename. Applies the same unit normalisation as <code class="docutils literal notranslate"><span class="pre">/upload</span></code>.</p>
+<p><strong>Request body:</strong> <a class="reference internal" href="#disco.server.LoadLocalParams" title="disco.server.LoadLocalParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">LoadLocalParams</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/200">200 OK</a></span> – JSON object with keys:
+<code class="docutils literal notranslate"><span class="pre">status</span></code> (<code class="docutils literal notranslate"><span class="pre">&quot;loaded&quot;</span></code>), <code class="docutils literal notranslate"><span class="pre">filename</span></code> (str),
+<code class="docutils literal notranslate"><span class="pre">shape</span></code> (list[int, int]),
+<code class="docutils literal notranslate"><span class="pre">pixel_scale</span></code> (float).</p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/404">404 Not Found</a></span> – If the file does not exist in the upload directory.</p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/500">500 Internal Server Error</a></span> – On parse error.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--preview">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/preview</span></span><a class="headerlink" href="#get--preview" title="Link to this definition"></a></dt>
+<dd><p>Return a base64-encoded PNG preview of the currently-loaded image,
+rendered with the <code class="docutils literal notranslate"><span class="pre">inferno</span></code> colormap and an <code class="docutils literal notranslate"><span class="pre">AsinhStretch</span></code>
+normalisation (<code class="docutils literal notranslate"><span class="pre">stretch_val=0.02</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/200">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">{&quot;image&quot;:</span> <span class="pre">&quot;data:image/png;base64,&lt;...&gt;&quot;}</span></code></p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/404">404 Not Found</a></span> – If no data is loaded.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--get_header">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/get_header</span></span><a class="headerlink" href="#get--get_header" title="Link to this definition"></a></dt>
+<dd><p>Return the FITS header as a list of keyword–value–comment triples,
+excluding <code class="docutils literal notranslate"><span class="pre">COMMENT</span></code> and <code class="docutils literal notranslate"><span class="pre">HISTORY</span></code> records.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/200">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">{&quot;header&quot;:</span> <span class="pre">[{&quot;key&quot;:</span> <span class="pre">str,</span> <span class="pre">&quot;value&quot;:</span> <span class="pre">str,</span> <span class="pre">&quot;comment&quot;:</span> <span class="pre">str},</span> <span class="pre">...]}</span></code>
+Returns an empty list if no header is loaded.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="pipeline-and-optimisation">
+<h3>Pipeline and Optimisation<a class="headerlink" href="#pipeline-and-optimisation" title="Link to this heading"></a></h3>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--run_pipeline">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/run_pipeline</span></span><a class="headerlink" href="#post--run_pipeline" title="Link to this definition"></a></dt>
+<dd><p>Execute the deprojection pipeline on the currently-loaded image with the
+supplied geometry, and store the results in <code class="docutils literal notranslate"><span class="pre">state.results</span></code>.</p>
+<p><strong>Procedure:</strong></p>
+<ol class="arabic simple">
+<li><p>Convert GUI pixel-y to image-y convention.</p></li>
+<li><p>Generate the deprojected image by applying the inclination and PA
+transform on a <span class="math notranslate nohighlight">\(1000 \times 1000\)</span> grid using
+<code class="docutils literal notranslate"><span class="pre">scipy.ndimage.map_coordinates</span></code> (order 3).</p></li>
+<li><p>Compute the polar map (radius vs azimuth, 361 × 500 pixels).</p></li>
+<li><p>Build the azimuthal model (mean profile tiled over the polar grid,
+then reprojected to Cartesian).</p></li>
+<li><p>Compute the residual map (deprojected − model).</p></li>
+<li><p>Extract the azimuthally-averaged profile via
+<a class="reference internal" href="fits_utils.html#disco.core.fits_utils.extract_profile" title="disco.core.fits_utils.extract_profile"><code class="xref py py-func docutils literal notranslate"><span class="pre">disco.core.fits_utils.extract_profile()</span></code></a>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">fit_rmin</span> <span class="pre">&lt;</span> <span class="pre">fit_rmax</span></code>, fit a Gaussian to the profile segment
+using <code class="docutils literal notranslate"><span class="pre">scipy.optimize.curve_fit</span></code> with the model
+<span class="math notranslate nohighlight">\(G(r) = a\exp(-(r-r_0)^2/(2\sigma^2)) + c\)</span>.</p></li>
+<li><p>Read beam geometry from the header and construct a beam info dict.</p></li>
+<li><p>Store all results in <code class="docutils literal notranslate"><span class="pre">state</span></code>.</p></li>
+</ol>
+<p><strong>Request body:</strong> <a class="reference internal" href="#disco.server.PipelineParams" title="disco.server.PipelineParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">PipelineParams</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/200">200 OK</a></span> – JSON object with the following structure:</p></li>
+</ul>
+</dd>
+</dl>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{
+  &quot;images&quot;: {
+    &quot;deproj&quot;:    &quot;data:image/png;base64,...&quot;,
+    &quot;polar&quot;:     &quot;data:image/png;base64,...&quot;,
+    &quot;model&quot;:     &quot;data:image/png;base64,...&quot;,
+    &quot;residuals&quot;: &quot;data:image/png;base64,...&quot;
+  },
+  &quot;profile&quot;: {
+    &quot;radius&quot;:        [...],
+    &quot;intensity&quot;:     [...],
+    &quot;raw_intensity&quot;: [...]
+  },
+  &quot;geometry&quot;: {
+    &quot;fov_cartesian&quot;: &lt;float&gt;,
+    &quot;fov_polar&quot;:     &lt;float&gt;,
+    &quot;beam&quot;:          {&quot;major&quot;: &lt;float&gt;, &quot;minor&quot;: &lt;float&gt;, &quot;pa&quot;: &lt;float&gt;},
+    &quot;pixel_scale&quot;:   &lt;float&gt;
+  },
+  &quot;fit&quot;: {
+    &quot;peak_radius&quot;: &lt;float&gt;,
+    &quot;fwhm&quot;:        &lt;float&gt;
+  }
+}
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">fit</span></code> key is <code class="docutils literal notranslate"><span class="pre">null</span></code> if no fit range is specified or fitting fails.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/400">400 Bad Request</a></span> – If no data is loaded.</p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/500">500 Internal Server Error</a></span> – On internal error.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http post">
+<dt class="sig sig-object http" id="post--optimize_geometry">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/optimize_geometry</span></span><a class="headerlink" href="#post--optimize_geometry" title="Link to this definition"></a></dt>
+<dd><p>Run a grid-seeded Nelder-Mead optimisation of
+<a class="reference internal" href="optimization.html#disco.core.optimization.geometric_loss" title="disco.core.optimization.geometric_loss"><code class="xref py py-func docutils literal notranslate"><span class="pre">disco.core.optimization.geometric_loss()</span></code></a> to refine inclination and
+position angle.</p>
+<p><strong>Procedure:</strong></p>
+<ol class="arabic simple">
+<li><p>Convert GUI coordinates to image-space.</p></li>
+<li><p>Apply zero-padding (1000 pixels) and crop around the centre.</p></li>
+<li><p>Evaluate the loss at a grid of <span class="math notranslate nohighlight">\((i, \phi)\)</span> candidates:
+<code class="docutils literal notranslate"><span class="pre">test_incls</span> <span class="pre">=</span> <span class="pre">[10,</span> <span class="pre">30,</span> <span class="pre">50,</span> <span class="pre">70]</span></code> degrees,
+<code class="docutils literal notranslate"><span class="pre">test_pas</span>&#160;&#160; <span class="pre">=</span> <span class="pre">range(0,</span> <span class="pre">180,</span> <span class="pre">30)</span></code> degrees.</p></li>
+<li><p>Run Nelder-Mead (bounds <code class="docutils literal notranslate"><span class="pre">[0,85]</span> <span class="pre">×</span> <span class="pre">[0,180]</span> <span class="pre">×</span> <span class="pre">[-10,10]²</span></code>, <code class="docutils literal notranslate"><span class="pre">dim=400</span></code>,
+<code class="docutils literal notranslate"><span class="pre">order=3</span></code>) starting from the best grid point.</p></li>
+</ol>
+<p><strong>Request body:</strong> <a class="reference internal" href="#disco.server.OptimizeParams" title="disco.server.OptimizeParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeParams</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/200">200 OK</a></span> – </p></li>
+</ul>
+</dd>
+</dl>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{
+  &quot;optimized_incl&quot;: &lt;float&gt;,
+  &quot;optimized_pa&quot;:   &lt;float&gt;
+}
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/400">400 Bad Request</a></span> – If no data is loaded.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="rendering">
+<h3>Rendering<a class="headerlink" href="#rendering" title="Link to this heading"></a></h3>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--render_plot">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/render_plot</span></span><a class="headerlink" href="#post--render_plot" title="Link to this definition"></a></dt>
+<dd><p>Render a Matplotlib figure of the requested image type and return it as a
+base64-encoded PNG.</p>
+<p>For 2D image types (<code class="docutils literal notranslate"><span class="pre">&quot;data&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;deproj&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;model&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;residuals&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;polar&quot;</span></code>):</p>
+<ul class="simple">
+<li><p>Intensity normalisation uses the selected stretch function
+(<code class="docutils literal notranslate"><span class="pre">AsinhStretch</span></code>, <code class="docutils literal notranslate"><span class="pre">LogStretch</span></code>, <code class="docutils literal notranslate"><span class="pre">LinearStretch</span></code>, or
+<code class="docutils literal notranslate"><span class="pre">SqrtStretch</span></code>).</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">show_axes</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, axis labels, title, and optionally a
+colorbar and grid are rendered.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">show_beam</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> and <code class="docutils literal notranslate"><span class="pre">BMAJ</span></code>/<code class="docutils literal notranslate"><span class="pre">BMIN</span></code> are present in the
+header, a beam ellipse is overlaid in the lower-left region.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">contours</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, <code class="docutils literal notranslate"><span class="pre">ax.contour</span></code> is called with
+<code class="docutils literal notranslate"><span class="pre">contour_levels</span></code> levels.</p></li>
+</ul>
+<p>For <code class="docutils literal notranslate"><span class="pre">&quot;profile&quot;</span></code> type:</p>
+<ul class="simple">
+<li><p>A log-scale 1D plot of the brightness temperature profile is generated.</p></li>
+</ul>
+<p><strong>Request body:</strong> <a class="reference internal" href="#disco.server.PlotParams" title="disco.server.PlotParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlotParams</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/200">200 OK</a></span> – </p></li>
+</ul>
+</dd>
+</dl>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{
+  &quot;image&quot;: &quot;data:image/png;base64,...&quot;,
+  &quot;stats&quot;: {
+    &quot;min&quot;: &lt;float&gt;,
+    &quot;max&quot;: &lt;float&gt;,
+    &quot;vmin_used&quot;: &lt;float&gt;,
+    &quot;vmax_used&quot;: &lt;float&gt;,
+    &quot;cmap_used&quot;: &lt;str&gt;
+  }
+}
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/400">400 Bad Request</a></span> – If data for the requested type is not available.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="download-and-metadata">
+<h3>Download and Metadata<a class="headerlink" href="#download-and-metadata" title="Link to this heading"></a></h3>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--download_fits">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/download_fits</span></span><a class="headerlink" href="#get--download_fits" title="Link to this definition"></a></dt>
+<dd><p>Return a pipeline output array as a binary FITS file, preserving the
+original FITS header.</p>
+<p><strong>Query parameter:</strong> <code class="docutils literal notranslate"><span class="pre">type</span></code> — one of <code class="docutils literal notranslate"><span class="pre">&quot;data&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;deproj&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;model&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;residuals&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;polar&quot;</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/200">200 OK</a></span> – Binary FITS file with
+<code class="docutils literal notranslate"><span class="pre">Content-Disposition:</span> <span class="pre">attachment;</span> <span class="pre">filename=result_&lt;type&gt;.fits</span></code></p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/400">400 Bad Request</a></span> – If the requested data type is not available.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--query_simbad">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/query_simbad</span></span><a class="headerlink" href="#get--query_simbad" title="Link to this definition"></a></dt>
+<dd><p>Query CDS SIMBAD for objects within 2 arcmin of the loaded FITS image
+centre. Reads the WCS from the header to compute the sky position.</p>
+<p>Requests the following VOTable fields: <code class="docutils literal notranslate"><span class="pre">otype</span></code>, <code class="docutils literal notranslate"><span class="pre">flux(V)</span></code>,
+<code class="docutils literal notranslate"><span class="pre">distance</span></code>.</p>
+<p>Requires <code class="docutils literal notranslate"><span class="pre">astroquery</span></code> to be installed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/200">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">{&quot;found&quot;:</span> <span class="pre">true,</span> <span class="pre">&quot;data&quot;:</span> <span class="pre">[...]}</span></code> — list of row objects
+with all returned SIMBAD columns, or
+<code class="docutils literal notranslate"><span class="pre">{&quot;found&quot;:</span> <span class="pre">false,</span> <span class="pre">&quot;data&quot;:</span> <span class="pre">[]}</span></code> if no sources are found.</p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/400">400 Bad Request</a></span> – If no header is loaded.</p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/501">501 Not Implemented</a></span> – If <code class="docutils literal notranslate"><span class="pre">astroquery</span></code> is not installed.</p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/500">500 Internal Server Error</a></span> – On SIMBAD query error.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="static-file-serving">
+<h3>Static File Serving<a class="headerlink" href="#static-file-serving" title="Link to this heading"></a></h3>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--assets--path-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/assets/&lt;path&gt;</span></span><a class="headerlink" href="#get--assets--path-" title="Link to this definition"></a></dt>
+<dd><p>Serves static assets from <code class="docutils literal notranslate"><span class="pre">disco/static/assets/</span></code> (Vite build output).</p>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--full_path">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/{full_path}</span></span><a class="headerlink" href="#get--full_path" title="Link to this definition"></a></dt>
+<dd><p>Catch-all route. If the path resolves to an existing file in
+<code class="docutils literal notranslate"><span class="pre">disco/static/</span></code>, serves it directly; otherwise serves
+<code class="docutils literal notranslate"><span class="pre">disco/static/index.html</span></code> (enabling React client-side routing).</p>
+<p>All responses include <code class="docutils literal notranslate"><span class="pre">Cache-Control:</span> <span class="pre">no-cache</span></code> headers to prevent
+stale asset delivery.</p>
+</dd></dl>
+
+</section>
+</section>
+<hr class="docutils" />
+<section id="server-lifecycle">
+<h2>Server Lifecycle<a class="headerlink" href="#server-lifecycle" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="disco.server.start_server">
+<span class="sig-prename descclassname"><span class="pre">disco.server.</span></span><span class="sig-name descname"><span class="pre">start_server</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/server.html#start_server"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.server.start_server" title="Link to this definition"></a></dt>
+<dd><p>Called by <a class="reference internal" href="main.html#disco.main.run" title="disco.main.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">disco.main.run()</span></code></a> when <code class="docutils literal notranslate"><span class="pre">gui</span></code> is the first argument.
+Prints the server address to stdout, starts a background thread that
+opens the default browser at <code class="docutils literal notranslate"><span class="pre">http://localhost:8000</span></code> after a 1.5-second
+delay, and starts Uvicorn:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8000</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="s2">&quot;warning&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>On shutdown, the <code class="docutils literal notranslate"><span class="pre">&#64;app.on_event(&quot;shutdown&quot;)</span></code> handler calls
+<code class="docutils literal notranslate"><span class="pre">wipe_session_logic()</span></code> to clean up the upload directory and reset
+session state.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="optimization.html" class="btn btn-neutral float-left" title="disco.core.optimization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cli_module.html" class="btn btn-neutral float-right" title="disco.cli" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Jorge Luis Guzmán Lazo.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,523 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>disco.core.cnn_inference &mdash; DISCO v1.1.7</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_disco.css?v=499842b1" />
+
+  
+    <link rel="shortcut icon" href="../_static/disco_icon.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=370aedac"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="disco.core.optimization" href="optimization.html" />
+    <link rel="prev" title="disco.core.fits_utils" href="fits_utils.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/disco_icon.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installation-from-pypi">Installation from PyPI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#keeping-disco-up-to-date">Keeping DISCO up to date</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#included-static-assets">Included Static Assets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#interactive-gui-mode">Interactive GUI Mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#automated-cli-mode">Automated CLI Mode</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../architecture.html#repository-structure">Repository Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../architecture.html#module-relationships">Module Relationships</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../architecture.html#operational-modes">Operational Modes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../architecture.html#cli-pipeline-disco-start-identifier">CLI Pipeline (<code class="docutils literal notranslate"><span class="pre">disco-start</span> <span class="pre">&lt;identifier</span> <span class="pre">...&gt;</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../architecture.html#gui-server-disco-start-gui">GUI Server (<code class="docutils literal notranslate"><span class="pre">disco-start</span> <span class="pre">gui</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../architecture.html#frontend-build-pipeline">Frontend Build Pipeline</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline.html">Pipeline Description</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../pipeline.html#group-discovery">Group Discovery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pipeline.html#phase-1-fits-ingestion">Phase 1 — FITS Ingestion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pipeline.html#phase-2-geometry-optimisation">Phase 2 — Geometry Optimisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pipeline.html#phase-3-uncertainty-estimation">Phase 3 — Uncertainty Estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pipeline.html#phase-4-profile-extraction-and-beam-homogenisation">Phase 4 — Profile Extraction and Beam Homogenisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pipeline.html#phase-5-output-serialisation">Phase 5 — Output Serialisation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">Command-Line Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html#synopsis">Synopsis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html#positional-arguments">Positional Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html#optional-arguments">Optional Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html#usage-examples">Usage Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html#cnn-model-loading">CNN Model Loading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../gui.html">Graphical User Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../gui.html#application-layout">Application Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui.html#file-loading">File Loading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui.html#geometry-controls-controls-panel">Geometry Controls (CONTROLS panel)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui.html#auto-tune-geometry">Auto-Tune Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui.html#analysis-dashboard-analysis-panel">Analysis Dashboard (ANALYSIS panel)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gui.html#view-modes">View Modes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gui.html#display-settings">Display Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gui.html#d-profile-chart">1D Profile Chart</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gui.html#cursor-probe">Cursor Probe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gui.html#ring-fit-statistics">Ring Fit Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gui.html#cumulative-flux-chart">Cumulative Flux Chart</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gui.html#custom-markers">Custom Markers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../gui.html#export-functions">Export Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui.html#simbad-query">SIMBAD Query</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="fits_utils.html"><code class="docutils literal notranslate"><span class="pre">disco.core.fits_utils</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fits_utils.html#beam-utilities">Beam Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.get_alma_beam"><code class="docutils literal notranslate"><span class="pre">get_alma_beam()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.deconvolve_beams"><code class="docutils literal notranslate"><span class="pre">deconvolve_beams()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.make_gaussian_kernel_casa"><code class="docutils literal notranslate"><span class="pre">make_gaussian_kernel_casa()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="fits_utils.html#centroid-and-parameter-detection">Centroid and Parameter Detection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.find_center_robust"><code class="docutils literal notranslate"><span class="pre">find_center_robust()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.auto_detect_parameters"><code class="docutils literal notranslate"><span class="pre">auto_detect_parameters()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.refine_center_local"><code class="docutils literal notranslate"><span class="pre">refine_center_local()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="fits_utils.html#profile-extraction">Profile Extraction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.extract_profile"><code class="docutils literal notranslate"><span class="pre">extract_profile()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.measure_rout_deproj"><code class="docutils literal notranslate"><span class="pre">measure_rout_deproj()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.save_debug_deproj_center"><code class="docutils literal notranslate"><span class="pre">save_debug_deproj_center()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="fits_utils.html#wcs-and-coordinate-utilities">WCS and Coordinate Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.deg_to_sex"><code class="docutils literal notranslate"><span class="pre">deg_to_sex()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.pixel_to_icrs"><code class="docutils literal notranslate"><span class="pre">pixel_to_icrs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.icrs_to_pixel"><code class="docutils literal notranslate"><span class="pre">icrs_to_pixel()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.get_obs_epoch"><code class="docutils literal notranslate"><span class="pre">get_obs_epoch()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="fits_utils.html#gaia-proper-motion">Gaia Proper Motion</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.query_gaia_proper_motion"><code class="docutils literal notranslate"><span class="pre">query_gaia_proper_motion()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fits_utils.html#disco.core.fits_utils.apply_proper_motion_correction"><code class="docutils literal notranslate"><span class="pre">apply_proper_motion_correction()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">disco.core.cnn_inference</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#architecture">Architecture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#disco.core.cnn_inference.ResBlock"><code class="docutils literal notranslate"><span class="pre">ResBlock</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#disco.core.cnn_inference.ResBlock.forward"><code class="docutils literal notranslate"><span class="pre">ResBlock.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#disco.core.cnn_inference.DiscoNet"><code class="docutils literal notranslate"><span class="pre">DiscoNet</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#disco.core.cnn_inference.DiscoNet.forward"><code class="docutils literal notranslate"><span class="pre">DiscoNet.forward()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#output-encoding">Output Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#inference-function">Inference Function</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#disco.core.cnn_inference.predict_with_cnn"><code class="docutils literal notranslate"><span class="pre">predict_with_cnn()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="optimization.html"><code class="docutils literal notranslate"><span class="pre">disco.core.optimization</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="optimization.html#geometric-loss-function">Geometric Loss Function</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="optimization.html#disco.core.optimization.geometric_loss"><code class="docutils literal notranslate"><span class="pre">geometric_loss()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="optimization.html#hybrid-geometry-optimiser">Hybrid Geometry Optimiser</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="optimization.html#disco.core.optimization.auto_tune_geometry_hybrid"><code class="docutils literal notranslate"><span class="pre">auto_tune_geometry_hybrid()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="optimization.html#uncertainty-estimation">Uncertainty Estimation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="optimization.html#disco.core.optimization.estimate_geometry_errors"><code class="docutils literal notranslate"><span class="pre">estimate_geometry_errors()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="optimization.html#centre-refinement">Centre Refinement</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="optimization.html#disco.core.optimization.refine_center_geometry"><code class="docutils literal notranslate"><span class="pre">refine_center_geometry()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="server.html"><code class="docutils literal notranslate"><span class="pre">disco.server</span></code> — HTTP API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="server.html#global-state">Global State</a></li>
+<li class="toctree-l2"><a class="reference internal" href="server.html#pydantic-request-models">Pydantic Request Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="server.html#disco.server.PlotParams"><code class="docutils literal notranslate"><span class="pre">PlotParams</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="server.html#disco.server.PipelineParams"><code class="docutils literal notranslate"><span class="pre">PipelineParams</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="server.html#disco.server.OptimizeParams"><code class="docutils literal notranslate"><span class="pre">OptimizeParams</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="server.html#disco.server.LoadLocalParams"><code class="docutils literal notranslate"><span class="pre">LoadLocalParams</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="server.html#endpoints">Endpoints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="server.html#session-management">Session Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="server.html#file-loading">File Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="server.html#pipeline-and-optimisation">Pipeline and Optimisation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="server.html#rendering">Rendering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="server.html#download-and-metadata">Download and Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="server.html#static-file-serving">Static File Serving</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="server.html#server-lifecycle">Server Lifecycle</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="server.html#disco.server.start_server"><code class="docutils literal notranslate"><span class="pre">start_server()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cli_module.html"><code class="docutils literal notranslate"><span class="pre">disco.cli</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cli_module.html#disco.cli.discover_groups"><code class="docutils literal notranslate"><span class="pre">discover_groups()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_module.html#disco.cli.run_pipeline"><code class="docutils literal notranslate"><span class="pre">run_pipeline()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_module.html#disco.cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="main.html"><code class="docutils literal notranslate"><span class="pre">disco.main</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="main.html#disco.main.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Supplementary</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../training.html">DiscoNet Training Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../training.html#step-1-catalogue-generation-training-generate-catalogue-py">Step 1: Catalogue Generation (<code class="docutils literal notranslate"><span class="pre">training/generate_catalogue.py</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../training.html#step-2-fits-simulation-training-simulate-catalogue-py">Step 2: FITS Simulation (<code class="docutils literal notranslate"><span class="pre">training/simulate_catalogue.py</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../training.html#step-3-model-training-training-train-model-py">Step 3: Model Training (<code class="docutils literal notranslate"><span class="pre">training/train_model.py</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../file_io.html">File Input and Output</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../file_io.html#fits-input">FITS Input</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../file_io.html#cli-output-files">CLI Output Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../file_io.html#radial-profile-plot">Radial Profile Plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../file_io.html#csv-exports-csv-on">CSV Exports (<code class="docutils literal notranslate"><span class="pre">--csv</span> <span class="pre">on</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../file_io.html#debug-output-debug-on">Debug Output (<code class="docutils literal notranslate"><span class="pre">--debug</span> <span class="pre">on</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../file_io.html#gui-session-files">GUI Session Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../file_io.html#gui-fits-downloads">GUI FITS Downloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../file_io.html#gui-csv-export">GUI CSV Export</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-1-7-current">Version 1.1.7 (current)</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DISCO</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><code class="docutils literal notranslate"><span class="pre">disco.core.cnn_inference</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-disco.core.cnn_inference">
+<span id="disco-core-cnn-inference"></span><span id="api-cnn-inference"></span><h1><code class="docutils literal notranslate"><span class="pre">disco.core.cnn_inference</span></code><a class="headerlink" href="#module-disco.core.cnn_inference" title="Link to this heading"></a></h1>
+<p>This module defines the <strong>DiscoNet</strong> convolutional neural network and the
+<a class="reference internal" href="#disco.core.cnn_inference.predict_with_cnn" title="disco.core.cnn_inference.predict_with_cnn"><code class="xref py py-func docutils literal notranslate"><span class="pre">predict_with_cnn()</span></code></a> inference function used to generate prior estimates
+of disk inclination and position angle from a FITS image patch.</p>
+<hr class="docutils" />
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h2>
+<p>DiscoNet is a residual convolutional encoder with a multi-layer perceptron
+head. It accepts a 3-channel <span class="math notranslate nohighlight">\(128 \times 128\)</span> tensor and returns 5
+scalar outputs (<code class="docutils literal notranslate"><span class="pre">n_out=5</span></code>), although only the first three are used for
+geometric parameter decoding in the current inference path.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="disco.core.cnn_inference.ResBlock">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disco.core.cnn_inference.</span></span><span class="sig-name descname"><span class="pre">ResBlock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/core/cnn_inference.html#ResBlock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.core.cnn_inference.ResBlock" title="Link to this definition"></a></dt>
+<dd><p>A residual block consisting of two <span class="math notranslate nohighlight">\(3 \times 3\)</span> convolutional layers
+with batch normalisation and ReLU activations, plus a skip connection.</p>
+<div class="math notranslate nohighlight">
+\[\text{out} = \text{ReLU}\!\left(x + \text{BN}(\text{Conv}(\text{ReLU}(\text{BN}(\text{Conv}(x)))))\right)\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of input and output channels.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="disco.core.cnn_inference.ResBlock.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/core/cnn_inference.html#ResBlock.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.core.cnn_inference.ResBlock.forward" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><em>torch.Tensor</em></a>) – Input feature map.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Output feature map of the same shape as input.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)">torch.Tensor</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="disco.core.cnn_inference.DiscoNet">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disco.core.cnn_inference.</span></span><span class="sig-name descname"><span class="pre">DiscoNet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/core/cnn_inference.html#DiscoNet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.core.cnn_inference.DiscoNet" title="Link to this definition"></a></dt>
+<dd><p>Residual convolutional encoder with five downsampling stages and an MLP
+regression head. At inference time the model is loaded with <code class="docutils literal notranslate"><span class="pre">n_out=5</span></code>.</p>
+<p><strong>Architecture summary:</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 30.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Stage</p></th>
+<th class="head"><p>Layer(s)</p></th>
+<th class="head"><p>Output channels</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">stem</span></code></p></td>
+<td><p>Conv 3×3, BN, ReLU</p></td>
+<td><p>32</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">enc1</span></code></p></td>
+<td><p>ResBlock(32) + Conv 3×3 stride 2</p></td>
+<td><p>64</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">enc2</span></code></p></td>
+<td><p>ResBlock(64) + Conv 3×3 stride 2</p></td>
+<td><p>128</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">enc3</span></code></p></td>
+<td><p>ResBlock(128) + Conv 3×3 stride 2</p></td>
+<td><p>256</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">enc4</span></code></p></td>
+<td><p>ResBlock(256) + Conv 3×3 stride 2</p></td>
+<td><p>512</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">enc5</span></code></p></td>
+<td><p>ResBlock(512) + Conv 3×3 stride 2</p></td>
+<td><p>512</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pool</span></code></p></td>
+<td><p>AdaptiveAvgPool2d(4×4)</p></td>
+<td><p>512 × 4 × 4 = 8192</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">head</span></code></p></td>
+<td><p>Linear(8192→1024), ReLU, Dropout(0.45), Linear(1024→512),
+ReLU, Dropout(0.30), Linear(512→n_out)</p></td>
+<td><p>n_out</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>n_out</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of output scalars. Default: 6. The CLI pipeline
+loads the model with <code class="docutils literal notranslate"><span class="pre">n_out=5</span></code>.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="disco.core.cnn_inference.DiscoNet.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/core/cnn_inference.html#DiscoNet.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.core.cnn_inference.DiscoNet.forward" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><em>torch.Tensor</em></a>) – Input tensor of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">3,</span> <span class="pre">H,</span> <span class="pre">W)</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Output tensor of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">n_out)</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)">torch.Tensor</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<hr class="docutils" />
+<section id="output-encoding">
+<h2>Output Encoding<a class="headerlink" href="#output-encoding" title="Link to this heading"></a></h2>
+<p>The network outputs are encoded as follows (as documented in the training
+checkpoint <code class="docutils literal notranslate"><span class="pre">outputs</span></code> field):</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 20.0%" />
+<col style="width: 65.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Index</p></th>
+<th class="head"><p>Symbol</p></th>
+<th class="head"><p>Encoding</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">incl/90</span></code></p></td>
+<td><p>Inclination normalised to [0, 1] (multiply by 90° to recover degrees)</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sin2PA</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(\sin(2\phi)\)</span> — PA encoded as double-angle sine</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">cos2PA</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(\cos(2\phi)\)</span> — PA encoded as double-angle cosine</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dx/0.14</span></code></p></td>
+<td><p>Centre x-offset normalised by 0.14 arcsec (not used in inference)</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dy/0.14</span></code></p></td>
+<td><p>Centre y-offset normalised by 0.14 arcsec (not used in inference)</p></td>
+</tr>
+</tbody>
+</table>
+<p>The position angle is decoded as:</p>
+<div class="math notranslate nohighlight">
+\[\hat{\phi} = \left(\frac{1}{2}\arctan_2\!\left(\hat{y}_1,\, \hat{y}_2\right) \times \frac{180}{\pi}\right) \bmod 180°\]</div>
+<p>This double-angle encoding is used to ensure continuity across the
+<span class="math notranslate nohighlight">\(0° / 180°\)</span> boundary of position angle.</p>
+</section>
+<hr class="docutils" />
+<section id="inference-function">
+<h2>Inference Function<a class="headerlink" href="#inference-function" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="disco.core.cnn_inference.predict_with_cnn">
+<span class="sig-prename descclassname"><span class="pre">disco.core.cnn_inference.</span></span><span class="sig-name descname"><span class="pre">predict_with_cnn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_rad</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/core/cnn_inference.html#predict_with_cnn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.core.cnn_inference.predict_with_cnn" title="Link to this definition"></a></dt>
+<dd><p>Generate a prior estimate of disk inclination and position angle from a
+FITS image patch using a pre-loaded DiscoNet model.</p>
+<p><strong>Preprocessing:</strong></p>
+<ol class="arabic simple">
+<li><p>A rectangular crop of half-width <span class="math notranslate nohighlight">\(1.5 \times r_{\rm search} /
+\delta_{\rm pix}\)</span> pixels is extracted around <code class="docutils literal notranslate"><span class="pre">(cx,</span> <span class="pre">cy)</span></code>. The crop
+is zero-padded if it extends beyond the image boundary.</p></li>
+<li><p>The crop is resampled to <span class="math notranslate nohighlight">\(128 \times 128\)</span> pixels using
+<code class="docutils literal notranslate"><span class="pre">scipy.ndimage.zoom</span></code> (order 1).</p></li>
+<li><p>Intensity normalisation: clipped to <span class="math notranslate nohighlight">\([p_1, p_{99.9}]\)</span> then
+rescaled to [0, 1].</p></li>
+<li><p>A beam map (2D elliptical Gaussian at the image centre, normalised to
+peak 1) is constructed for the second channel.</p></li>
+<li><p>A scalar map filled with
+<span class="math notranslate nohighlight">\(\text{clip}(b_{\rm maj} / \text{FOV}, 0, 1)\)</span> is used as the
+third channel.</p></li>
+</ol>
+<p>The resulting 3-channel tensor of shape <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">3,</span> <span class="pre">128,</span> <span class="pre">128)</span></code> is forwarded
+through the model in <code class="docutils literal notranslate"><span class="pre">eval</span></code> mode with gradient computation disabled.</p>
+<p><strong>Output decoding:</strong></p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}\hat{i}  = \text{clip}(y_0 \times 90°,\ 0°, 85°)\\\hat{\phi} = \left(\frac{\arctan_2(y_1, y_2)}{2} \times \frac{180}{\pi}\right) \bmod 180°\end{aligned}\end{align} \]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><em>numpy.ndarray</em></a>) – 2D FITS image array (float32).</p></li>
+<li><p><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – FITS header (used for <code class="docutils literal notranslate"><span class="pre">BMAJ</span></code>, <code class="docutils literal notranslate"><span class="pre">BMIN</span></code>, <code class="docutils literal notranslate"><span class="pre">BPA</span></code>).</p></li>
+<li><p><strong>pixel_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Pixel scale in arcseconds per pixel.</p></li>
+<li><p><strong>cx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centroid column coordinate in pixels.</p></li>
+<li><p><strong>cy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centroid row coordinate in pixels.</p></li>
+<li><p><strong>search_rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Search radius in arcseconds defining the crop region.</p></li>
+<li><p><strong>model</strong> (<a class="reference internal" href="#disco.core.cnn_inference.DiscoNet" title="disco.core.cnn_inference.DiscoNet"><em>DiscoNet</em></a>) – Pre-loaded DiscoNet model in evaluation mode.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(cnn_incl,</span> <span class="pre">cnn_pa)</span></code> — estimated inclination (degrees) and
+position angle (degrees).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="fits_utils.html" class="btn btn-neutral float-left" title="disco.core.fits_utils" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="optimization.html" class="btn btn-neutral float-right" title="disco.core.optimization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Jorge Luis Guzmán Lazo.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

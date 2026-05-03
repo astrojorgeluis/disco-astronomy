@@ -1,0 +1,602 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>disco.core.optimization &mdash; DISCO v1.1.7</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_disco.css?v=4652740b" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/disco_icon.png"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=370aedac"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/disco_icon.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#installation-from-pypi">Installation from PyPI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#keeping-disco-up-to-date">Keeping DISCO up to date</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#included-static-assets">Included Static Assets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#interactive-gui-mode">Interactive GUI Mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../quickstart.html#automated-cli-mode">Automated CLI Mode</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../architecture.html#repository-structure">Repository Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../architecture.html#module-relationships">Module Relationships</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../architecture.html#operational-modes">Operational Modes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../architecture.html#cli-pipeline-disco-start-identifier">CLI Pipeline (<code class="docutils literal notranslate"><span class="pre">disco-start</span> <span class="pre">&lt;identifier</span> <span class="pre">...&gt;</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../architecture.html#gui-server-disco-start-gui">GUI Server (<code class="docutils literal notranslate"><span class="pre">disco-start</span> <span class="pre">gui</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../architecture.html#frontend-build-pipeline">Frontend Build Pipeline</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pipeline.html">Pipeline Description</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../pipeline.html#group-discovery">Group Discovery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../pipeline.html#phase-1-fits-ingestion">Phase 1 — FITS Ingestion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../pipeline.html#phase-2-geometry-optimisation">Phase 2 — Geometry Optimisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../pipeline.html#phase-3-uncertainty-estimation">Phase 3 — Uncertainty Estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../pipeline.html#phase-4-profile-extraction-and-beam-homogenisation">Phase 4 — Profile Extraction and Beam Homogenisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../pipeline.html#phase-5-output-serialisation">Phase 5 — Output Serialisation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cli.html">Command-Line Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../cli.html#synopsis">Synopsis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cli.html#positional-arguments">Positional Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cli.html#optional-arguments">Optional Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cli.html#usage-examples">Usage Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cli.html#cnn-model-loading">CNN Model Loading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../gui.html">Graphical User Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../gui.html#application-layout">Application Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gui.html#file-loading">File Loading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gui.html#geometry-controls-controls-panel">Geometry Controls (CONTROLS panel)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gui.html#auto-tune-geometry">Auto-Tune Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gui.html#analysis-dashboard-analysis-panel">Analysis Dashboard (ANALYSIS panel)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../gui.html#view-modes">View Modes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gui.html#display-settings">Display Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gui.html#d-profile-chart">1D Profile Chart</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gui.html#cursor-probe">Cursor Probe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gui.html#ring-fit-statistics">Ring Fit Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gui.html#cumulative-flux-chart">Cumulative Flux Chart</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gui.html#custom-markers">Custom Markers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gui.html#export-functions">Export Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gui.html#simbad-query">SIMBAD Query</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/fits_utils.html"><code class="docutils literal notranslate"><span class="pre">disco.core.fits_utils</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/fits_utils.html#beam-utilities">Beam Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/fits_utils.html#disco.core.fits_utils.get_alma_beam"><code class="docutils literal notranslate"><span class="pre">get_alma_beam()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/fits_utils.html#disco.core.fits_utils.deconvolve_beams"><code class="docutils literal notranslate"><span class="pre">deconvolve_beams()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/fits_utils.html#disco.core.fits_utils.make_gaussian_kernel_casa"><code class="docutils literal notranslate"><span class="pre">make_gaussian_kernel_casa()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/fits_utils.html#centroid-and-parameter-detection">Centroid and Parameter Detection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/fits_utils.html#disco.core.fits_utils.find_center_robust"><code class="docutils literal notranslate"><span class="pre">find_center_robust()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/fits_utils.html#disco.core.fits_utils.auto_detect_parameters"><code class="docutils literal notranslate"><span class="pre">auto_detect_parameters()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/fits_utils.html#disco.core.fits_utils.refine_center_local"><code class="docutils literal notranslate"><span class="pre">refine_center_local()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/fits_utils.html#profile-extraction">Profile Extraction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/fits_utils.html#disco.core.fits_utils.extract_profile"><code class="docutils literal notranslate"><span class="pre">extract_profile()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/fits_utils.html#disco.core.fits_utils.measure_rout_deproj"><code class="docutils literal notranslate"><span class="pre">measure_rout_deproj()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/fits_utils.html#disco.core.fits_utils.save_debug_deproj_center"><code class="docutils literal notranslate"><span class="pre">save_debug_deproj_center()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/fits_utils.html#wcs-and-coordinate-utilities">WCS and Coordinate Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/fits_utils.html#disco.core.fits_utils.deg_to_sex"><code class="docutils literal notranslate"><span class="pre">deg_to_sex()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/fits_utils.html#disco.core.fits_utils.pixel_to_icrs"><code class="docutils literal notranslate"><span class="pre">pixel_to_icrs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/fits_utils.html#disco.core.fits_utils.icrs_to_pixel"><code class="docutils literal notranslate"><span class="pre">icrs_to_pixel()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/fits_utils.html#disco.core.fits_utils.get_obs_epoch"><code class="docutils literal notranslate"><span class="pre">get_obs_epoch()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/fits_utils.html#gaia-proper-motion">Gaia Proper Motion</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/fits_utils.html#disco.core.fits_utils.query_gaia_proper_motion"><code class="docutils literal notranslate"><span class="pre">query_gaia_proper_motion()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/fits_utils.html#disco.core.fits_utils.apply_proper_motion_correction"><code class="docutils literal notranslate"><span class="pre">apply_proper_motion_correction()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/cnn_inference.html"><code class="docutils literal notranslate"><span class="pre">disco.core.cnn_inference</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/cnn_inference.html#architecture">Architecture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/cnn_inference.html#disco.core.cnn_inference.ResBlock"><code class="docutils literal notranslate"><span class="pre">ResBlock</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/cnn_inference.html#disco.core.cnn_inference.ResBlock.forward"><code class="docutils literal notranslate"><span class="pre">ResBlock.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/cnn_inference.html#disco.core.cnn_inference.DiscoNet"><code class="docutils literal notranslate"><span class="pre">DiscoNet</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/cnn_inference.html#disco.core.cnn_inference.DiscoNet.forward"><code class="docutils literal notranslate"><span class="pre">DiscoNet.forward()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/cnn_inference.html#output-encoding">Output Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/cnn_inference.html#inference-function">Inference Function</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/cnn_inference.html#disco.core.cnn_inference.predict_with_cnn"><code class="docutils literal notranslate"><span class="pre">predict_with_cnn()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/optimization.html"><code class="docutils literal notranslate"><span class="pre">disco.core.optimization</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/optimization.html#geometric-loss-function">Geometric Loss Function</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/optimization.html#disco.core.optimization.geometric_loss"><code class="docutils literal notranslate"><span class="pre">geometric_loss()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/optimization.html#hybrid-geometry-optimiser">Hybrid Geometry Optimiser</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/optimization.html#disco.core.optimization.auto_tune_geometry_hybrid"><code class="docutils literal notranslate"><span class="pre">auto_tune_geometry_hybrid()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/optimization.html#uncertainty-estimation">Uncertainty Estimation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/optimization.html#disco.core.optimization.estimate_geometry_errors"><code class="docutils literal notranslate"><span class="pre">estimate_geometry_errors()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/optimization.html#centre-refinement">Centre Refinement</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/optimization.html#disco.core.optimization.refine_center_geometry"><code class="docutils literal notranslate"><span class="pre">refine_center_geometry()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/server.html"><code class="docutils literal notranslate"><span class="pre">disco.server</span></code> — HTTP API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/server.html#global-state">Global State</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/server.html#pydantic-request-models">Pydantic Request Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/server.html#disco.server.PlotParams"><code class="docutils literal notranslate"><span class="pre">PlotParams</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/server.html#disco.server.PipelineParams"><code class="docutils literal notranslate"><span class="pre">PipelineParams</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/server.html#disco.server.OptimizeParams"><code class="docutils literal notranslate"><span class="pre">OptimizeParams</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/server.html#disco.server.LoadLocalParams"><code class="docutils literal notranslate"><span class="pre">LoadLocalParams</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/server.html#endpoints">Endpoints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/server.html#session-management">Session Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/server.html#file-loading">File Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/server.html#pipeline-and-optimisation">Pipeline and Optimisation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/server.html#rendering">Rendering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/server.html#download-and-metadata">Download and Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/server.html#static-file-serving">Static File Serving</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/server.html#server-lifecycle">Server Lifecycle</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/server.html#disco.server.start_server"><code class="docutils literal notranslate"><span class="pre">start_server()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/cli_module.html"><code class="docutils literal notranslate"><span class="pre">disco.cli</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/cli_module.html#disco.cli.discover_groups"><code class="docutils literal notranslate"><span class="pre">discover_groups()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/cli_module.html#disco.cli.run_pipeline"><code class="docutils literal notranslate"><span class="pre">run_pipeline()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/cli_module.html#disco.cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/main.html"><code class="docutils literal notranslate"><span class="pre">disco.main</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/main.html#disco.main.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Supplementary</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../training.html">DiscoNet Training Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../training.html#step-1-catalogue-generation-training-generate-catalogue-py">Step 1: Catalogue Generation (<code class="docutils literal notranslate"><span class="pre">training/generate_catalogue.py</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../training.html#step-2-fits-simulation-training-simulate-catalogue-py">Step 2: FITS Simulation (<code class="docutils literal notranslate"><span class="pre">training/simulate_catalogue.py</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../training.html#step-3-model-training-training-train-model-py">Step 3: Model Training (<code class="docutils literal notranslate"><span class="pre">training/train_model.py</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_io.html">File Input and Output</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../file_io.html#fits-input">FITS Input</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../file_io.html#cli-output-files">CLI Output Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../file_io.html#radial-profile-plot">Radial Profile Plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../file_io.html#csv-exports-csv-on">CSV Exports (<code class="docutils literal notranslate"><span class="pre">--csv</span> <span class="pre">on</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../file_io.html#debug-output-debug-on">Debug Output (<code class="docutils literal notranslate"><span class="pre">--debug</span> <span class="pre">on</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../file_io.html#gui-session-files">GUI Session Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../file_io.html#gui-fits-downloads">GUI FITS Downloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../file_io.html#gui-csv-export">GUI CSV Export</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../changelog.html#version-1-1-7-current">Version 1.1.7 (current)</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DISCO</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">disco.core.optimization</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for disco.core.optimization</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.ndimage</span><span class="w"> </span><span class="kn">import</span> <span class="n">map_coordinates</span><span class="p">,</span> <span class="n">gaussian_filter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">minimize</span><span class="p">,</span> <span class="n">differential_evolution</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">disco.core.cnn_inference</span><span class="w"> </span><span class="kn">import</span> <span class="n">predict_with_cnn</span>
+
+<div class="viewcode-block" id="geometric_loss">
+<a class="viewcode-back" href="../../../api/optimization.html#disco.core.optimization.geometric_loss">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">geometric_loss</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">base_cx</span><span class="p">,</span> <span class="n">base_cy</span><span class="p">,</span> <span class="n">crop_rad</span><span class="p">,</span> <span class="n">rmin_pix</span><span class="p">,</span> <span class="n">rmax_pix</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">incl</span><span class="p">,</span> <span class="n">pa</span><span class="p">,</span> <span class="n">dcx</span><span class="p">,</span> <span class="n">dcy</span> <span class="o">=</span> <span class="n">params</span>
+
+    <span class="n">local_cx</span> <span class="o">=</span> <span class="n">base_cx</span> <span class="o">+</span> <span class="n">dcx</span>
+    <span class="n">local_cy</span> <span class="o">=</span> <span class="n">base_cy</span> <span class="o">+</span> <span class="n">dcy</span>
+
+    <span class="n">x</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span> <span class="o">-</span> <span class="n">dim</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+    <span class="n">Xc</span>   <span class="o">=</span> <span class="n">X</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">incl</span><span class="p">))</span>
+    <span class="n">Xrot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">pa</span><span class="p">))</span> <span class="o">*</span> <span class="n">Xc</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">pa</span><span class="p">))</span> <span class="o">*</span> <span class="n">Y</span>
+    <span class="n">Yrot</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">pa</span><span class="p">))</span> <span class="o">*</span> <span class="n">Xc</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">pa</span><span class="p">))</span> <span class="o">*</span> <span class="n">Y</span>
+
+    <span class="n">scale</span>  <span class="o">=</span> <span class="p">(</span><span class="n">crop_rad</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">dim</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="p">[</span><span class="n">Yrot</span> <span class="o">*</span> <span class="n">scale</span> <span class="o">+</span> <span class="n">local_cy</span><span class="p">,</span> <span class="o">-</span><span class="n">Xrot</span> <span class="o">*</span> <span class="n">scale</span> <span class="o">+</span> <span class="n">local_cx</span><span class="p">]</span>
+
+    <span class="n">out_of_bounds</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">|</span>
+        <span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">out_of_bounds</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="p">(</span><span class="n">dim</span> <span class="o">*</span> <span class="n">dim</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mf">1e12</span>
+
+    <span class="n">deproj</span>  <span class="o">=</span> <span class="n">map_coordinates</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">,</span> <span class="n">cval</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">r_steps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dim</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">R</span><span class="p">,</span> <span class="n">TH</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dim</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">r_steps</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">180</span><span class="p">))</span>
+    <span class="n">polar</span>   <span class="o">=</span> <span class="n">map_coordinates</span><span class="p">(</span><span class="n">deproj</span><span class="p">,</span> <span class="p">[</span><span class="n">R</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">TH</span><span class="p">)</span> <span class="o">+</span> <span class="n">dim</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">R</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">TH</span><span class="p">)</span> <span class="o">+</span> <span class="n">dim</span> <span class="o">/</span> <span class="mi">2</span><span class="p">],</span>
+                              <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">,</span> <span class="n">cval</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+
+    <span class="n">scale_polar</span> <span class="o">=</span> <span class="n">r_steps</span> <span class="o">/</span> <span class="n">crop_rad</span>
+    <span class="n">idx_min</span>     <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">rmin_pix</span> <span class="o">*</span> <span class="n">scale_polar</span><span class="p">))</span>
+    <span class="n">idx_max</span>     <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">r_steps</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">rmax_pix</span> <span class="o">*</span> <span class="n">scale_polar</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">idx_max</span> <span class="o">&lt;=</span> <span class="n">idx_min</span> <span class="o">+</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">idx_min</span><span class="p">,</span> <span class="n">idx_max</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r_steps</span>
+
+    <span class="n">polar_crop</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">polar</span><span class="p">[:,</span> <span class="n">idx_min</span><span class="p">:</span><span class="n">idx_max</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">profile</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">polar_crop</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-8</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">1e12</span>
+
+    <span class="n">norm_factor</span> <span class="o">=</span> <span class="n">profile</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.01</span><span class="p">)</span>
+    <span class="n">diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">polar_crop</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="p">(</span><span class="mi">180</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">norm_factor</span><span class="p">,</span> <span class="p">(</span><span class="mi">180</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">norm_prof</span> <span class="o">=</span> <span class="n">profile</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">norm_prof</span> <span class="o">&gt;</span> <span class="mf">0.03</span>
+        <span class="n">rad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">profile</span><span class="p">))</span>
+        <span class="n">r_weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">norm_prof</span><span class="p">)</span> <span class="o">*</span> <span class="n">mask</span> <span class="o">*</span> <span class="n">rad</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">r_weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+
+    <span class="n">delta</span> <span class="o">=</span> <span class="mf">0.5</span>
+    <span class="n">huber</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">delta</span><span class="p">,</span>
+                     <span class="mf">0.5</span> <span class="o">*</span> <span class="n">diff</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
+                     <span class="n">delta</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">delta</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">huber</span> <span class="o">*</span> <span class="n">r_weights</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="auto_tune_geometry_hybrid">
+<a class="viewcode-back" href="../../../api/optimization.html#disco.core.optimization.auto_tune_geometry_hybrid">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">auto_tune_geometry_hybrid</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">pixel_scale</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">search_rad</span><span class="p">,</span> <span class="n">rmin</span><span class="p">):</span>
+    <span class="n">cnn_incl</span><span class="p">,</span> <span class="n">cnn_pa</span> <span class="o">=</span> <span class="n">predict_with_cnn</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">pixel_scale</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">search_rad</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+
+    <span class="n">pad</span>         <span class="o">=</span> <span class="mi">500</span>
+    <span class="n">d_pad</span>       <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pad</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">,</span> <span class="n">constant_values</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">real_cy_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cy</span><span class="p">)</span> <span class="o">+</span> <span class="n">pad</span>
+    <span class="n">real_cx_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cx</span><span class="p">)</span> <span class="o">+</span> <span class="n">pad</span>
+    <span class="n">offset_y</span>    <span class="o">=</span> <span class="p">(</span><span class="n">cy</span> <span class="o">+</span> <span class="n">pad</span><span class="p">)</span> <span class="o">-</span> <span class="n">real_cy_int</span>
+    <span class="n">offset_x</span>    <span class="o">=</span> <span class="p">(</span><span class="n">cx</span> <span class="o">+</span> <span class="n">pad</span><span class="p">)</span> <span class="o">-</span> <span class="n">real_cx_int</span>
+    <span class="n">search_rad_pix</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">search_rad</span> <span class="o">/</span> <span class="n">pixel_scale</span><span class="p">)</span>
+    <span class="n">crop_rad</span>       <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">search_rad_pix</span> <span class="o">*</span> <span class="mf">1.5</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span>
+
+    <span class="n">dc</span> <span class="o">=</span> <span class="n">d_pad</span><span class="p">[</span><span class="n">real_cy_int</span> <span class="o">-</span> <span class="n">crop_rad</span> <span class="p">:</span> <span class="n">real_cy_int</span> <span class="o">+</span> <span class="n">crop_rad</span><span class="p">,</span>
+               <span class="n">real_cx_int</span> <span class="o">-</span> <span class="n">crop_rad</span> <span class="p">:</span> <span class="n">real_cx_int</span> <span class="o">+</span> <span class="n">crop_rad</span><span class="p">]</span>
+
+    <span class="n">base_cy</span> <span class="o">=</span> <span class="n">crop_rad</span> <span class="o">+</span> <span class="n">offset_y</span>
+    <span class="n">base_cx</span> <span class="o">=</span> <span class="n">crop_rad</span> <span class="o">+</span> <span class="n">offset_x</span>
+
+    <span class="n">rmin_pix</span>  <span class="o">=</span> <span class="n">rmin</span> <span class="o">/</span> <span class="n">pixel_scale</span>
+    <span class="n">rmax_pix</span>  <span class="o">=</span> <span class="n">search_rad</span> <span class="o">/</span> <span class="n">pixel_scale</span>
+
+    <span class="n">bmaj_pix</span> <span class="o">=</span> <span class="p">(</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;BMAJ&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3600</span><span class="p">)</span> <span class="o">/</span> <span class="n">pixel_scale</span>
+    <span class="n">sigma_smooth</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">bmaj_pix</span> <span class="o">*</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">dc_smooth</span> <span class="o">=</span> <span class="n">gaussian_filter</span><span class="p">(</span><span class="n">dc</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">sigma_smooth</span><span class="p">)</span>
+
+    <span class="n">largs_coarse</span> <span class="o">=</span> <span class="p">(</span><span class="n">dc_smooth</span><span class="p">,</span> <span class="n">base_cx</span><span class="p">,</span> <span class="n">base_cy</span><span class="p">,</span> <span class="n">crop_rad</span><span class="p">,</span> <span class="n">rmin_pix</span><span class="p">,</span> <span class="n">rmax_pix</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">largs_fine</span>   <span class="o">=</span> <span class="p">(</span><span class="n">dc</span><span class="p">,</span>       <span class="n">base_cx</span><span class="p">,</span> <span class="n">base_cy</span><span class="p">,</span> <span class="n">crop_rad</span><span class="p">,</span> <span class="n">rmin_pix</span><span class="p">,</span> <span class="n">rmax_pix</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">cnn_incl</span> <span class="o">&lt;</span> <span class="mf">35.0</span><span class="p">:</span>
+        <span class="n">incl_margin</span> <span class="o">=</span> <span class="mf">15.0</span>
+        <span class="n">pa_margin</span>   <span class="o">=</span> <span class="mf">25.0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">incl_margin</span> <span class="o">=</span> <span class="mf">20.0</span>
+        <span class="n">pa_margin</span>   <span class="o">=</span> <span class="mf">30.0</span>
+
+    <span class="n">center_lim_1</span> <span class="o">=</span> <span class="mf">1.5</span>
+    <span class="n">bounds_1</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">cnn_incl</span> <span class="o">-</span> <span class="n">incl_margin</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="mf">85.0</span><span class="p">,</span> <span class="n">cnn_incl</span> <span class="o">+</span> <span class="n">incl_margin</span><span class="p">)),</span>
+        <span class="p">(</span><span class="n">cnn_pa</span> <span class="o">-</span> <span class="n">pa_margin</span><span class="p">,</span> <span class="n">cnn_pa</span> <span class="o">+</span> <span class="n">pa_margin</span><span class="p">),</span>
+        <span class="p">(</span><span class="o">-</span><span class="n">center_lim_1</span><span class="p">,</span> <span class="n">center_lim_1</span><span class="p">),</span>
+        <span class="p">(</span><span class="o">-</span><span class="n">center_lim_1</span><span class="p">,</span> <span class="n">center_lim_1</span><span class="p">),</span>
+    <span class="p">]</span>
+
+    <span class="n">res_global_1</span> <span class="o">=</span> <span class="n">differential_evolution</span><span class="p">(</span>
+        <span class="n">geometric_loss</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bounds_1</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">largs_coarse</span><span class="p">,</span>
+        <span class="n">maxiter</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">mutation</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="n">recombination</span><span class="o">=</span><span class="mf">0.7</span>
+    <span class="p">)</span>
+
+    <span class="n">res_final_1</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span>
+        <span class="n">geometric_loss</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">res_global_1</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">largs_fine</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="s1">&#39;Nelder-Mead&#39;</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bounds_1</span><span class="p">,</span>
+        <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;xatol&#39;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="s1">&#39;fatol&#39;</span><span class="p">:</span> <span class="mf">1e-5</span><span class="p">,</span> <span class="s1">&#39;maxiter&#39;</span><span class="p">:</span> <span class="mi">320</span><span class="p">}</span>
+    <span class="p">)</span>
+
+    <span class="n">best_1</span> <span class="o">=</span> <span class="n">res_final_1</span><span class="o">.</span><span class="n">x</span>
+    <span class="n">incl_1</span><span class="p">,</span> <span class="n">pa_1</span><span class="p">,</span> <span class="n">dcx_1</span><span class="p">,</span> <span class="n">dcy_1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">best_1</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">best_1</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">best_1</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">best_1</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+
+    <span class="n">near_edge</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">dcx_1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.8</span> <span class="o">*</span> <span class="n">center_lim_1</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">dcy_1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.8</span> <span class="o">*</span> <span class="n">center_lim_1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">near_edge</span><span class="p">:</span>
+        <span class="n">base_cx_2</span> <span class="o">=</span> <span class="n">base_cx</span> <span class="o">+</span> <span class="n">dcx_1</span>
+        <span class="n">base_cy_2</span> <span class="o">=</span> <span class="n">base_cy</span> <span class="o">+</span> <span class="n">dcy_1</span>
+
+        <span class="n">largs_coarse_2</span> <span class="o">=</span> <span class="p">(</span><span class="n">dc_smooth</span><span class="p">,</span> <span class="n">base_cx_2</span><span class="p">,</span> <span class="n">base_cy_2</span><span class="p">,</span> <span class="n">crop_rad</span><span class="p">,</span> <span class="n">rmin_pix</span><span class="p">,</span> <span class="n">rmax_pix</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">largs_fine_2</span>   <span class="o">=</span> <span class="p">(</span><span class="n">dc</span><span class="p">,</span>       <span class="n">base_cx_2</span><span class="p">,</span> <span class="n">base_cy_2</span><span class="p">,</span> <span class="n">crop_rad</span><span class="p">,</span> <span class="n">rmin_pix</span><span class="p">,</span> <span class="n">rmax_pix</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+        <span class="n">center_lim_2</span> <span class="o">=</span> <span class="mf">0.6</span>
+        <span class="n">bounds_2</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">cnn_incl</span> <span class="o">-</span> <span class="n">incl_margin</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="mf">85.0</span><span class="p">,</span> <span class="n">cnn_incl</span> <span class="o">+</span> <span class="n">incl_margin</span><span class="p">)),</span>
+            <span class="p">(</span><span class="n">cnn_pa</span> <span class="o">-</span> <span class="n">pa_margin</span><span class="p">,</span> <span class="n">cnn_pa</span> <span class="o">+</span> <span class="n">pa_margin</span><span class="p">),</span>
+            <span class="p">(</span><span class="o">-</span><span class="n">center_lim_2</span><span class="p">,</span> <span class="n">center_lim_2</span><span class="p">),</span>
+            <span class="p">(</span><span class="o">-</span><span class="n">center_lim_2</span><span class="p">,</span> <span class="n">center_lim_2</span><span class="p">),</span>
+        <span class="p">]</span>
+
+        <span class="n">x0_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">incl_1</span><span class="p">,</span> <span class="n">pa_1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+        <span class="n">res_global_2</span> <span class="o">=</span> <span class="n">differential_evolution</span><span class="p">(</span>
+            <span class="n">geometric_loss</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bounds_2</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">largs_coarse_2</span><span class="p">,</span>
+            <span class="n">maxiter</span><span class="o">=</span><span class="mi">35</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">43</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">mutation</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="n">recombination</span><span class="o">=</span><span class="mf">0.7</span>
+        <span class="p">)</span>
+
+        <span class="n">x0_mix</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">x0_2</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">res_global_2</span><span class="o">.</span><span class="n">x</span>
+
+        <span class="n">res_final_2</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span>
+            <span class="n">geometric_loss</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">x0_mix</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">largs_fine_2</span><span class="p">,</span>
+            <span class="n">method</span><span class="o">=</span><span class="s1">&#39;Nelder-Mead&#39;</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bounds_2</span><span class="p">,</span>
+            <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;xatol&#39;</span><span class="p">:</span> <span class="mf">0.04</span><span class="p">,</span> <span class="s1">&#39;fatol&#39;</span><span class="p">:</span> <span class="mf">1e-5</span><span class="p">,</span> <span class="s1">&#39;maxiter&#39;</span><span class="p">:</span> <span class="mi">260</span><span class="p">}</span>
+        <span class="p">)</span>
+
+        <span class="n">incl_f</span><span class="p">,</span> <span class="n">pa_f</span><span class="p">,</span> <span class="n">dcx_2</span><span class="p">,</span> <span class="n">dcy_2</span> <span class="o">=</span> <span class="n">res_final_2</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">best_incl</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">incl_f</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">85.0</span><span class="p">))</span>
+        <span class="n">best_pa</span>   <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">pa_f</span> <span class="o">%</span> <span class="mf">180.0</span><span class="p">)</span>
+        <span class="n">best_dcx</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">dcx_1</span> <span class="o">+</span> <span class="n">dcx_2</span><span class="p">)</span>
+        <span class="n">best_dcy</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">dcy_1</span> <span class="o">+</span> <span class="n">dcy_2</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">best_incl</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">incl_1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">85.0</span><span class="p">))</span>
+        <span class="n">best_pa</span>   <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">pa_1</span> <span class="o">%</span> <span class="mf">180.0</span><span class="p">)</span>
+        <span class="n">best_dcx</span>  <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">dcx_1</span><span class="p">)</span>
+        <span class="n">best_dcy</span>  <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">dcy_1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">best_incl</span> <span class="o">-</span> <span class="n">cnn_incl</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">20.0</span><span class="p">:</span>
+        <span class="n">best_incl</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cnn_incl</span><span class="p">)</span>
+        <span class="n">best_pa</span>   <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cnn_pa</span><span class="p">)</span>
+        <span class="n">best_dcx</span><span class="p">,</span> <span class="n">best_dcy</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span>
+
+    <span class="k">if</span> <span class="n">best_incl</span> <span class="o">&lt;</span> <span class="mf">5.0</span><span class="p">:</span>
+        <span class="n">best_pa</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cnn_pa</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">best_incl</span><span class="p">,</span> <span class="n">best_pa</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">cnn_incl</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">cnn_pa</span><span class="p">),</span> <span class="n">best_dcx</span><span class="p">,</span> <span class="n">best_dcy</span></div>
+
+
+
+<div class="viewcode-block" id="estimate_geometry_errors">
+<a class="viewcode-back" href="../../../api/optimization.html#disco.core.optimization.estimate_geometry_errors">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">estimate_geometry_errors</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pixel_scale</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">incl</span><span class="p">,</span> <span class="n">pa</span><span class="p">,</span> <span class="n">rmin</span><span class="p">,</span> <span class="n">rmax</span><span class="p">):</span>
+    <span class="n">pad</span>         <span class="o">=</span> <span class="mi">500</span>
+    <span class="n">d_pad</span>       <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pad</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">,</span> <span class="n">constant_values</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">real_cy_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cy</span><span class="p">)</span> <span class="o">+</span> <span class="n">pad</span>
+    <span class="n">real_cx_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cx</span><span class="p">)</span> <span class="o">+</span> <span class="n">pad</span>
+    <span class="n">offset_y</span>    <span class="o">=</span> <span class="p">(</span><span class="n">cy</span> <span class="o">+</span> <span class="n">pad</span><span class="p">)</span> <span class="o">-</span> <span class="n">real_cy_int</span>
+    <span class="n">offset_x</span>    <span class="o">=</span> <span class="p">(</span><span class="n">cx</span> <span class="o">+</span> <span class="n">pad</span><span class="p">)</span> <span class="o">-</span> <span class="n">real_cx_int</span>
+    <span class="n">crop_rad</span>    <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">rmax</span> <span class="o">/</span> <span class="n">pixel_scale</span> <span class="o">*</span> <span class="mf">1.5</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span>
+
+    <span class="n">dc</span> <span class="o">=</span> <span class="n">d_pad</span><span class="p">[</span>
+        <span class="n">real_cy_int</span> <span class="o">-</span> <span class="n">crop_rad</span> <span class="p">:</span> <span class="n">real_cy_int</span> <span class="o">+</span> <span class="n">crop_rad</span><span class="p">,</span>
+        <span class="n">real_cx_int</span> <span class="o">-</span> <span class="n">crop_rad</span> <span class="p">:</span> <span class="n">real_cx_int</span> <span class="o">+</span> <span class="n">crop_rad</span>
+    <span class="p">]</span>
+
+    <span class="n">base_cx</span> <span class="o">=</span> <span class="n">crop_rad</span> <span class="o">+</span> <span class="n">offset_x</span>
+    <span class="n">base_cy</span> <span class="o">=</span> <span class="n">crop_rad</span> <span class="o">+</span> <span class="n">offset_y</span>
+    <span class="n">rmin_pix</span> <span class="o">=</span> <span class="n">rmin</span> <span class="o">/</span> <span class="n">pixel_scale</span>
+    <span class="n">rmax_pix</span> <span class="o">=</span> <span class="n">rmax</span> <span class="o">/</span> <span class="n">pixel_scale</span>
+
+    <span class="n">largs</span> <span class="o">=</span> <span class="p">(</span><span class="n">dc</span><span class="p">,</span> <span class="n">base_cx</span><span class="p">,</span> <span class="n">base_cy</span><span class="p">,</span> <span class="n">crop_rad</span><span class="p">,</span> <span class="n">rmin_pix</span><span class="p">,</span> <span class="n">rmax_pix</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+    <span class="n">bnds</span> <span class="o">=</span> <span class="p">[(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">incl</span> <span class="o">-</span> <span class="mf">30.0</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="mf">85.0</span><span class="p">,</span> <span class="n">incl</span> <span class="o">+</span> <span class="mf">30.0</span><span class="p">)),</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)]</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span>
+        <span class="n">geometric_loss</span><span class="p">,</span>
+        <span class="n">x0</span><span class="o">=</span><span class="p">[</span><span class="n">incl</span><span class="p">,</span> <span class="n">pa</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+        <span class="n">args</span><span class="o">=</span><span class="n">largs</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="s1">&#39;Nelder-Mead&#39;</span><span class="p">,</span>
+        <span class="n">bounds</span><span class="o">=</span><span class="n">bnds</span><span class="p">,</span>
+        <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;xatol&#39;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="s1">&#39;fatol&#39;</span><span class="p">:</span> <span class="mf">1e-5</span><span class="p">,</span> <span class="s1">&#39;maxiter&#39;</span><span class="p">:</span> <span class="mi">600</span><span class="p">}</span>
+    <span class="p">)</span>
+
+    <span class="n">opt_incl</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">85.0</span><span class="p">))</span>
+    <span class="n">opt_pa</span>   <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span> <span class="mf">180.0</span><span class="p">)</span>
+
+    <span class="n">loss_min</span> <span class="o">=</span> <span class="n">geometric_loss</span><span class="p">([</span><span class="n">opt_incl</span><span class="p">,</span> <span class="n">opt_pa</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="o">*</span><span class="n">largs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">loss_min</span><span class="p">)</span> <span class="ow">or</span> <span class="n">loss_min</span> <span class="o">&gt;=</span> <span class="mf">1e11</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">2.0</span>
+
+    <span class="n">deltas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">12.0</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parabolic_error</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">fixed</span><span class="p">,</span> <span class="n">scan_incl</span><span class="p">):</span>
+        <span class="n">pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="o">-</span><span class="n">deltas</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">],</span> <span class="n">deltas</span><span class="p">])</span>
+        <span class="n">losses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+            <span class="n">geometric_loss</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">center</span> <span class="o">+</span> <span class="n">d</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">85</span><span class="p">),</span> <span class="n">fixed</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span> <span class="k">if</span> <span class="n">scan_incl</span>
+                <span class="k">else</span> <span class="p">[</span><span class="n">fixed</span><span class="p">,</span> <span class="p">(</span><span class="n">center</span> <span class="o">+</span> <span class="n">d</span><span class="p">)</span> <span class="o">%</span> <span class="mi">180</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+                <span class="o">*</span><span class="n">largs</span>
+            <span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">pts</span>
+        <span class="p">])</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">losses</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">losses</span> <span class="o">&lt;</span> <span class="n">loss_min</span> <span class="o">*</span> <span class="mf">2.5</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">valid</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">5.0</span>
+        <span class="n">coeffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">pts</span><span class="p">[</span><span class="n">valid</span><span class="p">],</span> <span class="n">losses</span><span class="p">[</span><span class="n">valid</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">coeffs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">a</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">5.0</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">loss_min</span> <span class="o">*</span> <span class="mf">5e-3</span> <span class="o">/</span> <span class="n">a</span><span class="p">),</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">_parabolic_error</span><span class="p">(</span><span class="n">opt_incl</span><span class="p">,</span> <span class="n">opt_pa</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="n">_parabolic_error</span><span class="p">(</span><span class="n">opt_pa</span><span class="p">,</span> <span class="n">opt_incl</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="refine_center_geometry">
+<a class="viewcode-back" href="../../../api/optimization.html#disco.core.optimization.refine_center_geometry">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">refine_center_geometry</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">pixel_scale</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">incl</span><span class="p">,</span> <span class="n">pa</span><span class="p">,</span> <span class="n">rmin</span><span class="p">,</span> <span class="n">rmax</span><span class="p">):</span>
+    <span class="n">pad</span> <span class="o">=</span> <span class="mi">300</span>
+    <span class="n">d_pad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pad</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">,</span> <span class="n">constant_values</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">real_cy_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cy</span><span class="p">)</span> <span class="o">+</span> <span class="n">pad</span>
+    <span class="n">real_cx_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cx</span><span class="p">)</span> <span class="o">+</span> <span class="n">pad</span>
+    <span class="n">offset_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">cy</span> <span class="o">+</span> <span class="n">pad</span><span class="p">)</span> <span class="o">-</span> <span class="n">real_cy_int</span>
+    <span class="n">offset_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">cx</span> <span class="o">+</span> <span class="n">pad</span><span class="p">)</span> <span class="o">-</span> <span class="n">real_cx_int</span>
+
+    <span class="n">crop_rad</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">rmax</span> <span class="o">/</span> <span class="n">pixel_scale</span> <span class="o">*</span> <span class="mf">1.5</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span>
+    <span class="n">crop_rad</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">crop_rad</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">real_cy_int</span> <span class="o">-</span> <span class="n">crop_rad</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">real_cy_int</span> <span class="o">+</span> <span class="n">crop_rad</span> <span class="o">&gt;</span> <span class="n">d_pad</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span>
+            <span class="n">real_cx_int</span> <span class="o">-</span> <span class="n">crop_rad</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">real_cx_int</span> <span class="o">+</span> <span class="n">crop_rad</span> <span class="o">&gt;</span> <span class="n">d_pad</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span>
+
+    <span class="n">dc</span> <span class="o">=</span> <span class="n">d_pad</span><span class="p">[</span><span class="n">real_cy_int</span> <span class="o">-</span> <span class="n">crop_rad</span><span class="p">:</span><span class="n">real_cy_int</span> <span class="o">+</span> <span class="n">crop_rad</span><span class="p">,</span>
+               <span class="n">real_cx_int</span> <span class="o">-</span> <span class="n">crop_rad</span><span class="p">:</span><span class="n">real_cx_int</span> <span class="o">+</span> <span class="n">crop_rad</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">dc</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="ow">or</span> <span class="n">dc</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span>
+
+    <span class="n">base_cx</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">crop_rad</span> <span class="o">+</span> <span class="n">offset_x</span><span class="p">)</span>
+    <span class="n">base_cy</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">crop_rad</span> <span class="o">+</span> <span class="n">offset_y</span><span class="p">)</span>
+    <span class="n">rmin_pix</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">rmin</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">pixel_scale</span>
+    <span class="n">rmax_pix</span> <span class="o">=</span> <span class="n">rmax</span> <span class="o">/</span> <span class="n">pixel_scale</span>
+
+    <span class="n">bmaj_pix</span> <span class="o">=</span> <span class="nb">max</span><span class="p">((</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;BMAJ&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3600</span><span class="p">)</span> <span class="o">/</span> <span class="n">pixel_scale</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">)</span>
+    <span class="n">center_lim</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">bmaj_pix</span> <span class="o">*</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.15</span> <span class="o">/</span> <span class="n">pixel_scale</span><span class="p">)</span>
+
+    <span class="n">largs</span> <span class="o">=</span> <span class="p">(</span><span class="n">dc</span><span class="p">,</span> <span class="n">base_cx</span><span class="p">,</span> <span class="n">base_cy</span><span class="p">,</span> <span class="n">crop_rad</span><span class="p">,</span> <span class="n">rmin_pix</span><span class="p">,</span> <span class="n">rmax_pix</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">loss_ref</span> <span class="o">=</span> <span class="n">geometric_loss</span><span class="p">([</span><span class="n">incl</span><span class="p">,</span> <span class="n">pa</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="o">*</span><span class="n">largs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">loss_ref</span><span class="p">)</span> <span class="ow">or</span> <span class="n">loss_ref</span> <span class="o">&gt;=</span> <span class="mf">1e11</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">geometric_loss</span><span class="p">([</span><span class="n">incl</span><span class="p">,</span> <span class="n">pa</span><span class="p">,</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="o">*</span><span class="n">largs</span><span class="p">),</span>
+        <span class="n">x0</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+        <span class="n">method</span><span class="o">=</span><span class="s1">&#39;Nelder-Mead&#39;</span><span class="p">,</span>
+        <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;xatol&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s1">&#39;fatol&#39;</span><span class="p">:</span> <span class="mf">1e-4</span><span class="p">,</span> <span class="s1">&#39;maxiter&#39;</span><span class="p">:</span> <span class="mi">300</span><span class="p">}</span>
+    <span class="p">)</span>
+
+    <span class="n">dcx</span><span class="p">,</span> <span class="n">dcy</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">dcx</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">dcy</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span>
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dcx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">center_lim</span> <span class="ow">or</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dcy</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">center_lim</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span>
+    <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">fun</span> <span class="o">&gt;=</span> <span class="n">loss_ref</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span>
+
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">cx</span> <span class="o">+</span> <span class="n">dcx</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">cy</span> <span class="o">+</span> <span class="n">dcy</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Jorge Luis Guzmán Lazo.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,704 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Graphical User Interface &mdash; DISCO v1.1.7</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/custom_disco.css?v=499842b1" />
+
+  
+    <link rel="shortcut icon" href="_static/disco_icon.png"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=370aedac"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="disco.core.fits_utils" href="api/fits_utils.html" />
+    <link rel="prev" title="Command-Line Interface" href="cli.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/disco_icon.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installation-from-pypi">Installation from PyPI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#keeping-disco-up-to-date">Keeping DISCO up to date</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#included-static-assets">Included Static Assets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#interactive-gui-mode">Interactive GUI Mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#automated-cli-mode">Automated CLI Mode</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#repository-structure">Repository Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#module-relationships">Module Relationships</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#operational-modes">Operational Modes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#cli-pipeline-disco-start-identifier">CLI Pipeline (<code class="docutils literal notranslate"><span class="pre">disco-start</span> <span class="pre">&lt;identifier</span> <span class="pre">...&gt;</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#gui-server-disco-start-gui">GUI Server (<code class="docutils literal notranslate"><span class="pre">disco-start</span> <span class="pre">gui</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#frontend-build-pipeline">Frontend Build Pipeline</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.html">Pipeline Description</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.html#group-discovery">Group Discovery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.html#phase-1-fits-ingestion">Phase 1 — FITS Ingestion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.html#phase-2-geometry-optimisation">Phase 2 — Geometry Optimisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.html#phase-3-uncertainty-estimation">Phase 3 — Uncertainty Estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.html#phase-4-profile-extraction-and-beam-homogenisation">Phase 4 — Profile Extraction and Beam Homogenisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.html#phase-5-output-serialisation">Phase 5 — Output Serialisation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">Command-Line Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#synopsis">Synopsis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#positional-arguments">Positional Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#optional-arguments">Optional Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#usage-examples">Usage Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#cnn-model-loading">CNN Model Loading</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Graphical User Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#step-by-step-guide">Step-by-Step Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#application-layout">Application Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#file-loading">File Loading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#toolbar-reference">Toolbar Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#geometry-controls-controls-panel">Geometry Controls (CONTROLS panel)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#auto-tune-geometry">Auto-Tune Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#analysis-dashboard-analysis-panel">Analysis Dashboard (ANALYSIS panel)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#view-modes">View Modes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#display-settings">Display Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#d-profile-chart">1D Profile Chart</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cursor-probe">Cursor Probe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ring-fit-statistics">Ring Fit Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cumulative-flux-chart">Cumulative Flux Chart</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#custom-markers">Custom Markers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#export-functions">Export Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simbad-query">SIMBAD Query</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/fits_utils.html"><code class="docutils literal notranslate"><span class="pre">disco.core.fits_utils</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/fits_utils.html#beam-utilities">Beam Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.get_alma_beam"><code class="docutils literal notranslate"><span class="pre">get_alma_beam()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.deconvolve_beams"><code class="docutils literal notranslate"><span class="pre">deconvolve_beams()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.make_gaussian_kernel_casa"><code class="docutils literal notranslate"><span class="pre">make_gaussian_kernel_casa()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/fits_utils.html#centroid-and-parameter-detection">Centroid and Parameter Detection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.find_center_robust"><code class="docutils literal notranslate"><span class="pre">find_center_robust()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.auto_detect_parameters"><code class="docutils literal notranslate"><span class="pre">auto_detect_parameters()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.refine_center_local"><code class="docutils literal notranslate"><span class="pre">refine_center_local()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/fits_utils.html#profile-extraction">Profile Extraction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.extract_profile"><code class="docutils literal notranslate"><span class="pre">extract_profile()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.measure_rout_deproj"><code class="docutils literal notranslate"><span class="pre">measure_rout_deproj()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.save_debug_deproj_center"><code class="docutils literal notranslate"><span class="pre">save_debug_deproj_center()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/fits_utils.html#wcs-and-coordinate-utilities">WCS and Coordinate Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.deg_to_sex"><code class="docutils literal notranslate"><span class="pre">deg_to_sex()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.pixel_to_icrs"><code class="docutils literal notranslate"><span class="pre">pixel_to_icrs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.icrs_to_pixel"><code class="docutils literal notranslate"><span class="pre">icrs_to_pixel()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.get_obs_epoch"><code class="docutils literal notranslate"><span class="pre">get_obs_epoch()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/fits_utils.html#gaia-proper-motion">Gaia Proper Motion</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.query_gaia_proper_motion"><code class="docutils literal notranslate"><span class="pre">query_gaia_proper_motion()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/fits_utils.html#disco.core.fits_utils.apply_proper_motion_correction"><code class="docutils literal notranslate"><span class="pre">apply_proper_motion_correction()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/cnn_inference.html"><code class="docutils literal notranslate"><span class="pre">disco.core.cnn_inference</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/cnn_inference.html#architecture">Architecture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/cnn_inference.html#disco.core.cnn_inference.ResBlock"><code class="docutils literal notranslate"><span class="pre">ResBlock</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/cnn_inference.html#disco.core.cnn_inference.ResBlock.forward"><code class="docutils literal notranslate"><span class="pre">ResBlock.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/cnn_inference.html#disco.core.cnn_inference.DiscoNet"><code class="docutils literal notranslate"><span class="pre">DiscoNet</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/cnn_inference.html#disco.core.cnn_inference.DiscoNet.forward"><code class="docutils literal notranslate"><span class="pre">DiscoNet.forward()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/cnn_inference.html#output-encoding">Output Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/cnn_inference.html#inference-function">Inference Function</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/cnn_inference.html#disco.core.cnn_inference.predict_with_cnn"><code class="docutils literal notranslate"><span class="pre">predict_with_cnn()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/optimization.html"><code class="docutils literal notranslate"><span class="pre">disco.core.optimization</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/optimization.html#geometric-loss-function">Geometric Loss Function</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/optimization.html#disco.core.optimization.geometric_loss"><code class="docutils literal notranslate"><span class="pre">geometric_loss()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/optimization.html#hybrid-geometry-optimiser">Hybrid Geometry Optimiser</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/optimization.html#disco.core.optimization.auto_tune_geometry_hybrid"><code class="docutils literal notranslate"><span class="pre">auto_tune_geometry_hybrid()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/optimization.html#uncertainty-estimation">Uncertainty Estimation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/optimization.html#disco.core.optimization.estimate_geometry_errors"><code class="docutils literal notranslate"><span class="pre">estimate_geometry_errors()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/optimization.html#centre-refinement">Centre Refinement</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/optimization.html#disco.core.optimization.refine_center_geometry"><code class="docutils literal notranslate"><span class="pre">refine_center_geometry()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/server.html"><code class="docutils literal notranslate"><span class="pre">disco.server</span></code> — HTTP API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/server.html#global-state">Global State</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/server.html#pydantic-request-models">Pydantic Request Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/server.html#disco.server.PlotParams"><code class="docutils literal notranslate"><span class="pre">PlotParams</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/server.html#disco.server.PipelineParams"><code class="docutils literal notranslate"><span class="pre">PipelineParams</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/server.html#disco.server.OptimizeParams"><code class="docutils literal notranslate"><span class="pre">OptimizeParams</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/server.html#disco.server.LoadLocalParams"><code class="docutils literal notranslate"><span class="pre">LoadLocalParams</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/server.html#endpoints">Endpoints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/server.html#session-management">Session Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/server.html#file-loading">File Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/server.html#pipeline-and-optimisation">Pipeline and Optimisation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/server.html#rendering">Rendering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/server.html#download-and-metadata">Download and Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/server.html#static-file-serving">Static File Serving</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/server.html#server-lifecycle">Server Lifecycle</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/server.html#disco.server.start_server"><code class="docutils literal notranslate"><span class="pre">start_server()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/cli_module.html"><code class="docutils literal notranslate"><span class="pre">disco.cli</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.discover_groups"><code class="docutils literal notranslate"><span class="pre">discover_groups()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.run_pipeline"><code class="docutils literal notranslate"><span class="pre">run_pipeline()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/main.html"><code class="docutils literal notranslate"><span class="pre">disco.main</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/main.html#disco.main.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Supplementary</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="training.html">DiscoNet Training Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="training.html#step-1-catalogue-generation-training-generate-catalogue-py">Step 1: Catalogue Generation (<code class="docutils literal notranslate"><span class="pre">training/generate_catalogue.py</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training.html#step-2-fits-simulation-training-simulate-catalogue-py">Step 2: FITS Simulation (<code class="docutils literal notranslate"><span class="pre">training/simulate_catalogue.py</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training.html#step-3-model-training-training-train-model-py">Step 3: Model Training (<code class="docutils literal notranslate"><span class="pre">training/train_model.py</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file_io.html">File Input and Output</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_io.html#fits-input">FITS Input</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_io.html#cli-output-files">CLI Output Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file_io.html#radial-profile-plot">Radial Profile Plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file_io.html#csv-exports-csv-on">CSV Exports (<code class="docutils literal notranslate"><span class="pre">--csv</span> <span class="pre">on</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file_io.html#debug-output-debug-on">Debug Output (<code class="docutils literal notranslate"><span class="pre">--debug</span> <span class="pre">on</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_io.html#gui-session-files">GUI Session Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_io.html#gui-fits-downloads">GUI FITS Downloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_io.html#gui-csv-export">GUI CSV Export</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-1-7-current">Version 1.1.7 (current)</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DISCO</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Graphical User Interface</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="graphical-user-interface">
+<span id="gui"></span><h1>Graphical User Interface<a class="headerlink" href="#graphical-user-interface" title="Link to this heading"></a></h1>
+<p>The DISCO GUI is a single-page web application delivered by the FastAPI
+backend (<code class="docutils literal notranslate"><span class="pre">disco.server</span></code>) and rendered in any modern browser. It is
+launched with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>disco-start<span class="w"> </span>gui
+</pre></div>
+</div>
+<p>The server starts on <code class="docutils literal notranslate"><span class="pre">http://localhost:8000</span></code> and opens a browser tab
+automatically after a 1.5-second delay via a background thread.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The GUI is recommended for exploratory analysis and first-time users.
+For reproducible, automated batch processing, use the CLI instead
+(see <a class="reference internal" href="cli.html#cli"><span class="std std-ref">Command-Line Interface</span></a>).</p>
+</div>
+<hr class="docutils" />
+<section id="step-by-step-guide">
+<h2>Step-by-Step Guide<a class="headerlink" href="#step-by-step-guide" title="Link to this heading"></a></h2>
+<p>A typical GUI session follows these steps:</p>
+<p><strong>1. Load a FITS file</strong></p>
+<p>Click the <strong>folder icon</strong> in the toolbar and select your <code class="docutils literal notranslate"><span class="pre">.fits</span></code> file.
+The image will appear in the viewer and the FITS header will populate
+automatically in the CATALOG panel.</p>
+<p><strong>2. Adjust the disk geometry</strong></p>
+<p>In the <strong>CONTROLS</strong> panel on the left, use the sliders to set the initial
+geometric parameters:</p>
+<ul class="simple">
+<li><p><strong>Inclination</strong> — disk inclination in degrees (0° = face-on, 90° = edge-on).</p></li>
+<li><p><strong>Position Angle</strong> — orientation of the disk major axis in degrees.</p></li>
+<li><p><strong>Radius Out</strong> — estimated outer disk radius in arcseconds.</p></li>
+<li><p><strong>Center X / Y</strong> — pixel coordinates of the disk centre (auto-initialised
+to the image midpoint on load).</p></li>
+</ul>
+<p>Activate the <strong>Ellipse Tool</strong> in the toolbar to display the geometry overlay
+on the image. As you move the sliders, the ellipse updates live so you can
+visually align it with the disk before running the pipeline.</p>
+<p><strong>3. Run the pipeline</strong></p>
+<p>Click <strong>RUN PIPELINE</strong>. DISCO computes the deprojected image,
+azimuthally-averaged radial profile, cumulative flux curve, and Gaussian ring
+fit for the current parameters.</p>
+<p><strong>4. Auto-tune the geometry (optional)</strong></p>
+<p>Click <strong>Auto-Tune Geometry</strong> in the ANALYSIS panel to run the optimiser
+automatically. It performs a grid-search seeded Nelder-Mead minimisation of
+the geometric loss and applies the best-fit inclination, position angle, and
+centre — no manual tuning required. See <a class="reference internal" href="api/optimization.html#api-optimization"><span class="std std-ref">disco.core.optimization</span></a> for the
+full algorithm description.</p>
+<p><strong>5. Explore the results</strong></p>
+<p>Switch between <strong>Deproj</strong>, <strong>Model</strong>, <strong>Residuals</strong>, and <strong>Polar</strong> view tabs
+to inspect different representations of the disk. Activate the <strong>Inspector</strong>
+tool and hover over the image to probe the radial profile in real time. Drag
+on the profile chart to define a fitting range for Gaussian ring analysis.</p>
+<p><strong>6. Export</strong></p>
+<p>Download the radial profile as CSV, save the currently displayed view as a
+FITS file, or open the <strong>Matplotlib Widget</strong> for a publication-ready figure.
+Use <strong>Save Session</strong> to preserve all parameters for later restoration.</p>
+</section>
+<hr class="docutils" />
+<section id="application-layout">
+<h2>Application Layout<a class="headerlink" href="#application-layout" title="Link to this heading"></a></h2>
+<p>The interface is implemented as a mosaic tiling system
+(<code class="docutils literal notranslate"><span class="pre">react-mosaic-component</span></code>) with four resizable, re-arrangeable panels,
+identified by internal window identifiers:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Panel ID</p></th>
+<th class="head"><p>Content</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CONTROLS</span></code></p></td>
+<td><p>Geometry parameter controls (inclination, position angle, outer
+radius, centre pixel coordinates), active filename display, and the
+<strong>RUN PIPELINE</strong> button.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">VIEWER</span></code></p></td>
+<td><p>Interactive canvas viewer (<code class="docutils literal notranslate"><span class="pre">InteractiveViewer.jsx</span></code> wrapping
+<code class="docutils literal notranslate"><span class="pre">SimpleImageViewer.jsx</span></code>) showing the currently-loaded FITS image
+with pan, zoom, and inspector interactions.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CATALOG</span></code></p></td>
+<td><p>FITS header keyword table (key, value, comment) and <strong>SIMBAD</strong> query
+button.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ANALYSIS</span></code></p></td>
+<td><p>The <code class="docutils literal notranslate"><span class="pre">AnalysisDashboard</span></code> component with image view selector,
+1D radial profile chart, cumulative flux chart, statistics probe,
+and ring-fit statistics.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<hr class="docutils" />
+<section id="file-loading">
+<h2>File Loading<a class="headerlink" href="#file-loading" title="Link to this heading"></a></h2>
+<p>Files are loaded via two mechanisms:</p>
+<ol class="arabic simple">
+<li><p><strong>Direct FITS upload</strong> — clicking the folder icon triggers a hidden
+<code class="docutils literal notranslate"><span class="pre">&lt;input</span> <span class="pre">type=&quot;file&quot;&gt;</span></code> element. The selected file is posted to
+<code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/upload</span></code>. On success, <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/preview</span></code> is called to retrieve
+a base64-encoded preview image, and <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/get_header</span></code> retrieves the
+FITS header keywords.</p></li>
+<li><p><strong>Session restore</strong> — if a <code class="docutils literal notranslate"><span class="pre">.json</span></code> session file is selected, the stored
+parameters are restored and the referenced FITS filename is reloaded via
+<code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/load_local</span></code>.</p></li>
+</ol>
+</section>
+<hr class="docutils" />
+<section id="toolbar-reference">
+<h2>Toolbar Reference<a class="headerlink" href="#toolbar-reference" title="Link to this heading"></a></h2>
+<p>The toolbar provides file management and viewer interaction controls. The
+active mode is highlighted with a purple background.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 10.0%" />
+<col style="width: 20.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Icon</p></th>
+<th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>📁</p></td>
+<td><p><strong>Open File</strong></p></td>
+<td><p>Opens a file picker to load a <code class="docutils literal notranslate"><span class="pre">.fits</span></code> image or a previously saved
+<code class="docutils literal notranslate"><span class="pre">.json</span></code> session file.</p></td>
+</tr>
+<tr class="row-odd"><td><p>💾</p></td>
+<td><p><strong>Save Session</strong></p></td>
+<td><p>Saves current parameters (inclination, PA, radius, centre) and the
+active filename to a downloadable <code class="docutils literal notranslate"><span class="pre">.json</span></code> file for later
+restoration.</p></td>
+</tr>
+<tr class="row-even"><td><p>⛶</p></td>
+<td><p><strong>Fullscreen</strong></p></td>
+<td><p>Expands the viewer panel to fill the browser window.</p></td>
+</tr>
+<tr class="row-odd"><td><p>✕</p></td>
+<td><p><strong>Close</strong></p></td>
+<td><p>Clears the currently loaded file and resets the interface.</p></td>
+</tr>
+<tr class="row-even"><td><p>◎</p></td>
+<td><p><strong>Ellipse Tool</strong></p></td>
+<td><p>It allows you to manipulate the shape of the ellipse. The ellipse reflects the current inclination, position angle, and outer radius in real time as you adjust the sliders and/or move the ellipse control. Use it as a visual guide before running the pipeline.</p></td>
+</tr>
+<tr class="row-odd"><td><p>🖐</p></td>
+<td><p><strong>Pan</strong></p></td>
+<td><p>Switches to pan/drag mode for navigating across large images.</p></td>
+</tr>
+<tr class="row-even"><td><p>⊕</p></td>
+<td><p><strong>Inspector</strong></p></td>
+<td><p>Enables the Cursor Probe. Hovering over the image synchronises the
+crosshair position with the 1D radial profile chart and displays
+Radius, Intensity (K), and X/Y sky offsets in real time.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<hr class="docutils" />
+<section id="geometry-controls-controls-panel">
+<h2>Geometry Controls (CONTROLS panel)<a class="headerlink" href="#geometry-controls-controls-panel" title="Link to this heading"></a></h2>
+<p>The following parameters are exposed in the CONTROLS panel and are
+transmitted to <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/run_pipeline</span></code> on each pipeline execution:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">incl</span></code></p></td>
+<td><p>Disk inclination in degrees (slider + numeric input, range 0–90°).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pa</span></code></p></td>
+<td><p>Position angle in degrees (slider + numeric input, range 0–180°).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">rout</span></code></p></td>
+<td><p>Outer disk radius in arcseconds (slider + numeric input, range
+0.1–10 arcsec).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cx</span></code>, <code class="docutils literal notranslate"><span class="pre">cy</span></code></p></td>
+<td><p>Pixel coordinates of the disk centre (numeric inputs; initialised
+to the image midpoint on load).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fit_rmin</span></code>, <code class="docutils literal notranslate"><span class="pre">fit_rmax</span></code></p></td>
+<td><p>Radial range boundaries for Gaussian ring fitting (set by
+drag-selection on the profile chart or image canvas).</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<hr class="docutils" />
+<section id="auto-tune-geometry">
+<h2>Auto-Tune Geometry<a class="headerlink" href="#auto-tune-geometry" title="Link to this heading"></a></h2>
+<p>The <strong>Auto-Tune</strong> button (implemented as <code class="docutils literal notranslate"><span class="pre">handleAutoTune</span></code> in <code class="docutils literal notranslate"><span class="pre">App.jsx</span></code>)
+posts the current geometry to <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/optimize_geometry</span></code> and applies the
+returned optimised inclination and position angle:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="c1">// App.jsx — handleAutoTune</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="s1">&#39;http://localhost:8000/optimize_geometry&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;POST&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+<span class="w">        </span><span class="nx">cx</span><span class="p">,</span><span class="w"> </span><span class="nx">cy</span><span class="p">,</span><span class="w"> </span><span class="nx">pa</span><span class="p">,</span><span class="w"> </span><span class="nx">incl</span><span class="p">,</span><span class="w"> </span><span class="nx">rout</span><span class="p">,</span><span class="w"> </span><span class="nx">fit_rmin</span><span class="p">,</span><span class="w"> </span><span class="nx">fit_rmax</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">});</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+<span class="nx">setParams</span><span class="p">(</span><span class="nx">prev</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">({</span>
+<span class="w">    </span><span class="p">...</span><span class="nx">prev</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">incl</span><span class="o">:</span><span class="w"> </span><span class="nx">data</span><span class="p">.</span><span class="nx">optimized_incl</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">pa</span><span class="o">:</span><span class="w">   </span><span class="nx">data</span><span class="p">.</span><span class="nx">optimized_pa</span>
+<span class="p">}));</span>
+</pre></div>
+</div>
+<p>The optimisation is a grid-search seeded Nelder-Mead minimisation of
+<a class="reference internal" href="api/optimization.html#disco.core.optimization.geometric_loss" title="disco.core.optimization.geometric_loss"><code class="xref py py-func docutils literal notranslate"><span class="pre">disco.core.optimization.geometric_loss()</span></code></a> (see <a class="reference internal" href="api/optimization.html#api-optimization"><span class="std std-ref">disco.core.optimization</span></a>).
+Note that the GUI’s Auto-Tune uses only the analytical grid-search path;
+the CNN-seeded hybrid optimiser (<code class="docutils literal notranslate"><span class="pre">auto_tune_geometry_hybrid</span></code>) is used
+exclusively by the CLI pipeline.</p>
+</section>
+<hr class="docutils" />
+<section id="analysis-dashboard-analysis-panel">
+<h2>Analysis Dashboard (ANALYSIS panel)<a class="headerlink" href="#analysis-dashboard-analysis-panel" title="Link to this heading"></a></h2>
+<section id="view-modes">
+<h3>View Modes<a class="headerlink" href="#view-modes" title="Link to this heading"></a></h3>
+<p>The dashboard toolbar provides four view selectors:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 85.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Mode</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">deproj</span></code></p></td>
+<td><p>Deprojected (face-on) image computed by the pipeline.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">model</span></code></p></td>
+<td><p>Azimuthally-averaged synthetic model image.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">residuals</span></code></p></td>
+<td><p>Difference between the deprojected image and the model. Highlights
+non-axisymmetric structures such as spirals, arcs, or clumps.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">polar</span></code></p></td>
+<td><p>Image resampled into polar coordinates (radius vs azimuth).</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="display-settings">
+<h3>Display Settings<a class="headerlink" href="#display-settings" title="Link to this heading"></a></h3>
+<p>A popover panel provides the following visualisation controls, which
+trigger a <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/render_plot</span></code> call on change:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Control</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Intensity Limits (Min/Max)</p></td>
+<td><p>Manual <code class="docutils literal notranslate"><span class="pre">vmin</span></code> / <code class="docutils literal notranslate"><span class="pre">vmax</span></code> values passed to the Matplotlib normalisation.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Auto button</p></td>
+<td><p>Sets <code class="docutils literal notranslate"><span class="pre">vmax_percentile:</span> <span class="pre">100</span></code> to trigger automatic percentile scaling.</p></td>
+</tr>
+<tr class="row-even"><td><p>Colormap</p></td>
+<td><p>Selected from: <code class="docutils literal notranslate"><span class="pre">magma</span></code>, <code class="docutils literal notranslate"><span class="pre">inferno</span></code>, <code class="docutils literal notranslate"><span class="pre">viridis</span></code>, <code class="docutils literal notranslate"><span class="pre">seismic</span></code>,
+<code class="docutils literal notranslate"><span class="pre">gray</span></code>, <code class="docutils literal notranslate"><span class="pre">jet</span></code>. Inversion toggles the <code class="docutils literal notranslate"><span class="pre">_r</span></code> suffix convention.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Stretch</p></td>
+<td><p>Selected from: <code class="docutils literal notranslate"><span class="pre">asinh</span></code>, <code class="docutils literal notranslate"><span class="pre">linear</span></code>, <code class="docutils literal notranslate"><span class="pre">log</span></code>, <code class="docutils literal notranslate"><span class="pre">sqrt</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p>Contours</p></td>
+<td><p>Boolean toggle; number of contour levels is configurable (1–50).</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="d-profile-chart">
+<h3>1D Profile Chart<a class="headerlink" href="#d-profile-chart" title="Link to this heading"></a></h3>
+<p>The radial profile chart is rendered with the <code class="docutils literal notranslate"><span class="pre">recharts</span></code> library
+(<code class="docutils literal notranslate"><span class="pre">LineChart</span></code>). The Y axis supports linear and logarithmic scaling (toggle
+switch). Data points are derived from the <code class="docutils literal notranslate"><span class="pre">profileData</span></code> object returned
+by <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/run_pipeline</span></code>.</p>
+<p><strong>Range selection for Gaussian ring fitting</strong> is implemented as a
+click-and-drag interaction on the chart: the <code class="docutils literal notranslate"><span class="pre">dragStart</span></code> and <code class="docutils literal notranslate"><span class="pre">dragEnd</span></code>
+state variables track the selected radial interval, which is communicated
+to the server via <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/run_pipeline</span></code> through the <code class="docutils literal notranslate"><span class="pre">fit_rmin</span></code> /
+<code class="docutils literal notranslate"><span class="pre">fit_rmax</span></code> fields.</p>
+</section>
+<section id="cursor-probe">
+<h3>Cursor Probe<a class="headerlink" href="#cursor-probe" title="Link to this heading"></a></h3>
+<p>When the <strong>Inspector</strong> tool is active, hovering over the 2D image canvas
+(<code class="docutils literal notranslate"><span class="pre">SimpleImageViewer</span></code>) synchronises the current radius to the 1D chart
+via the <code class="docutils literal notranslate"><span class="pre">syncedRadius</span></code> state variable. The probe widget displays:</p>
+<ul class="simple">
+<li><p><strong>RADIUS</strong> — current radial position in arcseconds</p></li>
+<li><p><strong>INTENSITY</strong> — brightness temperature at the closest profile sample, in K</p></li>
+<li><p><strong>OFFSET X</strong>, <strong>OFFSET Y</strong> — <span class="math notranslate nohighlight">\(r / \sqrt{2}\)</span> in arcseconds</p></li>
+</ul>
+</section>
+<section id="ring-fit-statistics">
+<h3>Ring Fit Statistics<a class="headerlink" href="#ring-fit-statistics" title="Link to this heading"></a></h3>
+<p>If a fit range is active (<code class="docutils literal notranslate"><span class="pre">fit_rmin</span> <span class="pre">&lt;</span> <span class="pre">fit_rmax</span></code>), the pipeline fits a
+Gaussian to the radial profile within the selected interval using
+<code class="docutils literal notranslate"><span class="pre">scipy.optimize.curve_fit</span></code> with the model:</p>
+<div class="math notranslate nohighlight">
+\[G(r) = a \exp\!\left(-\frac{(r - r_0)^2}{2\sigma^2}\right) + c\]</div>
+<p>The returned <code class="docutils literal notranslate"><span class="pre">fit</span></code> object exposes:</p>
+<ul class="simple">
+<li><p><strong>PEAK RADIUS</strong> <span class="math notranslate nohighlight">\(r_0\)</span> — centroid of the fitted Gaussian, in arcsec</p></li>
+<li><p><strong>WIDTH (FWHM)</strong> — <span class="math notranslate nohighlight">\(2\sqrt{2 \ln 2}\,\sigma\)</span>, in arcsec</p></li>
+</ul>
+</section>
+<section id="cumulative-flux-chart">
+<h3>Cumulative Flux Chart<a class="headerlink" href="#cumulative-flux-chart" title="Link to this heading"></a></h3>
+<p>The cumulative enclosed flux is computed client-side as:</p>
+<div class="math notranslate nohighlight">
+\[F_{\rm enc}(R) = \frac{\sum_{r \le R} I(r) \cdot r}{\sum_{\rm all} I(r) \cdot r} \times 100\%\]</div>
+<p>and displayed as an <code class="docutils literal notranslate"><span class="pre">AreaChart</span></code>.</p>
+</section>
+<section id="custom-markers">
+<h3>Custom Markers<a class="headerlink" href="#custom-markers" title="Link to this heading"></a></h3>
+<p>The <strong>Add Marker</strong> function enters marker-placement mode on the image canvas.
+On click, a dialog prompts for a label, shape (<code class="docutils literal notranslate"><span class="pre">circle</span></code>, <code class="docutils literal notranslate"><span class="pre">square</span></code>,
+<code class="docutils literal notranslate"><span class="pre">star</span></code>, <code class="docutils literal notranslate"><span class="pre">cross</span></code>), and colour. Markers are rendered as Konva.js overlay
+shapes and are persistent within the session. Markers can be cleared per
+view mode.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="export-functions">
+<h2>Export Functions<a class="headerlink" href="#export-functions" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Function</p></th>
+<th class="head"><p>Behaviour</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Download FITS</strong></p></td>
+<td><p>Calls <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/download_fits?type=&lt;view_type&gt;</span></code> which returns the
+corresponding data array as a binary FITS file carrying the original
+header from the loaded FITS file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>CSV Export</strong></p></td>
+<td><p>Client-side function (<code class="docutils literal notranslate"><span class="pre">handleDownloadCSV</span></code>) serialises
+<code class="docutils literal notranslate"><span class="pre">profileData.radius</span></code>, <code class="docutils literal notranslate"><span class="pre">profileData.raw_intensity</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">profileData.intensity</span></code> (brightness temperature) into a CSV blob
+and triggers a browser download of <code class="docutils literal notranslate"><span class="pre">radial_profile.csv</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Session Save</strong></p></td>
+<td><p>Serialises <code class="docutils literal notranslate"><span class="pre">{filename,</span> <span class="pre">params,</span> <span class="pre">timestamp,</span> <span class="pre">pixelScale}</span></code> as a JSON
+file downloadable as <code class="docutils literal notranslate"><span class="pre">session_&lt;stem&gt;.json</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Matplotlib Widget</strong></p></td>
+<td><p>Opens a secondary browser panel (<code class="docutils literal notranslate"><span class="pre">MatplotlibWidget.jsx</span></code>) that
+calls <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/render_plot</span></code> with higher DPI (default 150) and
+configurable axes, colourbar, and beam overlay options.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<hr class="docutils" />
+<section id="simbad-query">
+<h2>SIMBAD Query<a class="headerlink" href="#simbad-query" title="Link to this heading"></a></h2>
+<p>The <strong>SIMBAD</strong> button (in the CATALOG panel) triggers <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/query_simbad</span></code>.
+The server reads the WCS from the loaded FITS header, converts the image
+centre pixel to sky coordinates, and queries CDS SIMBAD within a 2 arcmin
+radius, requesting the <code class="docutils literal notranslate"><span class="pre">otype</span></code>, <code class="docutils literal notranslate"><span class="pre">flux(V)</span></code>, and <code class="docutils literal notranslate"><span class="pre">distance</span></code> VOTable
+fields. The result is returned as a list of JSON objects and displayed in a
+popup table.</p>
+<p>This functionality requires <code class="docutils literal notranslate"><span class="pre">astroquery</span></code> to be installed. If the library
+is absent, the endpoint returns HTTP 501.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cli.html" class="btn btn-neutral float-left" title="Command-Line Interface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api/fits_utils.html" class="btn btn-neutral float-right" title="disco.core.fits_utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Jorge Luis Guzmán Lazo.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
