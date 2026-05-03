@@ -8,7 +8,7 @@ import sys
 project   = 'DISCO'
 copyright = '2026, Jorge Luis Guzmán-Lazo'
 author    = 'Jorge Luis Guzmán-Lazo'
-release   = '1.2.0'
+release   = '1.2.1'
 version   = '1.2'
 
 # -- General configuration ---------------------------------------------------

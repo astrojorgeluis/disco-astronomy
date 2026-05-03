@@ -12,10 +12,9 @@
 <p align="center">
   <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.9+-3776AB?style=flat&logo=python&logoColor=white"/></a>
   <a href="https://pytorch.org/"><img src="https://img.shields.io/badge/PyTorch-CNN-EE4C2C?style=flat&logo=pytorch&logoColor=white"/></a>
-  <a href="https://fastapi.tiangolo.com/"><img src="https://img.shields.io/badge/FastAPI-Backend-009688?style=flat&logo=fastapi&logoColor=white"/></a>
-  <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-Frontend-61DAFB?style=flat&logo=react&logoColor=black"/></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg"/></a>
   <a href="https://pypi.org/project/disco-astronomy/"><img src="https://img.shields.io/badge/PyPI-disco--astronomy-blue?style=flat&logo=pypi&logoColor=white"/></a>
+  <a href="https://doi.org/10.5281/zenodo.19999240"><img src="https://img.shields.io/badge/DOI-10.5281%2Fzenodo.19999240-blue?style=flat&logo=doi&logoColor=white"/></a>
   <a href="https://astrojorgeluis.github.io/disco-astronomy/"><img src="https://img.shields.io/badge/docs-online-purple?style=flat&logo=readthedocs&logoColor=white"/></a>
 </p>
 
@@ -58,7 +57,26 @@ DISCO bridges scientific Python libraries with a modern web interface, offering 
 
 ## Citation
 
-If you use DISCO in published work, please cite this repository and acknowledge **Jorge Luis Guzmán-Lazo**, who developed the software within the [YEMS Millennium Nucleus](https://www.milenioyems.cl/) under the supervision of **Sebastián Pérez** and **Camilo González-Ruilova**.
+If you use DISCO in your research, please cite the associated Zenodo record:
+
+Guzmán-Lazo, J. L. (2026). *DISCO: Deprojection Image Software for Circumstellar Objects* (v1.2.1). Zenodo. https://doi.org/10.5281/zenodo.19999240
+
+### BibTeX
+```bibtex
+@software{guzman_lazo_2026_19999240,
+  author    = {Guzmán-Lazo, Jorge Luis},
+  title     = {DISCO: Deprojection Image Software for Circumstellar Objects},
+  year      = {2026},
+  version   = {v1.2.1},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.19999240},
+  url       = {https://doi.org/10.5281/zenodo.19999240}
+}
+```
+
+## Acknowledgements
+
+DISCO was developed by **Jorge Luis Guzmán-Lazo** within the [YEMS Millennium Nucleus](https://www.milenioyems.cl/) under the supervision of **Sebastián Pérez** and **Camilo González-Ruilova**.
 
 ---
 
