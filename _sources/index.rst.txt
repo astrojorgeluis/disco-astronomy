@@ -63,7 +63,10 @@ Two Modes of Operation
 The **GUI** is recommended for exploratory analysis and first-time users.
 The **CLI** is designed for reproducible, automated pipelines.
 
-.. rubric:: Citation and Acknowledgements
+
+
+ Citation and Acknowledgements
+----------------------
 
 If you use DISCO in published work, please cite this repository and acknowledge **Jorge Luis Guzmán-Lazo**, who developed the software within the `YEMS Millennium Nucleus <https://www.milenioyems.cl/>`_ under the supervision of **Sebastián Pérez** and **Camilo González-Ruilova**.
 
@@ -72,8 +75,6 @@ If you use DISCO in published work, please cite this repository and acknowledge 
 If you use DISCO in your research, please cite the associated Zenodo record:
 
 Guzmán-Lazo, J. L. (2026). *DISCO: Deprojection Image Software for Circumstellar Objects* (v1.2.1). Zenodo. https://doi.org/10.5281/zenodo.19999240
-
-### BibTeX
 
 .. code-block:: bibtex
 
