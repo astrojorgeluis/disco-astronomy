@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/astrojorgeluis/disco-astronomy/main/DISCO_Source_Git/assets/disco_banner.png" alt="DISCO Logo" width="700"/>
+  <img src="https://raw.githubusercontent.com/astrojorgeluis/disco-astronomy/main/DISCO_Source_Git/assets/disco_banner.png" alt="DISCO Logo" width="600"/>
 </p>
 
 # DISCO
