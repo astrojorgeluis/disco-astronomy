@@ -1,0 +1,18 @@
+
+.wy-side-nav-search {
+    background-color: #23103d !important; 
+}
+
+
+.wy-menu-vertical header, .wy-menu-vertical p.caption
+{
+    color: #f7931e !important; 
+}   
+
+h1, h2, h3, h4, h5, h6 {
+    color: #23103d !important; 
+}
+
+.wy-nav-side{
+    background: #1b0934 !important; 
+}
