@@ -76,7 +76,7 @@ Guzmán-Lazo, J. L. (2026). *DISCO: Deprojection Image Software for Circumstella
 
 ## Acknowledgements
 
-DISCO was developed by **Jorge Luis Guzmán-Lazo** within the [YEMS Millennium Nucleus](https://www.milenioyems.cl/) under the supervision of **Sebastián Pérez** and **Camilo Gonzalez-Ruilova**.
+DISCO was developed by **Jorge Luis Guzmán-Lazo** within the [YEMS Millennium Nucleus](https://www.milenioyems.cl/) under the supervision of **Sebastián Pérez** and **Camilo González-Ruilova**.
 
 ---
 

@@ -65,7 +65,7 @@ The **CLI** is designed for reproducible, automated pipelines.
 
 .. rubric:: Attribution
 
-If you use DISCO in published work, please cite this repository and acknowledge **Jorge Luis Guzmán-Lazo**, who developed the software within the `YEMS Millennium Nucleus <https://www.milenioyems.cl/>`_ under the supervision of **Sebastián Pérez** and **Camilo Gonzalez-Ruilova**.
+If you use DISCO in published work, please cite this repository and acknowledge **Jorge Luis Guzmán-Lazo**, who developed the software within the `YEMS Millennium Nucleus <https://www.milenioyems.cl/>`_ under the supervision of **Sebastián Pérez** and **Camilo González-Ruilova**.
 
 Contact: jorge.guzman.l@usach.cl
 
