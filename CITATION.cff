@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use DISCO in your research, please cite it as follows."
+authors:
+  - family-names: "Guzmán-Lazo"
+    given-names: "Jorge Luis"
+    email: "jorge.guzman.l@usach.cl"
+    affiliation: "Universidad de Santiago de Chile (USACH) / YEMS Millennium Nucleus"
+    orcid: "https://orcid.org/0009-0006-0883-7659"
+title: "DISCO: Deprojection Image Software for Circumstellar Objects"
+version: 1.2.2
+doi: "10.5281/zenodo.19999239"
+date-released: 2026-05-03
+url: "https://github.com/astrojorgeluis/disco-astronomy"
+keywords:
+  - "astronomy"
+  - "protoplanetary disks"
+  - "deprojection"
+  - "alma"
+  - "python"
