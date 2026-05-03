@@ -6,8 +6,8 @@ import os
 import sys
 
 project   = 'DISCO'
-copyright = '2026, Jorge Luis Guzmán Lazo'
-author    = 'Jorge Luis Guzmán Lazo'
+copyright = '2026, Jorge Luis Guzmán-Lazo'
+author    = 'Jorge Luis Guzmán-Lazo'
 release   = '1.2.0'
 version   = '1.2'
 

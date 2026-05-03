@@ -16,6 +16,7 @@
   <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-Frontend-61DAFB?style=flat&logo=react&logoColor=black"/></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg"/></a>
   <a href="https://pypi.org/project/disco-astronomy/"><img src="https://img.shields.io/badge/PyPI-disco--astronomy-blue?style=flat&logo=pypi&logoColor=white"/></a>
+  <a href="https://astrojorgeluis.github.io/disco-astronomy/"><img src="https://img.shields.io/badge/docs-online-purple?style=flat&logo=readthedocs&logoColor=white"/></a>
 </p>
 
 > ⚠️ **Work in Progress** — DISCO is in active early development. Features and interfaces may change between releases.
@@ -50,6 +51,8 @@
 DISCO is an open-source tool for the interactive and automated analysis of protoplanetary disk observations. It combines a convolutional neural network (**DiscoNet**) for rapid geometric parameter prediction with a hybrid optimization strategy, enabling robust deprojection and radial profile extraction from FITS images.
 
 DISCO bridges scientific Python libraries with a modern web interface, offering two complementary modes of operation: a **GUI** for interactive exploration and a **CLI pipeline** for reproducible batch processing.
+
+📖 **Full documentation:** [astrojorgeluis.github.io/disco-astronomy](https://astrojorgeluis.github.io/disco-astronomy/)
 
 ---
 
