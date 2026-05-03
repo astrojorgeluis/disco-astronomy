@@ -11,7 +11,7 @@ DISCO — Deprojection Image Software for Circumstellar Objects
 
 .. note::
 
-   **DISCO** (v1.2.1) is an open-source Python package for the analysis and physical
+   **DISCO** (v1.2.2) is an open-source Python package for the analysis and physical
    characterisation of protoplanetary disk observations from ALMA FITS data.
    This software is currently in active development.
 
@@ -73,7 +73,7 @@ If you use DISCO in published work, please cite this repository and acknowledge 
 
 If you use DISCO in your research, please cite the associated Zenodo record:
 
-Guzmán-Lazo, J. L. (2026). *DISCO: Deprojection Image Software for Circumstellar Objects* (v1.2.1). Zenodo. https://doi.org/10.5281/zenodo.19999240
+Guzmán-Lazo, J. L. (2026). *DISCO: Deprojection Image Software for Circumstellar Objects* (v1.2.2). Zenodo. https://doi.org/10.5281/zenodo.19999239
 
 .. code-block:: bibtex
 
@@ -81,10 +81,10 @@ Guzmán-Lazo, J. L. (2026). *DISCO: Deprojection Image Software for Circumstella
      author    = {Guzmán-Lazo, Jorge Luis},
      title     = {DISCO: Deprojection Image Software for Circumstellar Objects},
      year      = {2026},
-     version   = {v1.2.1},
+     version   = {v1.2.2},
      publisher = {Zenodo},
-     doi       = {10.5281/zenodo.19999240},
-     url       = {https://doi.org/10.5281/zenodo.19999240}
+     doi       = {10.5281/zenodo.19999239},
+     url       = {https://doi.org/10.5281/zenodo.19999239}
    }
 
 DISCO was developed by **Jorge Luis Guzmán-Lazo** within the `YEMS Millennium Nucleus <https://www.milenioyems.cl/>`_ under the supervision of **Sebastián Pérez** and **Camilo González-Ruilova**.
