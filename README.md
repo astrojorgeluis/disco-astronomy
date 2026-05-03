@@ -1,5 +1,6 @@
-> **WORK IN PROGRESS (WIP)**
-> This software is currently in early active development. Features and documentation are being updated frequently.
+<p align="center">
+  <img src="https://raw.githubusercontent.com/astrojorgeluis/disco-astronomy/main/DISCO_Source_Git/assets/disco_banner.png" alt="DISCO Logo" width="700"/>
+</p>
 
 # DISCO
 ### Deprojection Image Software for Circumstellar Objects
@@ -21,7 +22,7 @@ DISCO is an open-source tool for the interactive and automated analysis of proto
 
 It bridges scientific Python libraries with a modern web interface, offering two complementary modes of operation: a **CLI pipeline** for batch processing and a **GUI** for interactive exploration.
 
-> **Citation:** If you use DISCO in published work, please cite this repository and acknowledge **Jorge Luis Guzmán-Lazo**, who developed the software within the [YEMS Millennium Nucleus](https://www.milenioyems.cl/) under the supervision of **Sebastián Pérez Marquez** and **Camilo Gonzalez-Ruilova**.
+> **Citation:** If you use DISCO in published work, please cite this repository and acknowledge **Jorge Luis Guzmán Lazo**, who developed the software within the [YEMS Millennium Nucleus](https://www.milenioyems.cl/) under the supervision of **Sebastián Pérez Marquez** and **Camilo Gonzalez Ruilova**.
 
 ---
 
@@ -188,3 +189,6 @@ If you encounter issues or have questions, feel free to reach out:
 📬 **jorge.guzman.l@usach.cl**
 
 Bug reports and contributions via [GitHub Issues](https://github.com/astrojorgeluis/disco-astronomy) are also welcome.
+
+> **WORK IN PROGRESS (WIP)**
+> This software is currently in early active development. Features and documentation are being updated frequently.
