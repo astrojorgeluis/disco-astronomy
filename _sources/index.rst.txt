@@ -64,8 +64,7 @@ The **GUI** is recommended for exploratory analysis and first-time users.
 The **CLI** is designed for reproducible, automated pipelines.
 
 
-
- Citation and Acknowledgements
+Citation and Acknowledgements
 ----------------------
 
 If you use DISCO in published work, please cite this repository and acknowledge **Jorge Luis Guzmán-Lazo**, who developed the software within the `YEMS Millennium Nucleus <https://www.milenioyems.cl/>`_ under the supervision of **Sebastián Pérez** and **Camilo González-Ruilova**.
