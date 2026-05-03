@@ -14,7 +14,7 @@
   <a href="https://pytorch.org/"><img src="https://img.shields.io/badge/PyTorch-CNN-EE4C2C?style=flat&logo=pytorch&logoColor=white"/></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg"/></a>
   <a href="https://pypi.org/project/disco-astronomy/"><img src="https://img.shields.io/badge/PyPI-disco--astronomy-blue?style=flat&logo=pypi&logoColor=white"/></a>
-  <a href="https://doi.org/10.5281/zenodo.19999239"><img src="https://img.shields.io/badge/DOI-10.5281%2Fzenodo.19999240-blue?style=flat&logo=doi&logoColor=white"/></a>
+  <a href="https://doi.org/10.5281/zenodo.19999239"><img src="https://img.shields.io/badge/DOI-10.5281%2Fzenodo.19999239-blue?style=flat&logo=doi&logoColor=white"/></a>
   <a href="https://astrojorgeluis.github.io/disco-astronomy/"><img src="https://img.shields.io/badge/docs-online-purple?style=flat&logo=readthedocs&logoColor=white"/></a>
 </p>
 
@@ -63,7 +63,7 @@ Guzmán-Lazo, J. L. (2026). *DISCO: Deprojection Image Software for Circumstella
 
 ### BibTeX
 ```bibtex
-@software{guzman_lazo_2026_19999240,
+@software{guzman_lazo_2026_19999239,
   author    = {Guzmán-Lazo, Jorge Luis},
   title     = {DISCO: Deprojection Image Software for Circumstellar Objects},
   year      = {2026},
