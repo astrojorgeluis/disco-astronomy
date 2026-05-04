@@ -526,6 +526,18 @@ def main():
     parser.add_argument("--debug",     type=str,   default="off", choices=["on", "off"], help="Save debug deprojected image")
     args = parser.parse_args()
 
+    print("\n" + "-"*60)
+    print("WARNING: DISCO will now scan the current directory and all")
+    print("subdirectories to search for and process FITS files.")
+    print(f"Current directory: {os.getcwd()}")
+    print("-"*60)
+    
+    user_response = input("\nAre you sure you want to continue? [y/N]: ").strip().lower()
+    
+    if user_response != 'y' and user_response != 'yes':
+        print("Operation cancelled by user. Exiting...")
+        sys.exit(0)
+
     cnn_model  = None
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     model_path = os.path.join(BASE_DIR, "models", "disco_model_stable.pth")

@@ -3,7 +3,7 @@
 Changelog
 =========
 
-Version 1.2.2 (current)
+Version 1.2.3 (current)
 ------------------------
 
 This is the version documented in this manual, as specified in
@@ -13,7 +13,7 @@ This is the version documented in this manual, as specified in
 
    [project]
    name = "disco-astronomy"
-   version = "1.2.2"
+   version = "1.2.3"
 
 No prior version history is recorded in the repository as of this
 documentation release.
