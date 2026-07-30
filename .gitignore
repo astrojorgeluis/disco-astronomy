@@ -22,6 +22,10 @@ dist/
 # Uploads 
 DISCO_Source_Git/disco/uploads/
 DISCO_Source_Git/.disco_uploads/
+DISCO_Source_Git/client/.disco_uploads/
+**/.disco_uploads/
+*.fits
+!DISCO_Source_Git/tests/**/*.fits
 
 # Build static files
 DISCO_Source_Git/disco/static/
