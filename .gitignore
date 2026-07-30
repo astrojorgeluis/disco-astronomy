@@ -35,3 +35,7 @@ Thumbs.db
 # Entorno
 .env
 .env.*
+
+# Cursor / IDE (local agent rules & logs)
+.cursor/
+*.log
