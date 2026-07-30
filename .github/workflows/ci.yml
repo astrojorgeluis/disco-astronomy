@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: DISCO_Source_Git
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install package and test deps
+        run: |
+          pip install -e ".[dev]"
+      - name: Ruff
+        run: ruff check disco tests
+      - name: Pytest
+        run: pytest -q
+
+  client:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: DISCO_Source_Git/client
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: DISCO_Source_Git/client/package-lock.json
+      - run: npm ci
+      - run: npm run build

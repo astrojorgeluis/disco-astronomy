@@ -82,13 +82,19 @@ DISCO was developed by **Jorge Luis Guzmán-Lazo** within the [YEMS Millennium N
 
 ## Key Features
 
-- **DiscoNet (CNN)** — Convolutional neural network that predicts disk geometric parameters (inclination, position angle, outer/inner radius) directly from FITS images.
+- **DiscoNet (CNN)** — Convolutional neural network that predicts disk geometric parameters (inclination, position angle, outer/inner radius) directly from FITS images (CLI).
 - **Hybrid Optimization** — Combines CNN predictions with fine-grained numerical refinement (Nelder-Mead) for physically consistent results.
-- **Dual Visualization** — Real-time rendering of deprojected images in both Cartesian and polar projections.
+- **Unified science core** — CLI and GUI share the same deprojection / profile / unit handling code.
+- **Professional GUI** — CARTA-like Blueprint workspace with mosaic panels, single accent color, menu/toolbar/status bars.
+- **Client-side rendering** — Float32 pixel streaming with instantaneous colormap / stretch / percentile limits.
+- **Regions & statistics** — Ellipse, rectangle, polygon, and annulus tools with live sum/mean/RMS/peak/flux.
+- **Multi-image workspace** — Load several FITS files, switch active image, blink / difference compare modes.
+- **WCS probe** — True pixel values and sexagesimal RA/Dec under the cursor.
+- **Figure builder** — Multi-panel publication figures with PNG/PDF/SVG export and saved presets.
+- **Reproducibility** — Action history and exportable Python session script; full JSON session restore.
 - **Batch Processing** — Automated CLI pipeline supporting multiple targets and FITS files in a single run.
-- **Beam Homogenization** — Convolves images to a common target resolution for multi-epoch or multi-band consistency (enabled by default).
-- **SIMBAD Metadata** — Automatically queries object metadata (distance, spectral type) via the CDS SIMBAD service.
-- **Gaia Proper Motion Correction** — Corrects source centroid across multi-epoch observations using Gaia DR3 astrometry.
+- **Beam Homogenization** — Convolves images to a common target resolution for multi-epoch or multi-band consistency (CLI).
+- **SIMBAD / Gaia** — Catalog metadata and proper-motion corrections where applicable.
 - **CSV Export** — Outputs radial profiles and fitted parameters in tabular format.
 
 ---
@@ -97,8 +103,12 @@ DISCO was developed by **Jorge Luis Guzmán-Lazo** within the [YEMS Millennium N
 
 | Feature | CLI Pipeline (`disco-start`) | GUI (`disco-start gui`) |
 |---|:---:|:---:|
-| DiscoNet (CNN) geometry | ✅ | ❌ |
+| DiscoNet (CNN) geometry | ✅ | ❌ (planned) |
+| Shared science core | ✅ | ✅ |
 | Interactive visualization | ❌ | ✅ |
+| Regions / WCS probe | ❌ | ✅ |
+| Multi-image workspace | ❌ | ✅ |
+| Figure builder / history | ❌ | ✅ |
 | Batch processing | ✅ | ❌ |
 | Multi-band support | ✅ | ❌ |
 | Beam homogenization | ✅ | ❌ |
@@ -323,7 +333,7 @@ disco-start AS209 Elias29 --homobeam on --beam 0.15
 ```
 usage: disco-start [-h] [--rout ROUT] [--rmin RMIN] [--incl INCL] [--pa PA]
                    [--beam BEAM] [--homobeam {on,off}] [--csv {on,off}]
-                   [--debug {on,off}] [identifier ...]
+                   [--debug {on,off}] [-y] [--no-gaia] [identifier ...]
 ```
 
 | Argument | Default | Description |
@@ -337,6 +347,8 @@ usage: disco-start [-h] [--rout ROUT] [--rmin RMIN] [--incl INCL] [--pa PA]
 | `--homobeam {on,off}` | `on` | Enable / disable beam homogenization. **Enabled by default.** |
 | `--csv {on,off}` | `off` | Write CSV outputs: global parameters, per-band metadata, and tabulated radial profiles. |
 | `--debug {on,off}` | `off` | Save a diagnostic PNG overlaying the optimized center and outer radius on the deprojected image. |
+| `-y`, `--yes` | off | Skip the interactive confirmation prompt (needed for scripts / CI). |
+| `--no-gaia` | off | Skip the Gaia proper-motion query (offline / CI). |
 
 ---
 
@@ -344,10 +356,11 @@ usage: disco-start [-h] [--rout ROUT] [--rmin RMIN] [--incl INCL] [--pa PA]
 
 | Layer | Technology |
 |---|---|
-| Backend | Python 3.9+, FastAPI, Uvicorn |
-| Science | Astropy, SciPy, NumPy, astroquery |
+| Backend | Python 3.9+, FastAPI, Uvicorn, Pydantic |
+| Science core | Astropy, SciPy, NumPy (&lt;2), astroquery |
 | Deep Learning | PyTorch (DiscoNet CNN) |
-| Frontend | React, Vite, BlueprintJS, Recharts |
+| Frontend | React 18, Vite, BlueprintJS v6, Zustand, Konva, Recharts |
+| QA | pytest, Ruff, GitHub Actions |
 | Distribution | PyPI (`disco-astronomy`) |
 
 ---

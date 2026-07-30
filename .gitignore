@@ -19,14 +19,22 @@ DISCO_Source_Git/build/
 build/
 dist/
 
-# Uploads 
+# Uploads / temporary FITS
 DISCO_Source_Git/disco/uploads/
 DISCO_Source_Git/.disco_uploads/
+DISCO_Source_Git/client/.disco_uploads/
+**/.disco_uploads/
+*.fits
+!DISCO_Source_Git/tests/**/*.fits
 
 # Build static files
 DISCO_Source_Git/disco/static/
 disco/static/
 
+
+# Cursor / IDE
+.cursor/
+*.log
 
 # Sistema
 .DS_Store

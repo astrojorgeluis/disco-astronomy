@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 from scipy.ndimage import zoom
 
+
 class ResBlock(nn.Module):
     def __init__(self, ch):
         super().__init__()
@@ -39,7 +40,7 @@ class DiscoNet(nn.Module):
         for enc in [self.enc1, self.enc2, self.enc3, self.enc4, self.enc5]:
             x = enc(x)
         return self.head(self.pool(x))
-    
+
 
 def predict_with_cnn(data, header, pixel_scale, cx, cy, search_rad, model):
     IMG_SIZE = 128

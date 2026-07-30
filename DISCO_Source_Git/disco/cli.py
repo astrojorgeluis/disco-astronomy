@@ -1,41 +1,46 @@
-import sys
 import os
+import sys
+
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
-import re
-import warnings
 import argparse
 import csv
-import numpy as np
-import torch   
+import re
+import warnings
+
 import matplotlib
+import numpy as np
+import torch
+
 matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-from astropy.io import fits
-from astropy.wcs import WCS
-from astropy.wcs import FITSFixedWarning
-from astropy.wcs.utils import pixel_to_skycoord, skycoord_to_pixel
-from astropy.coordinates import SkyCoord
-from astropy.time import Time
 import astropy.units as u
-from disco.core.cnn_inference import DiscoNet, predict_with_cnn
-from disco.core.optimization import (geometric_loss, auto_tune_geometry_hybrid, estimate_geometry_errors, refine_center_geometry)
+import matplotlib.pyplot as plt
+from astropy.coordinates import SkyCoord
+from astropy.io import fits
+from astropy.wcs import FITSFixedWarning
+
+from disco.core.cnn_inference import DiscoNet
 from disco.core.fits_utils import (
-    get_alma_beam, deconvolve_beams, make_gaussian_kernel_casa,
-    find_center_robust, auto_detect_parameters, extract_profile,
-    save_debug_deproj_center, measure_rout_deproj, refine_center_local,
-    deg_to_sex, pixel_to_icrs, icrs_to_pixel, get_obs_epoch,
-    query_gaia_proper_motion, apply_proper_motion_correction,
-    _ASTROQUERY_AVAILABLE
+    _ASTROQUERY_AVAILABLE,
+    apply_proper_motion_correction,
+    auto_detect_parameters,
+    deconvolve_beams,
+    extract_profile,
+    find_center_robust,
+    get_obs_epoch,
+    icrs_to_pixel,
+    make_gaussian_kernel_casa,
+    measure_rout_deproj,
+    pixel_to_icrs,
+    query_gaia_proper_motion,
+    save_debug_deproj_center,
 )
+from disco.core.optimization import auto_tune_geometry_hybrid, estimate_geometry_errors, geometric_loss
+from disco.core.units import get_pixel_scale_arcsec, normalize_bunit_to_mjy
+
 warnings.filterwarnings("ignore", category=FITSFixedWarning)
-from scipy.ndimage import (
-    map_coordinates, gaussian_filter, gaussian_filter1d,
-    zoom, center_of_mass, binary_fill_holes, label
-)
-from scipy.optimize import minimize, differential_evolution
+from scipy.optimize import minimize
 from scipy.signal import fftconvolve
 from tqdm import tqdm
-
 
 
 def discover_groups(base_dir):
@@ -83,16 +88,10 @@ def run_pipeline(files_to_process, group_name, output_dir, args, cnn_model):
         try:
             with fits.open(filepath, memmap=True) as hdul:
                 data   = np.nan_to_num(np.squeeze(hdul[0].data).astype(np.float32))
-                header = hdul[0].header
+                header = hdul[0].header.copy()
+                data, header = normalize_bunit_to_mjy(data, header)
 
-                bunit = str(header.get('BUNIT', '')).strip().upper()
-                if bunit == 'JY/BEAM':
-                    data *= 1000
-                    header['BUNIT'] = 'mJy/beam'
-                elif bunit == '' and np.max(data) < 5.0:
-                    data *= 1000
-
-                pixel_scale = abs(header.get('CDELT2', 0.03)) * 3600
+                pixel_scale = get_pixel_scale_arcsec(header)
                 cx, cy      = find_center_robust(data, pixel_scale, header)
 
                 auto_rmin, auto_rout, bmaj = auto_detect_parameters(data, header, pixel_scale, cx, cy)
@@ -161,7 +160,10 @@ def run_pipeline(files_to_process, group_name, output_dir, args, cnn_model):
         )) % 360.0)
         ref_dec = float(np.sum(np.array(dec_vals) * w))
 
-        pmra_gaia, pmdec_gaia, gaia_sep = query_gaia_proper_motion(ref_ra, ref_dec)
+        if getattr(args, "no_gaia", False):
+            pmra_gaia, pmdec_gaia, gaia_sep = None, None, None
+        else:
+            pmra_gaia, pmdec_gaia, gaia_sep = query_gaia_proper_motion(ref_ra, ref_dec)
 
         best_epoch = best_item.get("obs_epoch", None)
         for item in temp_data:
@@ -218,7 +220,7 @@ def run_pipeline(files_to_process, group_name, output_dir, args, cnn_model):
                                     ref_ra, ref_dec, pmra_gaia, pmdec_gaia, dt_yr
                                 )
                         px, py = icrs_to_pixel(item["header"], apply_ra, apply_dec)
-                    
+
                         item["cx"], item["cy"] = px, py
                     except Exception:
                         item["cx"] += dx
@@ -313,7 +315,7 @@ def run_pipeline(files_to_process, group_name, output_dir, args, cnn_model):
             f"  |  match = {gaia_sep:.2f}\""
         )
     elif _ASTROQUERY_AVAILABLE and ref_ra is not None:
-        tqdm.write(f"         Gaia PM   : no match within 3\" — PM correction skipped")
+        tqdm.write("         Gaia PM   : no match within 3\" — PM correction skipped")
 
     pbar.update(1)
 
@@ -379,8 +381,6 @@ def run_pipeline(files_to_process, group_name, output_dir, args, cnn_model):
     max_pts  = 0
 
     for img in sorted(temp_data, key=lambda x: snr_map[x["filename"]], reverse=True):
-        band_bmaj = img["bmaj"]
-
         lbl = img["filename"]
         m   = re.search(r'(Band_\d+)', lbl, re.IGNORECASE)
         if m:
@@ -524,6 +524,8 @@ def main():
     parser.add_argument("--homobeam", type=str,   default="on",  choices=["on", "off"], help="Toggle beam homogenization")
     parser.add_argument("--csv",       type=str,   default="off", choices=["on", "off"], help="Export CSV data")
     parser.add_argument("--debug",     type=str,   default="off", choices=["on", "off"], help="Save debug deprojected image")
+    parser.add_argument("-y", "--yes", action="store_true", help="Skip interactive confirmation prompt")
+    parser.add_argument("--no-gaia", action="store_true", help="Skip Gaia proper-motion query (offline / CI)")
     args = parser.parse_args()
 
     print("\n" + "-"*60)
@@ -531,12 +533,12 @@ def main():
     print("subdirectories to search for and process FITS files.")
     print(f"Current directory: {os.getcwd()}")
     print("-"*60)
-    
-    user_response = input("\nAre you sure you want to continue? [y/N]: ").strip().lower()
-    
-    if user_response != 'y' and user_response != 'yes':
-        print("Operation cancelled by user. Exiting...")
-        sys.exit(0)
+
+    if not args.yes:
+        user_response = input("\nAre you sure you want to continue? [y/N]: ").strip().lower()
+        if user_response != 'y' and user_response != 'yes':
+            print("Operation cancelled by user. Exiting...")
+            sys.exit(0)
 
     cnn_model  = None
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))

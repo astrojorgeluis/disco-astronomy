@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "disco-astronomy"
-version = "1.2.3"
+version = "1.3.0"
 description = "Deprojection Image Software for Circumstellar Objects"
 authors = [
   { name="astrojorgeluis", email="jorge.guzman.l@usach.cl" },
@@ -24,9 +24,17 @@ dependencies = [
     "scipy>=1.11.0",
     "matplotlib>=3.8.0",
     "astroquery>=0.4.7",
-    "numpy<2.0.0",      
-    "torch>=2.0.0",       
-    "tqdm>=4.66.0"        
+    "numpy>=1.24.0,<2.0.0",
+    "torch>=2.0.0",
+    "tqdm>=4.66.0",
+    "pydantic>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "ruff>=0.4.0",
+    "httpx>=0.27.0",
 ]
 
 [project.scripts]
@@ -35,3 +43,25 @@ disco-start = "disco.main:run"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["disco*"]
+
+[tool.setuptools.package-data]
+disco = ["models/*.pth", "static/**/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = [
+    "slow: longer-running geometry recovery tests",
+]
+filterwarnings = [
+    "ignore::astropy.wcs.FITSFixedWarning",
+    "ignore::DeprecationWarning",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501", "E402"]

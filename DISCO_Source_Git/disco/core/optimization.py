@@ -1,7 +1,9 @@
 import numpy as np
-from scipy.ndimage import map_coordinates, gaussian_filter
-from scipy.optimize import minimize, differential_evolution
+from scipy.ndimage import gaussian_filter, map_coordinates
+from scipy.optimize import differential_evolution, minimize
+
 from disco.core.cnn_inference import predict_with_cnn
+
 
 def geometric_loss(params, image, base_cx, base_cy, crop_rad, rmin_pix, rmax_pix, dim=150, order=1):
     incl, pa, dcx, dcy = params

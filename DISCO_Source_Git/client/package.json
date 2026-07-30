@@ -13,18 +13,14 @@
   "dependencies": {
     "@blueprintjs/core": "^6.5.0",
     "@blueprintjs/icons": "^6.4.0",
-    "@blueprintjs/popover2": "^2.1.32",
-    "axios": "^1.13.2",
-    "classnames": "^2.5.1",
     "konva": "^10.0.12",
     "normalize.css": "^8.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-konva": "^18.2.14",
-    "react-mosaic-component": "^6.1.1",
     "react-split": "^2.0.14",
     "recharts": "^3.6.0",
-    "use-image": "^1.1.4"
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
