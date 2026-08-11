@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Changelog &mdash; DISCO v1.2.3</title>
+  <title>Changelog &mdash; DISCO v1.2.4</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom_disco.css?v=499842b1" />
@@ -15,9 +15,9 @@
     <link rel="shortcut icon" href="_static/disco_icon.png"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=590429e0"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/documentation_options.js?v=928db92d"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -85,6 +85,7 @@
 <li class="toctree-l2"><a class="reference internal" href="cli.html#synopsis">Synopsis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#positional-arguments">Positional Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#optional-arguments">Optional Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#confirmation-prompt">Confirmation Prompt</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#usage-examples">Usage Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#cnn-model-loading">CNN Model Loading</a></li>
 </ul>
@@ -241,7 +242,15 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#version-1-2-3-current">Version 1.2.3 (current)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-1-2-4-current">Version 1.2.4 (current)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gui">GUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#backend">Backend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cli">CLI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#docs-packaging">Docs / packaging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#version-1-2-3">Version 1.2.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-1-2-2">Version 1.2.2</a></li>
 </ul>
 </li>
 </ul>
@@ -271,17 +280,67 @@
              
   <section id="changelog">
 <span id="id1"></span><h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading"></a></h1>
-<section id="version-1-2-3-current">
-<h2>Version 1.2.3 (current)<a class="headerlink" href="#version-1-2-3-current" title="Link to this heading"></a></h2>
-<p>This is the version documented in this manual, as specified in
-<code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>.</p>
-<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[project]</span>
-<span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;disco-astronomy&quot;</span>
-<span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1.2.3&quot;</span>
-</pre></div>
-</div>
-<p>No prior version history is recorded in the repository as of this
-documentation release.</p>
+<section id="version-1-2-4-current">
+<h2>Version 1.2.4 (current)<a class="headerlink" href="#version-1-2-4-current" title="Link to this heading"></a></h2>
+<p>GUI, CLI, backend robustness, and documentation sync.</p>
+<section id="gui">
+<h3>GUI<a class="headerlink" href="#gui" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Replace the bare <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">pipeline...</span></code> placeholder with a Blueprint
+<code class="docutils literal notranslate"><span class="pre">NonIdealState</span></code> and clearer empty-state messaging.</p></li>
+<li><p>Persist colormap / stretch / intensity limits across pipeline re-runs,
+Auto-Tune, ring-range updates, and view-tab changes.</p></li>
+<li><p>Align default colormap with the pipeline render (<code class="docutils literal notranslate"><span class="pre">inferno</span></code>).</p></li>
+<li><p>Help opens the online documentation; toolbar labels match the docs
+(Ellipse Tool, Pan, Inspector, Close).</p></li>
+<li><p>Refresh / tab close clears the server session (also via Close / Exit).</p></li>
+<li><p>Status pill in the header (Idle / Ready / Running).</p></li>
+<li><p>Matplotlib plotter: beam overlay, fixed layout when toggling contours,
+and contour percentiles or N evenly spaced levels.</p></li>
+<li><p>Remove fabricated Inspector sky-offset cards.</p></li>
+</ul>
+</section>
+<section id="backend">
+<h3>Backend<a class="headerlink" href="#backend" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Safer FITS load: first image HDU, squeeze cubes to a 2D plane, clear
+analysis state on new upload.</p></li>
+<li><p>Guard missing/zero <code class="docutils literal notranslate"><span class="pre">CDELT2</span></code> with a warning and sane fallback.</p></li>
+<li><p>Actionable errors for pipeline/optimization failures; SIMBAD timeout
+and offline-friendly messaging.</p></li>
+<li><p>Path-safe uploads and static file serving; refuse to start GUI if
+<code class="docutils literal notranslate"><span class="pre">disco/static</span></code> was not built.</p></li>
+</ul>
+</section>
+<section id="cli">
+<h3>CLI<a class="headerlink" href="#cli" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>CSV column labels report brightness temperature (K) when that is what
+is written.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--yes</span></code> / <code class="docutils literal notranslate"><span class="pre">-y</span></code> skips the scan confirmation; non-TTY requires <code class="docutils literal notranslate"><span class="pre">--yes</span></code>.</p></li>
+<li><p>Direct <code class="docutils literal notranslate"><span class="pre">.fits</span></code> paths and directory paths are supported; identifier
+matching is case-insensitive.</p></li>
+<li><p>Warn when <code class="docutils literal notranslate"><span class="pre">--incl</span></code> / <code class="docutils literal notranslate"><span class="pre">--pa</span></code> are unpaired; degrade CNN path when
+<code class="docutils literal notranslate"><span class="pre">BMAJ</span></code> is missing; fix empty-crop return arity.</p></li>
+</ul>
+</section>
+<section id="docs-packaging">
+<h3>Docs / packaging<a class="headerlink" href="#docs-packaging" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Correct Auto-Tune (incl/PA/center), dynamic port, CORS, SIMBAD, overlays,
+and <code class="docutils literal notranslate"><span class="pre">npm</span> <span class="pre">run</span> <span class="pre">build</span></code> (not <code class="docutils literal notranslate"><span class="pre">build:disco</span></code> on v1).</p></li>
+<li><p>Sphinx assets restored; BibTeX cite-key fixed; versions aligned to 1.2.4.</p></li>
+<li><p>Minimal pytest suite and GitHub Actions CI (tests + frontend build).</p></li>
+</ul>
+</section>
+</section>
+<section id="version-1-2-3">
+<h2>Version 1.2.3<a class="headerlink" href="#version-1-2-3" title="Link to this heading"></a></h2>
+<p>Previous published PyPI version. See repository history for details.</p>
+</section>
+<section id="version-1-2-2">
+<h2>Version 1.2.2<a class="headerlink" href="#version-1-2-2" title="Link to this heading"></a></h2>
+<p>Zenodo DOI / citation integration release (GitHub Release <code class="docutils literal notranslate"><span class="pre">v1.2.2</span></code>).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>DISCO is currently in active development. Features and interfaces may

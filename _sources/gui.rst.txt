@@ -11,8 +11,10 @@ launched with:
 
    disco-start gui
 
-The server starts on ``http://localhost:8000`` and opens a browser tab
-automatically after a 1.5-second delay via a background thread.
+The server binds to the first free TCP port starting at 8000 and opens a
+browser tab automatically after a 1.5-second delay via a background thread.
+Check the terminal for the URL (for example ``http://localhost:8000``, or
+``8001`` if 8000 is already in use).
 
 .. tip::
 
@@ -58,9 +60,9 @@ fit for the current parameters.
 
 Click **Auto-Tune Geometry** in the ANALYSIS panel to run the optimiser
 automatically. It performs a grid-search seeded Nelder-Mead minimisation of
-the geometric loss and applies the best-fit inclination, position angle, and
-centre — no manual tuning required. See :ref:`api-optimization` for the
-full algorithm description.
+the geometric loss and applies the best-fit inclination and position angle
+(centre is not updated) — no manual tuning of those angles required. See
+:ref:`api-optimization` for the full algorithm description.
 
 **5. Explore the results**
 
@@ -200,12 +202,12 @@ Auto-Tune Geometry
 
 The **Auto-Tune** button (implemented as ``handleAutoTune`` in ``App.jsx``)
 posts the current geometry to ``POST /optimize_geometry`` and applies the
-returned optimised inclination and position angle:
+returned optimised inclination, position angle, and centre:
 
 .. code-block:: javascript
 
-   // App.jsx — handleAutoTune
-   const response = await fetch('http://localhost:8000/optimize_geometry', {
+   // App.jsx — handleAutoTune (API base URL matches the running server port)
+   const response = await fetch(`${apiBase}/optimize_geometry`, {
        method: 'POST',
        body: JSON.stringify({
            cx, cy, pa, incl, rout, fit_rmin, fit_rmax
@@ -215,12 +217,14 @@ returned optimised inclination and position angle:
    setParams(prev => ({
        ...prev,
        incl: data.optimized_incl,
-       pa:   data.optimized_pa
+       pa:   data.optimized_pa,
+       cx:   data.optimized_cx,
+       cy:   data.optimized_cy,
    }));
 
-The optimisation is a grid-search seeded Nelder-Mead minimisation of
+The optimisation is a grid-search seeded L-BFGS-B minimisation of
 :func:`disco.core.optimization.geometric_loss` (see :ref:`api-optimization`).
-Note that the GUI's Auto-Tune uses only the analytical grid-search path;
+Note that the GUI's Auto-Tune uses the analytical grid-search path;
 the CNN-seeded hybrid optimiser (``auto_tune_geometry_hybrid``) is used
 exclusively by the CLI pipeline.
 
@@ -273,6 +277,10 @@ trigger a ``POST /render_plot`` call on change:
      - Selected from: ``asinh``, ``linear``, ``log``, ``sqrt``.
    * - Contours
      - Boolean toggle; number of contour levels is configurable (1–50).
+   * - Overlays
+     - Axes, colourbar, and contours. The synthesised beam is shown when
+       available in the FITS header (not a Display Configuration toggle);
+       the Matplotlib Widget provides a separate beam overlay control.
 
 1D Profile Chart
 ~~~~~~~~~~~~~~~~

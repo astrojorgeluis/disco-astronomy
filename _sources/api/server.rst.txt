@@ -7,12 +7,15 @@
    :synopsis: FastAPI backend for the DISCO GUI.
 
 The GUI backend is implemented as a FastAPI application (``app``) served by
-Uvicorn on ``http://0.0.0.0:8000``. The application maintains a single
-in-memory session via the module-level singleton ``state`` (an instance of
-``GlobalState``). All state is cleared on startup and on server shutdown.
+Uvicorn on ``http://0.0.0.0:<port>``, where ``<port>`` is the first free TCP
+port starting at 8000 (see :func:`start_server`). The application maintains a
+single in-memory session via the module-level singleton ``state`` (an instance
+of ``GlobalState``). All state is cleared on startup and on server shutdown.
 
-CORS is enabled for all origins (``allow_origins=["*"]``) to permit
-access from the bundled React application.
+CORS is restricted to localhost origins via an ``allow_origin_regex`` that
+matches ``http(s)://localhost`` and ``http(s)://127.0.0.1`` with an optional
+port, which permits access from the bundled React application served on the
+same host.
 
 ----
 
@@ -359,13 +362,18 @@ Server Lifecycle
 .. function:: start_server()
 
    Called by :func:`disco.main.run` when ``gui`` is the first argument.
-   Prints the server address to stdout, starts a background thread that
-   opens the default browser at ``http://localhost:8000`` after a 1.5-second
-   delay, and starts Uvicorn:
+   Selects the first free TCP port starting at 8000, prints the server URL
+   to stdout, starts a background thread that opens the default browser at
+   that URL after a 1.5-second delay, and starts Uvicorn:
 
    .. code-block:: python
 
-      uvicorn.run(app, host="0.0.0.0", port=8000, log_level="warning")
+      port = get_free_port()  # first free port from 8000 upward
+      url = f"http://localhost:{port}"
+      # ... open browser at url ...
+      uvicorn.run(app, host="0.0.0.0", port=port, log_level="warning")
+
+   Check the terminal for the actual URL if 8000 is already in use.
 
    On shutdown, the ``@app.on_event("shutdown")`` handler calls
    ``wipe_session_logic()`` to clean up the upload directory and reset

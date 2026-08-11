@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>disco.cli &mdash; DISCO v1.2.3</title>
+  <title>disco.cli &mdash; DISCO v1.2.4</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/custom_disco.css?v=499842b1" />
@@ -15,9 +15,9 @@
     <link rel="shortcut icon" href="../_static/disco_icon.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=590429e0"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/documentation_options.js?v=928db92d"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -86,6 +86,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../cli.html#synopsis">Synopsis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cli.html#positional-arguments">Positional Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cli.html#optional-arguments">Optional Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html#confirmation-prompt">Confirmation Prompt</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cli.html#usage-examples">Usage Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cli.html#cnn-model-loading">CNN Model Loading</a></li>
 </ul>
@@ -242,7 +243,15 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-2-3-current">Version 1.2.3 (current)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-2-4-current">Version 1.2.4 (current)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog.html#gui">GUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog.html#backend">Backend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog.html#cli">CLI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog.html#docs-packaging">Docs / packaging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-2-3">Version 1.2.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-2-2">Version 1.2.2</a></li>
 </ul>
 </li>
 </ul>
@@ -289,7 +298,7 @@ the parent directory name to disambiguate sources at different directory
 levels.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>base_dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Root directory to search.</p>
+<dd class="field-odd"><p><strong>base_dir</strong> (<em>str</em>) – Root directory to search.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>List of group dictionaries, each with keys:
@@ -297,7 +306,7 @@ levels.</p>
 <code class="docutils literal notranslate"><span class="pre">&quot;output_dir&quot;</span></code> (str).</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a>]</p>
+<dd class="field-odd"><p>list[dict]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -309,14 +318,14 @@ levels.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>files_to_process</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – Ordered list of FITS file paths.</p></li>
-<li><p><strong>group_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Human-readable group identifier (used in output
+<li><p><strong>files_to_process</strong> (<em>list</em>) – Ordered list of FITS file paths.</p></li>
+<li><p><strong>group_name</strong> (<em>str</em>) – Human-readable group identifier (used in output
 filenames).</p></li>
-<li><p><strong>output_dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Directory where output files are written.</p></li>
-<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.Namespace" title="(in Python v3.14)"><em>argparse.Namespace</em></a>) – Parsed command-line arguments. Relevant
+<li><p><strong>output_dir</strong> (<em>str</em>) – Directory where output files are written.</p></li>
+<li><p><strong>args</strong> (<em>argparse.Namespace</em>) – Parsed command-line arguments. Relevant
 attributes: <code class="docutils literal notranslate"><span class="pre">rout</span></code>, <code class="docutils literal notranslate"><span class="pre">rmin</span></code>, <code class="docutils literal notranslate"><span class="pre">incl</span></code>,
 <code class="docutils literal notranslate"><span class="pre">pa</span></code>, <code class="docutils literal notranslate"><span class="pre">beam</span></code>, <code class="docutils literal notranslate"><span class="pre">homobeam</span></code>, <code class="docutils literal notranslate"><span class="pre">csv</span></code>,
-<code class="docutils literal notranslate"><span class="pre">debug</span></code>.</p></li>
+<code class="docutils literal notranslate"><span class="pre">debug</span></code>, <code class="docutils literal notranslate"><span class="pre">yes</span></code>.</p></li>
 <li><p><strong>cnn_model</strong> (<a class="reference internal" href="cnn_inference.html#disco.core.cnn_inference.DiscoNet" title="disco.core.cnn_inference.DiscoNet"><em>DiscoNet</em></a><em> | </em><em>None</em>) – Pre-loaded DiscoNet model, or <code class="docutils literal notranslate"><span class="pre">None</span></code>
 to use analytical-only geometry.</p></li>
 </ul>
@@ -336,10 +345,14 @@ to use analytical-only geometry.</p></li>
 <dt class="sig sig-object py" id="disco.cli.main">
 <span class="sig-prename descclassname"><span class="pre">disco.cli.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/cli.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.cli.main" title="Link to this definition"></a></dt>
 <dd><p>Parse command-line arguments and orchestrate the full pipeline execution
-across all matched groups. Loads the DiscoNet model once before iterating
-over groups. Groups are processed sequentially with a <code class="docutils literal notranslate"><span class="pre">tqdm</span></code> outer
-progress bar. Processing failures for individual groups are logged but
-do not abort the remaining groups.</p>
+across all matched groups. Before scanning, prints a confirmation prompt
+(<code class="docutils literal notranslate"><span class="pre">Are</span> <span class="pre">you</span> <span class="pre">sure</span> <span class="pre">you</span> <span class="pre">want</span> <span class="pre">to</span> <span class="pre">continue?</span> <span class="pre">[y/N]</span></code>) unless <code class="docutils literal notranslate"><span class="pre">-y</span></code> / <code class="docutils literal notranslate"><span class="pre">--yes</span></code>
+is set; non-interactive sessions without <code class="docutils literal notranslate"><span class="pre">--yes</span></code> exit with an error.
+Identifiers may be object name prefixes, directory paths, or direct
+<code class="docutils literal notranslate"><span class="pre">.fits</span></code> paths. Loads the DiscoNet model once before iterating over
+groups. Groups are processed sequentially with a <code class="docutils literal notranslate"><span class="pre">tqdm</span></code> outer progress
+bar. Processing failures for individual groups are logged but do not
+abort the remaining groups.</p>
 </dd></dl>
 
 </section>

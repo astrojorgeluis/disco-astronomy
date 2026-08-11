@@ -21,7 +21,7 @@ Synopsis
 
    usage: disco-start [-h] [--rout ROUT] [--rmin RMIN] [--incl INCL] [--pa PA]
                       [--beam BEAM] [--homobeam {on,off}] [--csv {on,off}]
-                      [--debug {on,off}] [identifier ...]
+                      [--debug {on,off}] [-y] [identifier ...]
 
 Positional Arguments
 --------------------
@@ -87,6 +87,24 @@ Optional Arguments
      - ``off``
      - Save a diagnostic deprojected PNG image showing the optimised
        centre and outer radius overlay.
+   * - ``-y``, ``--yes``
+     - off
+     - Skip the interactive confirmation prompt before FITS scanning.
+       Required in non-interactive sessions (no TTY); otherwise the CLI
+       exits with an error asking you to pass ``--yes``.
+
+Confirmation Prompt
+-------------------
+
+Before discovering FITS files, the CLI prints a warning with the current
+working directory and asks:
+
+.. code-block:: text
+
+   Are you sure you want to continue? [y/N]:
+
+Answer ``y`` or ``yes`` to proceed, or anything else to cancel. Use
+``-y`` / ``--yes`` to bypass this prompt (for scripts and CI).
 
 Usage Examples
 --------------
@@ -116,6 +134,10 @@ Usage Examples
 
    # Specify a custom homogenisation beam size
    disco-start AS209 Elias29 --homobeam on --beam 0.15
+
+   # Skip confirmation (scripts / non-interactive)
+   disco-start AS209 --yes
+   disco-start path/to/disk.fits -y
 
 CNN Model Loading
 -----------------

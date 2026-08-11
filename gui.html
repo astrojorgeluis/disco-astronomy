@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Graphical User Interface &mdash; DISCO v1.2.3</title>
+  <title>Graphical User Interface &mdash; DISCO v1.2.4</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom_disco.css?v=499842b1" />
@@ -15,10 +15,10 @@
     <link rel="shortcut icon" href="_static/disco_icon.png"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=590429e0"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="_static/documentation_options.js?v=928db92d"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -87,6 +87,7 @@
 <li class="toctree-l2"><a class="reference internal" href="cli.html#synopsis">Synopsis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#positional-arguments">Positional Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#optional-arguments">Optional Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#confirmation-prompt">Confirmation Prompt</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#usage-examples">Usage Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#cnn-model-loading">CNN Model Loading</a></li>
 </ul>
@@ -243,7 +244,15 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-3-current">Version 1.2.3 (current)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-4-current">Version 1.2.4 (current)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#gui">GUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#backend">Backend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#cli">CLI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#docs-packaging">Docs / packaging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-3">Version 1.2.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-2">Version 1.2.2</a></li>
 </ul>
 </li>
 </ul>
@@ -279,8 +288,10 @@ launched with:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>disco-start<span class="w"> </span>gui
 </pre></div>
 </div>
-<p>The server starts on <code class="docutils literal notranslate"><span class="pre">http://localhost:8000</span></code> and opens a browser tab
-automatically after a 1.5-second delay via a background thread.</p>
+<p>The server binds to the first free TCP port starting at 8000 and opens a
+browser tab automatically after a 1.5-second delay via a background thread.
+Check the terminal for the URL (for example <code class="docutils literal notranslate"><span class="pre">http://localhost:8000</span></code>, or
+<code class="docutils literal notranslate"><span class="pre">8001</span></code> if 8000 is already in use).</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>The GUI is recommended for exploratory analysis and first-time users.
@@ -315,9 +326,9 @@ fit for the current parameters.</p>
 <p><strong>4. Auto-tune the geometry (optional)</strong></p>
 <p>Click <strong>Auto-Tune Geometry</strong> in the ANALYSIS panel to run the optimiser
 automatically. It performs a grid-search seeded Nelder-Mead minimisation of
-the geometric loss and applies the best-fit inclination, position angle, and
-centre — no manual tuning required. See <a class="reference internal" href="api/optimization.html#api-optimization"><span class="std std-ref">disco.core.optimization</span></a> for the
-full algorithm description.</p>
+the geometric loss and applies the best-fit inclination and position angle
+(centre is not updated) — no manual tuning of those angles required. See
+<a class="reference internal" href="api/optimization.html#api-optimization"><span class="std std-ref">disco.core.optimization</span></a> for the full algorithm description.</p>
 <p><strong>5. Explore the results</strong></p>
 <p>Switch between <strong>Deproj</strong>, <strong>Model</strong>, <strong>Residuals</strong>, and <strong>Polar</strong> view tabs
 to inspect different representations of the disk. Activate the <strong>Inspector</strong>
@@ -478,9 +489,9 @@ drag-selection on the profile chart or image canvas).</p></td>
 <h2>Auto-Tune Geometry<a class="headerlink" href="#auto-tune-geometry" title="Link to this heading"></a></h2>
 <p>The <strong>Auto-Tune</strong> button (implemented as <code class="docutils literal notranslate"><span class="pre">handleAutoTune</span></code> in <code class="docutils literal notranslate"><span class="pre">App.jsx</span></code>)
 posts the current geometry to <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/optimize_geometry</span></code> and applies the
-returned optimised inclination and position angle:</p>
-<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="c1">// App.jsx — handleAutoTune</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="s1">&#39;http://localhost:8000/optimize_geometry&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+returned optimised inclination, position angle, and centre:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="c1">// App.jsx — handleAutoTune (API base URL matches the running server port)</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">apiBase</span><span class="si">}</span><span class="sb">/optimize_geometry`</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;POST&#39;</span><span class="p">,</span>
 <span class="w">    </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
 <span class="w">        </span><span class="nx">cx</span><span class="p">,</span><span class="w"> </span><span class="nx">cy</span><span class="p">,</span><span class="w"> </span><span class="nx">pa</span><span class="p">,</span><span class="w"> </span><span class="nx">incl</span><span class="p">,</span><span class="w"> </span><span class="nx">rout</span><span class="p">,</span><span class="w"> </span><span class="nx">fit_rmin</span><span class="p">,</span><span class="w"> </span><span class="nx">fit_rmax</span>
@@ -490,13 +501,15 @@ returned optimised inclination and position angle:</p>
 <span class="nx">setParams</span><span class="p">(</span><span class="nx">prev</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">({</span>
 <span class="w">    </span><span class="p">...</span><span class="nx">prev</span><span class="p">,</span>
 <span class="w">    </span><span class="nx">incl</span><span class="o">:</span><span class="w"> </span><span class="nx">data</span><span class="p">.</span><span class="nx">optimized_incl</span><span class="p">,</span>
-<span class="w">    </span><span class="nx">pa</span><span class="o">:</span><span class="w">   </span><span class="nx">data</span><span class="p">.</span><span class="nx">optimized_pa</span>
+<span class="w">    </span><span class="nx">pa</span><span class="o">:</span><span class="w">   </span><span class="nx">data</span><span class="p">.</span><span class="nx">optimized_pa</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">cx</span><span class="o">:</span><span class="w">   </span><span class="nx">data</span><span class="p">.</span><span class="nx">optimized_cx</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">cy</span><span class="o">:</span><span class="w">   </span><span class="nx">data</span><span class="p">.</span><span class="nx">optimized_cy</span><span class="p">,</span>
 <span class="p">}));</span>
 </pre></div>
 </div>
-<p>The optimisation is a grid-search seeded Nelder-Mead minimisation of
+<p>The optimisation is a grid-search seeded L-BFGS-B minimisation of
 <a class="reference internal" href="api/optimization.html#disco.core.optimization.geometric_loss" title="disco.core.optimization.geometric_loss"><code class="xref py py-func docutils literal notranslate"><span class="pre">disco.core.optimization.geometric_loss()</span></code></a> (see <a class="reference internal" href="api/optimization.html#api-optimization"><span class="std std-ref">disco.core.optimization</span></a>).
-Note that the GUI’s Auto-Tune uses only the analytical grid-search path;
+Note that the GUI’s Auto-Tune uses the analytical grid-search path;
 the CNN-seeded hybrid optimiser (<code class="docutils literal notranslate"><span class="pre">auto_tune_geometry_hybrid</span></code>) is used
 exclusively by the CLI pipeline.</p>
 </section>
@@ -563,6 +576,11 @@ trigger a <code class="docutils literal notranslate"><span class="pre">POST</spa
 </tr>
 <tr class="row-even"><td><p>Contours</p></td>
 <td><p>Boolean toggle; number of contour levels is configurable (1–50).</p></td>
+</tr>
+<tr class="row-odd"><td><p>Overlays</p></td>
+<td><p>Axes, colourbar, and contours. The synthesised beam is shown when
+available in the FITS header (not a Display Configuration toggle);
+the Matplotlib Widget provides a separate beam overlay control.</p></td>
 </tr>
 </tbody>
 </table>

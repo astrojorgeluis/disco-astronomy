@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Command-Line Interface &mdash; DISCO v1.2.3</title>
+  <title>Command-Line Interface &mdash; DISCO v1.2.4</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom_disco.css?v=499842b1" />
@@ -15,9 +15,9 @@
     <link rel="shortcut icon" href="_static/disco_icon.png"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=590429e0"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/documentation_options.js?v=928db92d"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -86,6 +86,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#synopsis">Synopsis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#positional-arguments">Positional Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#optional-arguments">Optional Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#confirmation-prompt">Confirmation Prompt</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#usage-examples">Usage Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#cnn-model-loading">CNN Model Loading</a></li>
 </ul>
@@ -242,7 +243,15 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-3-current">Version 1.2.3 (current)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-4-current">Version 1.2.4 (current)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#gui">GUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#backend">Backend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#cli">CLI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#docs-packaging">Docs / packaging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-3">Version 1.2.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-2">Version 1.2.2</a></li>
 </ul>
 </li>
 </ul>
@@ -284,7 +293,7 @@ either to the GUI server or to the CLI pipeline (see <a class="reference interna
 <h2>Synopsis<a class="headerlink" href="#synopsis" title="Link to this heading"></a></h2>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: disco-start [-h] [--rout ROUT] [--rmin RMIN] [--incl INCL] [--pa PA]
                    [--beam BEAM] [--homobeam {on,off}] [--csv {on,off}]
-                   [--debug {on,off}] [identifier ...]
+                   [--debug {on,off}] [-y] [identifier ...]
 </pre></div>
 </div>
 </section>
@@ -372,8 +381,24 @@ See <a class="reference internal" href="file_io.html#file-io-cli"><span class="s
 <td><p>Save a diagnostic deprojected PNG image showing the optimised
 centre and outer radius overlay.</p></td>
 </tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-y</span></code>, <code class="docutils literal notranslate"><span class="pre">--yes</span></code></p></td>
+<td><p>off</p></td>
+<td><p>Skip the interactive confirmation prompt before FITS scanning.
+Required in non-interactive sessions (no TTY); otherwise the CLI
+exits with an error asking you to pass <code class="docutils literal notranslate"><span class="pre">--yes</span></code>.</p></td>
+</tr>
 </tbody>
 </table>
+</section>
+<section id="confirmation-prompt">
+<h2>Confirmation Prompt<a class="headerlink" href="#confirmation-prompt" title="Link to this heading"></a></h2>
+<p>Before discovering FITS files, the CLI prints a warning with the current
+working directory and asks:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Are you sure you want to continue? [y/N]:
+</pre></div>
+</div>
+<p>Answer <code class="docutils literal notranslate"><span class="pre">y</span></code> or <code class="docutils literal notranslate"><span class="pre">yes</span></code> to proceed, or anything else to cancel. Use
+<code class="docutils literal notranslate"><span class="pre">-y</span></code> / <code class="docutils literal notranslate"><span class="pre">--yes</span></code> to bypass this prompt (for scripts and CI).</p>
 </section>
 <section id="usage-examples">
 <h2>Usage Examples<a class="headerlink" href="#usage-examples" title="Link to this heading"></a></h2>
@@ -400,6 +425,10 @@ disco-start<span class="w"> </span>AS209<span class="w"> </span>--rout<span clas
 
 <span class="c1"># Specify a custom homogenisation beam size</span>
 disco-start<span class="w"> </span>AS209<span class="w"> </span>Elias29<span class="w"> </span>--homobeam<span class="w"> </span>on<span class="w"> </span>--beam<span class="w"> </span><span class="m">0</span>.15
+
+<span class="c1"># Skip confirmation (scripts / non-interactive)</span>
+disco-start<span class="w"> </span>AS209<span class="w"> </span>--yes
+disco-start<span class="w"> </span>path/to/disk.fits<span class="w"> </span>-y
 </pre></div>
 </div>
 </section>

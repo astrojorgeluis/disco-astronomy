@@ -48,9 +48,9 @@ Launch the web interface for interactive, parameter-driven analysis:
    disco-start gui
 
 This command starts a local `Uvicorn <https://www.uvicorn.org/>`_ server on
-``http://localhost:8000``, opens a browser window automatically after a short
-delay, and serves the pre-built React application bundled in
-``disco/static/``.
+the first free TCP port starting at 8000 (check the terminal for the URL),
+opens a browser window automatically after a short delay, and serves the
+pre-built React application bundled in ``disco/static/``.
 
 Once running, load a FITS file using the folder icon in the toolbar.
 The interface provides four view modes — **Deproj**, **Model**,
@@ -91,9 +91,17 @@ directory:
    # Specify a custom homogenisation beam size and enable debug output
    disco-start AS209 Elias29 --homobeam on --beam 0.15 --debug on
 
+   # Skip the interactive confirmation prompt (required in non-interactive sessions)
+   disco-start AS209 --yes
+
 The pipeline discovers FITS files, groups them by common prefix
 (distinguishing multi-band observations), and processes each group through a
 five-phase sequence: FITS ingestion, geometry optimisation, uncertainty
 estimation, radial profile extraction, and result serialisation. See
 :ref:`pipeline` for a detailed description of each phase, and :ref:`cli`
 for the full argument reference.
+
+Before scanning, the CLI prints a warning with the current working directory
+and asks for confirmation (``Are you sure you want to continue? [y/N]``).
+Pass ``-y`` / ``--yes`` to skip the prompt, or use it in non-interactive
+sessions where confirmation cannot be entered.

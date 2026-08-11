@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>disco.server — HTTP API Reference &mdash; DISCO v1.2.3</title>
+  <title>disco.server — HTTP API Reference &mdash; DISCO v1.2.4</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/custom_disco.css?v=499842b1" />
@@ -15,10 +15,10 @@
     <link rel="shortcut icon" href="../_static/disco_icon.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=590429e0"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../_static/documentation_options.js?v=928db92d"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -87,6 +87,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../cli.html#synopsis">Synopsis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cli.html#positional-arguments">Positional Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cli.html#optional-arguments">Optional Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html#confirmation-prompt">Confirmation Prompt</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cli.html#usage-examples">Usage Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cli.html#cnn-model-loading">CNN Model Loading</a></li>
 </ul>
@@ -243,7 +244,15 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-2-3-current">Version 1.2.3 (current)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-2-4-current">Version 1.2.4 (current)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog.html#gui">GUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog.html#backend">Backend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog.html#cli">CLI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog.html#docs-packaging">Docs / packaging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-2-3">Version 1.2.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-2-2">Version 1.2.2</a></li>
 </ul>
 </li>
 </ul>
@@ -274,11 +283,14 @@
   <section id="module-disco.server">
 <span id="disco-server-http-api-reference"></span><span id="api-server"></span><h1><code class="docutils literal notranslate"><span class="pre">disco.server</span></code> — HTTP API Reference<a class="headerlink" href="#module-disco.server" title="Link to this heading"></a></h1>
 <p>The GUI backend is implemented as a FastAPI application (<code class="docutils literal notranslate"><span class="pre">app</span></code>) served by
-Uvicorn on <code class="docutils literal notranslate"><span class="pre">http://0.0.0.0:8000</span></code>. The application maintains a single
-in-memory session via the module-level singleton <code class="docutils literal notranslate"><span class="pre">state</span></code> (an instance of
-<code class="docutils literal notranslate"><span class="pre">GlobalState</span></code>). All state is cleared on startup and on server shutdown.</p>
-<p>CORS is enabled for all origins (<code class="docutils literal notranslate"><span class="pre">allow_origins=[&quot;*&quot;]</span></code>) to permit
-access from the bundled React application.</p>
+Uvicorn on <code class="docutils literal notranslate"><span class="pre">http://0.0.0.0:&lt;port&gt;</span></code>, where <code class="docutils literal notranslate"><span class="pre">&lt;port&gt;</span></code> is the first free TCP
+port starting at 8000 (see <a class="reference internal" href="#disco.server.start_server" title="disco.server.start_server"><code class="xref py py-func docutils literal notranslate"><span class="pre">start_server()</span></code></a>). The application maintains a
+single in-memory session via the module-level singleton <code class="docutils literal notranslate"><span class="pre">state</span></code> (an instance
+of <code class="docutils literal notranslate"><span class="pre">GlobalState</span></code>). All state is cleared on startup and on server shutdown.</p>
+<p>CORS is restricted to localhost origins via an <code class="docutils literal notranslate"><span class="pre">allow_origin_regex</span></code> that
+matches <code class="docutils literal notranslate"><span class="pre">http(s)://localhost</span></code> and <code class="docutils literal notranslate"><span class="pre">http(s)://127.0.0.1</span></code> with an optional
+port, which permits access from the bundled React application served on the
+same host.</p>
 <hr class="docutils" />
 <section id="global-state">
 <h2>Global State<a class="headerlink" href="#global-state" title="Link to this heading"></a></h2>
@@ -323,29 +335,29 @@ image type, used for correct axis labelling.</p></td>
 <h2>Pydantic Request Models<a class="headerlink" href="#pydantic-request-models" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="disco.server.PlotParams">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disco.server.</span></span><span class="sig-name descname"><span class="pre">PlotParams</span></span><a class="reference internal" href="../_modules/disco/server.html#PlotParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.server.PlotParams" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">disco.server.</span></span><span class="sig-name descname"><span class="pre">PlotParams</span></span><a class="reference internal" href="../_modules/disco/server.html#PlotParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.server.PlotParams" title="Link to this definition"></a></dt>
 <dd><p>Request body for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/render_plot</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Image type to render. One of:
+<li><p><strong>type</strong> (<em>str</em>) – Image type to render. One of:
 <code class="docutils literal notranslate"><span class="pre">&quot;data&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;deproj&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;model&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;residuals&quot;</span></code>,
 <code class="docutils literal notranslate"><span class="pre">&quot;polar&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;profile&quot;</span></code>.</p></li>
-<li><p><strong>cmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Matplotlib colormap name. Default: <code class="docutils literal notranslate"><span class="pre">&quot;magma&quot;</span></code>.</p></li>
-<li><p><strong>stretch</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Intensity stretch. One of: <code class="docutils literal notranslate"><span class="pre">&quot;asinh&quot;</span></code> (default),
+<li><p><strong>cmap</strong> (<em>str</em>) – Matplotlib colormap name. Default: <code class="docutils literal notranslate"><span class="pre">&quot;magma&quot;</span></code>.</p></li>
+<li><p><strong>stretch</strong> (<em>str</em>) – Intensity stretch. One of: <code class="docutils literal notranslate"><span class="pre">&quot;asinh&quot;</span></code> (default),
 <code class="docutils literal notranslate"><span class="pre">&quot;log&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;linear&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;sqrt&quot;</span></code>.</p></li>
-<li><p><strong>vmax_percentile</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> | </em><em>None</em>) – If set, the vmax is computed as
+<li><p><strong>vmax_percentile</strong> (<em>float</em><em> | </em><em>None</em>) – If set, the vmax is computed as
 this percentile of the image data.</p></li>
-<li><p><strong>vmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> | </em><em>None</em>) – Manual lower intensity limit.</p></li>
-<li><p><strong>vmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> | </em><em>None</em>) – Manual upper intensity limit.</p></li>
-<li><p><strong>contours</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Overlay contours. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>contour_levels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of contour levels. Default: 5.</p></li>
-<li><p><strong>show_beam</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Overlay beam ellipse. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>show_grid</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Overlay grid lines. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>show_axes</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Show axes and labels. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>show_colorbar</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Show colorbar. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> | </em><em>None</em>) – Optional plot title.</p></li>
-<li><p><strong>dpi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Figure DPI. Default: 150.</p></li>
+<li><p><strong>vmin</strong> (<em>float</em><em> | </em><em>None</em>) – Manual lower intensity limit.</p></li>
+<li><p><strong>vmax</strong> (<em>float</em><em> | </em><em>None</em>) – Manual upper intensity limit.</p></li>
+<li><p><strong>contours</strong> (<em>bool</em>) – Overlay contours. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>contour_levels</strong> (<em>int</em>) – Number of contour levels. Default: 5.</p></li>
+<li><p><strong>show_beam</strong> (<em>bool</em>) – Overlay beam ellipse. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>show_grid</strong> (<em>bool</em>) – Overlay grid lines. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>show_axes</strong> (<em>bool</em>) – Show axes and labels. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>show_colorbar</strong> (<em>bool</em>) – Show colorbar. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>title</strong> (<em>str</em><em> | </em><em>None</em>) – Optional plot title.</p></li>
+<li><p><strong>dpi</strong> (<em>int</em>) – Figure DPI. Default: 150.</p></li>
 </ul>
 </dd>
 </dl>
@@ -353,19 +365,19 @@ this percentile of the image data.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="disco.server.PipelineParams">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disco.server.</span></span><span class="sig-name descname"><span class="pre">PipelineParams</span></span><a class="reference internal" href="../_modules/disco/server.html#PipelineParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.server.PipelineParams" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">disco.server.</span></span><span class="sig-name descname"><span class="pre">PipelineParams</span></span><a class="reference internal" href="../_modules/disco/server.html#PipelineParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.server.PipelineParams" title="Link to this definition"></a></dt>
 <dd><p>Request body for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/run_pipeline</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>cx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Disk centre x-coordinate in pixels.</p></li>
-<li><p><strong>cy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Disk centre y-coordinate in pixels (GUI convention:
+<li><p><strong>cx</strong> (<em>float</em>) – Disk centre x-coordinate in pixels.</p></li>
+<li><p><strong>cy</strong> (<em>float</em>) – Disk centre y-coordinate in pixels (GUI convention:
 measured from the top of the image).</p></li>
-<li><p><strong>pa</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Position angle in degrees.</p></li>
-<li><p><strong>incl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Inclination in degrees.</p></li>
-<li><p><strong>rout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Outer disk radius in arcseconds.</p></li>
-<li><p><strong>fit_rmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Inner radius for Gaussian ring fitting. Default: 0.0.</p></li>
-<li><p><strong>fit_rmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Outer radius for Gaussian ring fitting. Default: 0.0.</p></li>
+<li><p><strong>pa</strong> (<em>float</em>) – Position angle in degrees.</p></li>
+<li><p><strong>incl</strong> (<em>float</em>) – Inclination in degrees.</p></li>
+<li><p><strong>rout</strong> (<em>float</em>) – Outer disk radius in arcseconds.</p></li>
+<li><p><strong>fit_rmin</strong> (<em>float</em>) – Inner radius for Gaussian ring fitting. Default: 0.0.</p></li>
+<li><p><strong>fit_rmax</strong> (<em>float</em>) – Outer radius for Gaussian ring fitting. Default: 0.0.</p></li>
 </ul>
 </dd>
 </dl>
@@ -373,18 +385,18 @@ measured from the top of the image).</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="disco.server.OptimizeParams">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disco.server.</span></span><span class="sig-name descname"><span class="pre">OptimizeParams</span></span><a class="reference internal" href="../_modules/disco/server.html#OptimizeParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.server.OptimizeParams" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">disco.server.</span></span><span class="sig-name descname"><span class="pre">OptimizeParams</span></span><a class="reference internal" href="../_modules/disco/server.html#OptimizeParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.server.OptimizeParams" title="Link to this definition"></a></dt>
 <dd><p>Request body for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/optimize_geometry</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>cx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centre x in pixels.</p></li>
-<li><p><strong>cy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centre y in pixels.</p></li>
-<li><p><strong>pa</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current position angle in degrees.</p></li>
-<li><p><strong>incl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current inclination in degrees.</p></li>
-<li><p><strong>rout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Outer radius in arcseconds.</p></li>
-<li><p><strong>fit_rmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Inner fitting radius in arcseconds. Default: 0.0.</p></li>
-<li><p><strong>fit_rmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Outer fitting radius in arcseconds. Default: 0.0.</p></li>
+<li><p><strong>cx</strong> (<em>float</em>) – Centre x in pixels.</p></li>
+<li><p><strong>cy</strong> (<em>float</em>) – Centre y in pixels.</p></li>
+<li><p><strong>pa</strong> (<em>float</em>) – Current position angle in degrees.</p></li>
+<li><p><strong>incl</strong> (<em>float</em>) – Current inclination in degrees.</p></li>
+<li><p><strong>rout</strong> (<em>float</em>) – Outer radius in arcseconds.</p></li>
+<li><p><strong>fit_rmin</strong> (<em>float</em>) – Inner fitting radius in arcseconds. Default: 0.0.</p></li>
+<li><p><strong>fit_rmax</strong> (<em>float</em>) – Outer fitting radius in arcseconds. Default: 0.0.</p></li>
 </ul>
 </dd>
 </dl>
@@ -392,11 +404,11 @@ measured from the top of the image).</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="disco.server.LoadLocalParams">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disco.server.</span></span><span class="sig-name descname"><span class="pre">LoadLocalParams</span></span><a class="reference internal" href="../_modules/disco/server.html#LoadLocalParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.server.LoadLocalParams" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">disco.server.</span></span><span class="sig-name descname"><span class="pre">LoadLocalParams</span></span><a class="reference internal" href="../_modules/disco/server.html#LoadLocalParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.server.LoadLocalParams" title="Link to this definition"></a></dt>
 <dd><p>Request body for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/load_local</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Base filename (not a full path) to load from
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – Base filename (not a full path) to load from
 the upload directory <code class="docutils literal notranslate"><span class="pre">.disco_uploads/</span></code>.</p>
 </dd>
 </dl>
@@ -732,12 +744,16 @@ stale asset delivery.</p>
 <dt class="sig sig-object py" id="disco.server.start_server">
 <span class="sig-prename descclassname"><span class="pre">disco.server.</span></span><span class="sig-name descname"><span class="pre">start_server</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/server.html#start_server"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.server.start_server" title="Link to this definition"></a></dt>
 <dd><p>Called by <a class="reference internal" href="main.html#disco.main.run" title="disco.main.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">disco.main.run()</span></code></a> when <code class="docutils literal notranslate"><span class="pre">gui</span></code> is the first argument.
-Prints the server address to stdout, starts a background thread that
-opens the default browser at <code class="docutils literal notranslate"><span class="pre">http://localhost:8000</span></code> after a 1.5-second
-delay, and starts Uvicorn:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8000</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="s2">&quot;warning&quot;</span><span class="p">)</span>
+Selects the first free TCP port starting at 8000, prints the server URL
+to stdout, starts a background thread that opens the default browser at
+that URL after a 1.5-second delay, and starts Uvicorn:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">port</span> <span class="o">=</span> <span class="n">get_free_port</span><span class="p">()</span>  <span class="c1"># first free port from 8000 upward</span>
+<span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;http://localhost:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="c1"># ... open browser at url ...</span>
+<span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="s2">&quot;warning&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Check the terminal for the actual URL if 8000 is already in use.</p>
 <p>On shutdown, the <code class="docutils literal notranslate"><span class="pre">&#64;app.on_event(&quot;shutdown&quot;)</span></code> handler calls
 <code class="docutils literal notranslate"><span class="pre">wipe_session_logic()</span></code> to clean up the upload directory and reset
 session state.</p>
