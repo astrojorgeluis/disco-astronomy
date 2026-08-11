@@ -60,7 +60,7 @@ def predict_with_cnn(data, header, pixel_scale, cx, cy, search_rad, model):
         crop  = np.pad(crop, ((0, pad_y), (0, pad_x)), mode='constant')
 
     if crop.shape[0] == 0 or crop.shape[1] == 0:
-        return 0.0, 0.0, 0.0
+        return 0.0, 0.0
 
     zoom_y = IMG_SIZE / crop.shape[0]
     zoom_x = IMG_SIZE / crop.shape[1]

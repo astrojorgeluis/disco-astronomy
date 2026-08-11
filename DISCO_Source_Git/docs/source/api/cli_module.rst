@@ -41,7 +41,7 @@ argument.
    :param argparse.Namespace args: Parsed command-line arguments. Relevant
                                     attributes: ``rout``, ``rmin``, ``incl``,
                                     ``pa``, ``beam``, ``homobeam``, ``csv``,
-                                    ``debug``.
+                                    ``debug``, ``yes``.
    :param DiscoNet | None cnn_model: Pre-loaded DiscoNet model, or ``None``
                                       to use analytical-only geometry.
 
@@ -56,7 +56,11 @@ argument.
 .. function:: main()
 
    Parse command-line arguments and orchestrate the full pipeline execution
-   across all matched groups. Loads the DiscoNet model once before iterating
-   over groups. Groups are processed sequentially with a ``tqdm`` outer
-   progress bar. Processing failures for individual groups are logged but
-   do not abort the remaining groups.
+   across all matched groups. Before scanning, prints a confirmation prompt
+   (``Are you sure you want to continue? [y/N]``) unless ``-y`` / ``--yes``
+   is set; non-interactive sessions without ``--yes`` exit with an error.
+   Identifiers may be object name prefixes, directory paths, or direct
+   ``.fits`` paths. Loads the DiscoNet model once before iterating over
+   groups. Groups are processed sequentially with a ``tqdm`` outer progress
+   bar. Processing failures for individual groups are logged but do not
+   abort the remaining groups.

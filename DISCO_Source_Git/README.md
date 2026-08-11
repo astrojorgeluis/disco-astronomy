@@ -59,7 +59,7 @@ DISCO bridges scientific Python libraries with a modern web interface, offering 
 
 If you use DISCO in your research, please cite the associated Zenodo record:
 
-Guzmán-Lazo, J. L. (2026). *DISCO: Deprojection Image Software for Circumstellar Objects* (v1.2.3). Zenodo. https://doi.org/10.5281/zenodo.19999239
+Guzmán-Lazo, J. L. (2026). *DISCO: Deprojection Image Software for Circumstellar Objects* (v1.2.4). Zenodo. https://doi.org/10.5281/zenodo.19999239
 
 ### BibTeX
 ```bibtex
@@ -67,7 +67,7 @@ Guzmán-Lazo, J. L. (2026). *DISCO: Deprojection Image Software for Circumstella
   author    = {Guzmán-Lazo, Jorge Luis},
   title     = {DISCO: Deprojection Image Software for Circumstellar Objects},
   year      = {2026},
-  version   = {v1.2.3},
+  version   = {v1.2.4},
   publisher = {Zenodo},
   doi       = {10.5281/zenodo.19999239},
   url       = {https://doi.org/10.5281/zenodo.19999239}
@@ -87,7 +87,7 @@ DISCO was developed by **Jorge Luis Guzmán-Lazo** within the [YEMS Millennium N
 - **Dual Visualization** — Real-time rendering of deprojected images in both Cartesian and polar projections.
 - **Batch Processing** — Automated CLI pipeline supporting multiple targets and FITS files in a single run.
 - **Beam Homogenization** — Convolves images to a common target resolution for multi-epoch or multi-band consistency (enabled by default).
-- **SIMBAD Metadata** — Automatically queries object metadata (distance, spectral type) via the CDS SIMBAD service.
+- **SIMBAD Metadata** — Manual **SIMBAD** button queries object metadata (distance, spectral type) via the CDS SIMBAD service.
 - **Gaia Proper Motion Correction** — Corrects source centroid across multi-epoch observations using Gaia DR3 astrometry.
 - **CSV Export** — Outputs radial profiles and fitted parameters in tabular format.
 
@@ -162,7 +162,7 @@ Launch the interactive web interface with:
 disco-start gui
 ```
 
-This starts a local server at `http://localhost:8000` and opens a browser tab automatically.
+This starts a local server on the first free port starting at 8000 and opens a browser tab automatically. Check the terminal for the URL (for example `http://localhost:8000`, or `8001` if 8000 is already in use).
 
 ![GUI Screenshot](https://raw.githubusercontent.com/astrojorgeluis/disco-astronomy/main/DISCO_Source_Git/assets/gui_screenshot.png)
 
@@ -187,7 +187,7 @@ Activate the **Ellipse Tool** in the toolbar to display the geometry overlay on 
 Click **RUN PIPELINE**. DISCO computes the deprojected image, azimuthally-averaged radial profile, cumulative flux curve, and Gaussian ring fit for the current parameters.
 
 **4. Auto-tune the geometry (optional)**
-Click **Auto-Tune Geometry** in the analysis panel to run the optimizer automatically. It performs a grid-search seeded Nelder-Mead minimization of the geometric loss and applies the best-fit inclination, position angle, and center — no manual tuning required.
+Click **Auto-Tune Geometry** in the analysis panel to run the optimizer automatically. It performs a grid-search seeded L-BFGS-B minimization of the geometric loss and applies the best-fit inclination, position angle, and center.
 
 **5. Explore the results**
 Switch between **Deproj / Model / Residuals / Polar** views to inspect different representations of the disk. Activate the **Inspector** tool and hover over the image to probe the radial profile in real time. Drag on the profile chart to define a fitting range for Gaussian ring analysis.
@@ -231,7 +231,7 @@ Once the pipeline has run, toggle between these representations using the tabs i
 ### Analysis Tools
 
 **Auto-Tune Geometry**
-Runs a grid-search seeded Nelder-Mead minimization to find the optimal inclination, position angle, and center offset. Results are applied immediately to the sliders.
+Runs a grid-search seeded L-BFGS-B minimization to find the optimal inclination, position angle, and center. Results are applied immediately to the sliders.
 
 **Gaussian Ring Fitting**
 Click and drag on the radial profile chart to define a fitting range. The pipeline fits a Gaussian to the selected interval and reports:
@@ -242,7 +242,6 @@ Click and drag on the radial profile chart to define a fitting range. The pipeli
 While the Inspector tool is active, hovering over the image shows:
 - **Radius** — radial position in arcseconds.
 - **Intensity** — brightness temperature at the nearest profile sample, in Kelvin.
-- **Offset X / Y** — projected sky offsets in arcseconds.
 
 **Custom Markers**
 Click **Add Marker** to enter placement mode. A dialog lets you define a label, shape (`circle`, `square`, `star`, `cross`), and color. Markers are rendered as overlays on the image for the duration of the session.
@@ -266,7 +265,7 @@ Click **Settings** in the analysis panel toolbar to access visualization control
 | **Stretch** | `asinh`, `linear`, `log`, `sqrt` |
 | **Intensity Limits** | Manual `Vmin` / `Vmax`, or **Auto** (percentile-based scaling) |
 | **Contours** | Toggle on/off; configurable number of levels (1–50) |
-| **Overlays** | Axes, colorbar, beam ellipse |
+| **Overlays** | Axes, colorbar, contours (beam is shown when available in the header; Matplotlib Widget has a separate beam toggle) |
 
 ---
 
@@ -314,16 +313,22 @@ disco-start AS209 --rout 1.2 --homobeam off
 
 # Specify a custom homogenization beam size
 disco-start AS209 Elias29 --homobeam on --beam 0.15
+
+# Skip the interactive confirmation prompt (scripts / non-interactive)
+disco-start AS209 --yes
+disco-start path/to/disk.fits -y
 ```
 
 > If no `identifier` is provided, DISCO discovers and processes **all** FITS files found in the current directory tree.
+
+Before scanning, the CLI prints a warning with the current working directory and asks `Are you sure you want to continue? [y/N]`. Pass `-y` / `--yes` to skip the prompt (required in non-interactive sessions).
 
 ### CLI Reference
 
 ```
 usage: disco-start [-h] [--rout ROUT] [--rmin RMIN] [--incl INCL] [--pa PA]
                    [--beam BEAM] [--homobeam {on,off}] [--csv {on,off}]
-                   [--debug {on,off}] [identifier ...]
+                   [--debug {on,off}] [-y] [identifier ...]
 ```
 
 | Argument | Default | Description |
@@ -337,6 +342,7 @@ usage: disco-start [-h] [--rout ROUT] [--rmin RMIN] [--incl INCL] [--pa PA]
 | `--homobeam {on,off}` | `on` | Enable / disable beam homogenization. **Enabled by default.** |
 | `--csv {on,off}` | `off` | Write CSV outputs: global parameters, per-band metadata, and tabulated radial profiles. |
 | `--debug {on,off}` | `off` | Save a diagnostic PNG overlaying the optimized center and outer radius on the deprojected image. |
+| `-y`, `--yes` | off | Skip the interactive confirmation prompt before FITS scanning. |
 
 ---
 

@@ -136,7 +136,7 @@ const ColorBar = ({ cmap, vizStats }) => {
         grey: 'linear-gradient(to top, #000000, #ffffff)',
         seismic: 'linear-gradient(to top, #00004c, #2c7bb6, #abd9e9, #ffffbf, #fdae61, #d7191c, #4c0000)',
         jet: 'linear-gradient(to top, #00007f, #0000ff, #00ffff, #ffff00, #ff7f00, #ff0000, #7f0000)',
-        twilight: 'linear-gradient(to top, #e2d9e2, #9a90c9, #5c5aa3, #2f3f6e, #17243b, #281f3f, #5b2a62, #9b4f7f, #d28eb6)'
+        twilight: 'linear-gradient(to top, #e2d9e2, #9a90c9, #5c5aa3, #2f3f6e, #17243b, #281f3f, #5b2a62, #9b4f7f, #d28eb6)',
     };
 
     const rawCmap = (vizStats?.cmap_used || cmap || 'magma').toLowerCase();
@@ -364,7 +364,7 @@ const SimpleImageViewer = forwardRef(({
         );
     };
 
-    if (!imageSrc) return <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', color: 'var(--disco-text-muted)' }}>Processing...</div>;
+    if (!imageSrc) return <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', color: 'var(--disco-text-muted)' }}>Waiting for image…</div>;
 
     return (
         <div ref={containerRef} style={{ width: '100%', height: '100%', position: 'relative', background: 'var(--disco-chart-bg)', overflow: 'hidden', cursor: activeTool === 'inspector' ? 'crosshair' : (isMarkerMode ? 'crosshair' : (activeTool === 'pan' ? 'grab' : 'default')) }}>

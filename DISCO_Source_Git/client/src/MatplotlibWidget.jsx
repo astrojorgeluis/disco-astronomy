@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
     Button, HTMLSelect, Spinner,
     InputGroup, Switch, Divider,
-    NumericInput
+    NumericInput, Label
 } from "@blueprintjs/core";
 
 const SmartInput = ({ value, onValueChange, ...props }) => {
@@ -33,6 +33,8 @@ const MatplotlibWidget = ({ defaultType = 'data' }) => {
         show_beam: true,
         contours: false,
         contour_levels: 5,
+        contour_mode: 'percentiles',
+        contour_percentiles: '50,70,90,95,99',
         title: "",
         dpi: 150
     });
@@ -46,7 +48,7 @@ const MatplotlibWidget = ({ defaultType = 'data' }) => {
         options.cmap, options.stretch,
         options.vmin, options.vmax,
         options.show_axes, options.show_grid, options.show_colorbar, options.show_beam,
-        options.contours, options.contour_levels,
+        options.contours, options.contour_levels, options.contour_mode, options.contour_percentiles,
         options.dpi, options.title
     ]);
 
@@ -148,13 +150,40 @@ const MatplotlibWidget = ({ defaultType = 'data' }) => {
                 </div>
 
                 {!isProfile && (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 5 }}>
-                        <Switch label="Contours" checked={options.contours} onChange={e => updateOption('contours', e.target.checked)} style={{ marginBottom: 0 }} />
+                    <div style={{ marginTop: 8, padding: 8, background: 'var(--disco-bg-app)', borderRadius: 4, border: '1px solid var(--disco-border)' }}>
+                        <Switch label="Contours" checked={options.contours} onChange={e => updateOption('contours', e.target.checked)} style={{ marginBottom: 8 }} />
                         {options.contours && (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                                <span style={{ fontSize: 10, color: 'var(--disco-text-muted)' }}>Lvls:</span>
-                                <NumericInput style={{ width: 50 }} buttonPosition="none" min={1} max={50} value={options.contour_levels} onValueChange={(v) => updateOption('contour_levels', v)} small />
-                            </div>
+                            <>
+                                <div className="compact-label">Contour mode</div>
+                                <HTMLSelect
+                                    fill
+                                    value={options.contour_mode}
+                                    onChange={e => updateOption('contour_mode', e.target.value)}
+                                    options={[
+                                        { label: 'Percentiles (choose which)', value: 'percentiles' },
+                                        { label: 'Evenly spaced (N levels)', value: 'count' },
+                                    ]}
+                                    style={{ marginBottom: 8 }}
+                                />
+                                {options.contour_mode === 'percentiles' ? (
+                                    <Label style={{ marginBottom: 0 }}>
+                                        Percentiles
+                                        <InputGroup
+                                            value={options.contour_percentiles}
+                                            onChange={e => updateOption('contour_percentiles', e.target.value)}
+                                            placeholder="50,70,90,95,99"
+                                        />
+                                        <div style={{ fontSize: 10, color: 'var(--disco-text-muted)', marginTop: 4 }}>
+                                            Comma-separated (0–100). These select which contours to draw.
+                                        </div>
+                                    </Label>
+                                ) : (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                        <span style={{ fontSize: 10, color: 'var(--disco-text-muted)' }}>N levels:</span>
+                                        <NumericInput style={{ width: 70 }} buttonPosition="none" min={1} max={50} value={options.contour_levels} onValueChange={(v) => updateOption('contour_levels', v)} small />
+                                    </div>
+                                )}
+                            </>
                         )}
                     </div>
                 )}
@@ -198,11 +227,11 @@ const MatplotlibWidget = ({ defaultType = 'data' }) => {
                 {loading && <Spinner style={{ position: 'absolute' }} size={60} intent="primary" />}
                 {errorMsg ? (
                     <div style={{ color: 'var(--disco-danger)', textAlign: 'center' }}>
-                        <div style={{ fontSize: 16, fontWeight: 'bold', marginBottom: 5 }}>⚠️ Plot Error</div>
+                        <div style={{ fontSize: 16, fontWeight: 'bold', marginBottom: 5 }}>Plot Error</div>
                         <div>{errorMsg}</div>
                     </div>
                 ) : image ? (
-                    <img src={image} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', boxShadow: '0 0 20px rgba(0,0,0,0.1)', background: 'white' }} />
+                    <img src={image} alt="matplotlib plot" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', boxShadow: '0 0 20px rgba(0,0,0,0.1)', background: 'white' }} />
                 ) : (
                     <div style={{ color: 'var(--disco-text-muted)' }}>Ready to render.</div>
                 )}

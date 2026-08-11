@@ -80,7 +80,7 @@ the primary Python modules.
                                    apply_proper_motion_correction           │
                                                                             │
    React SPA (served from disco/static/) ←────────────────────────────────┘
-       communicates via HTTP with disco.server on localhost:8000
+       communicates via HTTP with disco.server on localhost (first free port from 8000)
 
 Operational Modes
 -----------------
@@ -120,8 +120,13 @@ assets in place:
 .. code-block:: bash
 
    # From client/
-   npm run build:disco
-   # Equivalent to: npm run build && shx rm -rf ../disco/static && shx cp -r dist ../disco/static
+   npm ci && npm run build
+
+.. warning::
+
+   On v1, use ``npm run build`` only. Do **not** use ``npm run build:disco`` —
+   that script can delete the Vite output instead of installing it under
+   ``disco/static/``.
 
 The resulting bundle is shipped as part of the ``disco-astronomy`` PyPI
 distribution via the ``MANIFEST.in`` directive

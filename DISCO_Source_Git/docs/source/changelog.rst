@@ -3,20 +3,69 @@
 Changelog
 =========
 
-Version 1.2.3 (current)
-------------------------
+Version 1.2.4 (current)
+-----------------------
 
-This is the version documented in this manual, as specified in
-``pyproject.toml``.
+Conference-ready polish release focused on GUI professionalism, CLI
+correctness of labels/paths, backend robustness, and documentation sync.
 
-.. code-block:: toml
+GUI
+~~~
 
-   [project]
-   name = "disco-astronomy"
-   version = "1.2.3"
+* Replace the bare ``Run pipeline...`` placeholder with a Blueprint
+  ``NonIdealState`` and clearer empty-state messaging.
+* Persist colormap / stretch / intensity limits across pipeline re-runs,
+  Auto-Tune, ring-range updates, and view-tab changes.
+* Align default colormap with the pipeline render (``inferno``).
+* Help opens the online documentation; toolbar labels match the docs
+  (Ellipse Tool, Pan, Inspector, Close).
+* Browser refresh no longer wipes the server session (cleared only via
+  Close / Exit or server shutdown).
+* Remove fabricated Cursor Probe sky offsets.
 
-No prior version history is recorded in the repository as of this
-documentation release.
+Backend
+~~~~~~~
+
+* Safer FITS load: first image HDU, squeeze cubes to a 2D plane, clear
+  analysis state on new upload.
+* Guard missing/zero ``CDELT2`` with a warning and sane fallback.
+* Actionable errors for pipeline/optimization failures; SIMBAD timeout
+  and offline-friendly messaging.
+* Path-safe uploads and static file serving; refuse to start GUI if
+  ``disco/static`` was not built.
+
+CLI
+~~~
+
+* CSV column labels report brightness temperature (K) when that is what
+  is written.
+* ``--yes`` / ``-y`` skips the scan confirmation; non-TTY requires ``--yes``.
+* Direct ``.fits`` paths and directory paths are supported; identifier
+  matching is case-insensitive.
+* Warn when ``--incl`` / ``--pa`` are unpaired; degrade CNN path when
+  ``BMAJ`` is missing; fix empty-crop return arity.
+
+Docs / packaging
+~~~~~~~~~~~~~~~~
+
+* Correct Auto-Tune (incl/PA only), dynamic port, CORS, SIMBAD, overlays,
+  and ``npm run build`` (not ``build:disco`` on v1).
+* Sphinx assets restored; BibTeX cite-key fixed; versions aligned to 1.2.4.
+* Minimal pytest suite and GitHub Actions CI (tests + frontend build).
+* See ``RELEASE.md`` for the PyPI / Zenodo / Pages checklist.
+
+
+Version 1.2.3
+-------------
+
+Previous published PyPI version. See repository history for details.
+
+
+Version 1.2.2
+-------------
+
+Zenodo DOI / citation integration release (GitHub Release ``v1.2.2``).
+
 
 .. note::
 

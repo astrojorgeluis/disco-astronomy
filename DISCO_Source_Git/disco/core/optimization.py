@@ -63,7 +63,17 @@ def geometric_loss(params, image, base_cx, base_cy, crop_rad, rmin_pix, rmax_pix
 
 
 def auto_tune_geometry_hybrid(data, header, pixel_scale, cx, cy, model, search_rad, rmin):
-    cnn_incl, cnn_pa = predict_with_cnn(data, header, pixel_scale, cx, cy, search_rad, model)
+    try:
+        cnn_incl, cnn_pa = predict_with_cnn(data, header, pixel_scale, cx, cy, search_rad, model)
+    except ValueError as e:
+        # Missing BMAJ / invalid crop — fall back to neutral CNN seed
+        tqdm_msg = f"[WARN] CNN prior unavailable ({e}). Using analytical seed."
+        try:
+            from tqdm import tqdm
+            tqdm.write(tqdm_msg)
+        except Exception:
+            print(tqdm_msg)
+        cnn_incl, cnn_pa = 30.0, 45.0
 
     pad         = 500
     d_pad       = np.pad(data, pad, mode='constant', constant_values=0)

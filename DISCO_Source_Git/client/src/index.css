@@ -79,6 +79,11 @@ body:not(.bp5-dark) {
   --disco-btn-ghost-hover: rgba(0, 0, 0, 0.05);
 }
 
+@keyframes disco-status-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
 /* BASE STYLES */
 body, html, #root {
   height: 100%; margin: 0; padding: 0;
