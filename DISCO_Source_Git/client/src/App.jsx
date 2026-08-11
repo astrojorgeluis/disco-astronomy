@@ -152,6 +152,7 @@ function App() {
       } catch (e) { console.error("Exit failed", e); }
   };
 
+  // Wipe server session on refresh / tab close
   useEffect(() => {
       fetch('/reset_session', { method: 'POST' }).catch(e => console.warn("Cleanup failed", e));
       const handleTabClose = () => { navigator.sendBeacon('/reset_session'); };
@@ -254,10 +255,17 @@ function App() {
         setImageSrc(previewData.image);
         setImgDimensions({ width: uploadData.shape[1], height: uploadData.shape[0] });
         setFilename(file.name);
+        setResults(null);
+        setProfileData(null);
+        setFitStats(null);
+        setGeometry(null);
         const realWidth = uploadData.shape[1];
         const realHeight = uploadData.shape[0];
         const scale = uploadData.pixel_scale || 0.03;
         setPixelScale(scale);
+        if (uploadData.warning) {
+            showToast({ message: uploadData.warning, intent: "warning", timeout: 5000 });
+        }
         try {
             const headerRes = await fetch('/get_header');
             const headerData = await headerRes.json();
@@ -295,9 +303,23 @@ function App() {
           });
           if (!response.ok) throw new Error("Optimization failed");
           const data = await response.json();
-          setParams(prev => ({ ...prev, incl: data.optimized_incl, pa: data.optimized_pa }));
-          showToast({ message: `Optimized: Incl ${data.optimized_incl.toFixed(1)}°, PA ${data.optimized_pa.toFixed(1)}°`, intent: "success", icon: "tick-circle", timeout: 3000 });
-          handleRunPipeline(true, { incl: data.optimized_incl, pa: data.optimized_pa });
+          const nextParams = {
+              incl: data.optimized_incl,
+              pa: data.optimized_pa,
+              ...(Number.isFinite(data.optimized_cx) ? { cx: data.optimized_cx } : {}),
+              ...(Number.isFinite(data.optimized_cy) ? { cy: data.optimized_cy } : {}),
+          };
+          setParams(prev => ({ ...prev, ...nextParams }));
+          const centerNote = Number.isFinite(data.optimized_cx)
+              ? ` · Center (${data.optimized_cx.toFixed(1)}, ${data.optimized_cy.toFixed(1)})`
+              : '';
+          showToast({
+              message: `Optimized: Incl ${data.optimized_incl.toFixed(1)}°, PA ${data.optimized_pa.toFixed(1)}°${centerNote}`,
+              intent: "success",
+              icon: "tick-circle",
+              timeout: 4000,
+          });
+          handleRunPipeline(true, nextParams);
       } catch (e) {
           console.error(e);
           showToast({ message: "Optimization Failed", intent: "danger" });
@@ -419,17 +441,67 @@ function App() {
     return <MosaicWindow {...windowProps}><div/></MosaicWindow>;
   }, [headerInfo, filename, params, imageSrc, activeTool, results, isSimbadLoading, isPipelineLoading, fitStats, isAutoTuning]);
 
+  const appStatus = (isPipelineLoading || isAutoTuning || isSimbadLoading)
+      ? 'running'
+      : (imageSrc ? 'ready' : 'idle');
+  const statusMeta = {
+      idle: { label: 'Idle', color: 'var(--disco-text-subtle)' },
+      ready: { label: 'Ready', color: 'var(--disco-success)' },
+      running: {
+          label: isAutoTuning ? 'Auto-tuning…' : (isSimbadLoading ? 'Querying…' : 'Running…'),
+          color: 'var(--disco-warning)',
+      },
+  }[appStatus];
+
   return (
     <div className={darkMode ? "bp5-dark" : ""} style={{height:'100vh', display:'flex', flexDirection:'column', background:'var(--disco-bg-app)'}}>
         <input type="file" ref={fileInputRef} style={{display:'none'}} onChange={handleFileUpload} accept=".fits,.fit,.json"/>
         
         {/* HEADER & TOOLBAR */}
         <div style={{ height: '30px', background: 'var(--disco-header)', display:'flex', alignItems:'center', padding:'0 8px', borderBottom:'1px solid var(--disco-border)' }}>
-            <div style={{ fontWeight:'800', marginRight: 15, color: 'var(--disco-accent)', fontSize:12, letterSpacing:1 }}>DISCO<span style={{color:'var(--disco-text)', fontWeight:400}}></span></div>
+            <div style={{ fontWeight:'800', marginRight: 15, color: 'var(--disco-accent)', fontSize:12, letterSpacing:1 }}>DISCO</div>
             <Popover content={ViewMenu} position={Position.BOTTOM_LEFT} minimal><Button minimal small text="View" className="header-btn" style={{ fontSize:11 }}/></Popover>
+            <div
+                className="disco-status-pill"
+                title="Application status"
+                style={{
+                    marginLeft: 10,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    padding: '2px 8px',
+                    borderRadius: 999,
+                    border: '1px solid var(--disco-border)',
+                    background: 'var(--disco-bg-panel)',
+                    fontSize: 10,
+                    fontWeight: 600,
+                    color: 'var(--disco-text-muted)',
+                    letterSpacing: 0.3,
+                    textTransform: 'uppercase',
+                }}
+            >
+                <span
+                    style={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: '50%',
+                        background: statusMeta.color,
+                        boxShadow: appStatus === 'running' ? '0 0 0 3px rgba(161, 98, 7, 0.2)' : 'none',
+                        animation: appStatus === 'running' ? 'disco-status-pulse 1.2s ease-in-out infinite' : 'none',
+                    }}
+                />
+                {statusMeta.label}
+            </div>
             <div style={{flex:1}} />
             <Popover content={SettingsMenu} position={Position.BOTTOM_RIGHT} minimal><Button minimal small text="Settings" className="header-btn" style={{ fontSize: 11 }} /></Popover>
-            <Button minimal small text="Help" className="header-btn" style={{ fontSize: 11 }} />
+            <Button
+                minimal
+                small
+                text="Help"
+                className="header-btn"
+                style={{ fontSize: 11 }}
+                onClick={() => window.open('https://astrojorgeluis.github.io/disco-astronomy/', '_blank', 'noopener,noreferrer')}
+            />
         </div>
 
         <div style={{ height: '32px', background: 'var(--disco-header)', display:'flex', alignItems:'center', padding:'0 4px', borderBottom:'1px solid var(--disco-border)' }}>
@@ -438,13 +510,13 @@ function App() {
                 <Button icon="floppy-disk" onClick={handleSaveSession} title="Save Session"/>
                 <Button icon="fullscreen" onClick={toggleFullscreen} title="Fullscreen"/>
                 <Divider />
-                <Button icon="cross" intent="danger" onClick={handleExit} title="Exit"/>
+                <Button icon="cross" intent="danger" onClick={handleExit} title="Close"/>
             </ButtonGroup>
             <Divider style={{height:16, borderColor:'var(--disco-border)', margin:'0 8px'}}/>
             <ButtonGroup minimal>
-                <Button icon="selection" active={activeTool === 'select'} intent={activeTool === 'select' ? "primary" : "none"} onClick={() => setActiveTool('select')} title="Edit Geometry"/>
-                <Button icon="hand" active={activeTool === 'pan'} intent={activeTool === 'pan' ? "primary" : "none"} onClick={() => setActiveTool('pan')} title="Pan Image"/>
-                <Button icon="locate" active={activeTool === 'inspector'} intent={activeTool === 'inspector' ? "primary" : "none"} onClick={() => setActiveTool('inspector')} title="Spectral Inspector / Range Selector"/>
+                <Button icon="selection" active={activeTool === 'select'} intent={activeTool === 'select' ? "primary" : "none"} onClick={() => setActiveTool('select')} title="Ellipse Tool"/>
+                <Button icon="hand" active={activeTool === 'pan'} intent={activeTool === 'pan' ? "primary" : "none"} onClick={() => setActiveTool('pan')} title="Pan"/>
+                <Button icon="locate" active={activeTool === 'inspector'} intent={activeTool === 'inspector' ? "primary" : "none"} onClick={() => setActiveTool('inspector')} title="Inspector"/>
             </ButtonGroup>
         </div>
 

@@ -82,15 +82,36 @@ def run_pipeline(files_to_process, group_name, output_dir, args, cnn_model):
         filename = os.path.basename(filepath)
         try:
             with fits.open(filepath, memmap=True) as hdul:
-                data   = np.nan_to_num(np.squeeze(hdul[0].data).astype(np.float32))
-                header = hdul[0].header
+                raw = None
+                header = None
+                for hdu in hdul:
+                    if hdu.data is None:
+                        continue
+                    arr = np.squeeze(hdu.data)
+                    while getattr(arr, "ndim", 0) > 2:
+                        arr = arr[0]
+                    if getattr(arr, "ndim", 0) == 2:
+                        raw = arr
+                        header = hdu.header
+                        break
+                if raw is None:
+                    raise ValueError("No 2D image HDU found")
+                data = np.nan_to_num(np.asarray(raw, dtype=np.float32))
 
                 bunit = str(header.get('BUNIT', '')).strip().upper()
                 if bunit == 'JY/BEAM':
                     data *= 1000
                     header['BUNIT'] = 'mJy/beam'
                 elif bunit == '' and np.max(data) < 5.0:
+                    tqdm.write(f"[WARN] {filename}: empty BUNIT and max<5 — applying ×1000 heuristic (verify units).")
                     data *= 1000
+                elif bunit == '':
+                    tqdm.write(f"[WARN] {filename}: BUNIT missing; flux units may be incorrect.")
+
+                if header.get('CDELT2') is None or abs(float(header.get('CDELT2', 0) or 0)) == 0:
+                    tqdm.write(f"[WARN] {filename}: CDELT2 missing/zero — using 0.03 deg/pix fallback (likely wrong).")
+                if not header.get('RESTFRQ') and not header.get('CRVAL3'):
+                    tqdm.write(f"[WARN] {filename}: RESTFRQ missing — Tb conversion may use 230 GHz default.")
 
                 pixel_scale = abs(header.get('CDELT2', 0.03)) * 3600
                 cx, cy      = find_center_robust(data, pixel_scale, header)
@@ -186,6 +207,11 @@ def run_pipeline(files_to_process, group_name, output_dir, args, cnn_model):
 
     pbar.set_postfix_str("Phase 2/5: Optimizing Geometry")
     cnn_i, cnn_p = None, None
+    if (args.incl is None) ^ (args.pa is None):
+        tqdm.write(
+            "[WARN] --incl and --pa must both be set to skip optimization. "
+            "Ignoring the unpaired flag and running geometry optimization."
+        )
     if args.incl is not None and args.pa is not None:
         master_incl, master_pa, err_incl, err_pa = args.incl, args.pa, 0.0, 0.0
     else:
@@ -469,7 +495,7 @@ def run_pipeline(files_to_process, group_name, output_dir, args, cnn_model):
 
             with open(os.path.join(output_dir, f"RP_{group_name}_bands.csv"), mode='w', newline='') as f:
                 writer = csv.writer(f)
-                writer.writerow(["filename", "snr", "cx_pix", "cy_pix", "bmaj_arcsec", "bmin_arcsec", "peak_flux_mJyBeam"])
+                writer.writerow(["filename", "snr", "cx_pix", "cy_pix", "bmaj_arcsec", "bmin_arcsec", "peak_Tb_K"])
                 for d in csv_data.values():
                     writer.writerow([
                         d['filename'],
@@ -487,9 +513,9 @@ def run_pipeline(files_to_process, group_name, output_dir, args, cnn_model):
                 for lbl_clean in csv_data.keys():
                     header_row.extend([
                         f"R_{lbl_clean}_arcsec",
-                        f"Flux_{lbl_clean}_mJy",
-                        f"FluxNorm_{lbl_clean}",
-                        f"FluxNormErr_{lbl_clean}"
+                        f"Tb_{lbl_clean}_K",
+                        f"TbNorm_{lbl_clean}",
+                        f"TbNormErr_{lbl_clean}"
                     ])
                 writer.writerow(header_row)
                 for i in range(max_pts):
@@ -515,7 +541,7 @@ def run_pipeline(files_to_process, group_name, output_dir, args, cnn_model):
 
 def main():
     parser = argparse.ArgumentParser(description="DISCO Automated Pipeline")
-    parser.add_argument("identifier", nargs="*", help="Object prefix(es) or FITS file path(s)")
+    parser.add_argument("identifier", nargs="*", help="Object prefix(es), directory path(s), or FITS file path(s)")
     parser.add_argument("--rout",      type=float, default=None,  help="Force Rout (arcsec)")
     parser.add_argument("--rmin",      type=float, default=0.0,   help="Force Rmin (arcsec)")
     parser.add_argument("--incl",      type=float, default=None,  help="Force inclination (deg)")
@@ -524,19 +550,23 @@ def main():
     parser.add_argument("--homobeam", type=str,   default="on",  choices=["on", "off"], help="Toggle beam homogenization")
     parser.add_argument("--csv",       type=str,   default="off", choices=["on", "off"], help="Export CSV data")
     parser.add_argument("--debug",     type=str,   default="off", choices=["on", "off"], help="Save debug deprojected image")
+    parser.add_argument("-y", "--yes", action="store_true", help="Skip interactive confirmation prompt")
     args = parser.parse_args()
 
     print("\n" + "-"*60)
-    print("WARNING: DISCO will now scan the current directory and all")
-    print("subdirectories to search for and process FITS files.")
+    print("WARNING: DISCO will now scan for and process FITS files.")
     print(f"Current directory: {os.getcwd()}")
     print("-"*60)
-    
-    user_response = input("\nAre you sure you want to continue? [y/N]: ").strip().lower()
-    
-    if user_response != 'y' and user_response != 'yes':
-        print("Operation cancelled by user. Exiting...")
-        sys.exit(0)
+
+    if not args.yes:
+        if sys.stdin.isatty():
+            user_response = input("\nAre you sure you want to continue? [y/N]: ").strip().lower()
+            if user_response not in ("y", "yes"):
+                print("Operation cancelled by user. Exiting...")
+                sys.exit(0)
+        else:
+            print("[ERROR] Non-interactive session: pass --yes to confirm FITS scanning.")
+            sys.exit(1)
 
     cnn_model  = None
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -555,38 +585,63 @@ def main():
     else:
         print("[WARN] Model file not found. Falling back to analytical geometry.")
 
-    base_dir   = os.getcwd()
-    all_groups = discover_groups(base_dir)
-
-    if not all_groups:
-        print("[ERROR] No FITS files found in the current directory tree.")
-        sys.exit(1)
-
+    direct_groups = []
+    name_ids = []
     if args.identifier:
-        groups    = []
-        clean_ids = [ident.strip(',') for ident in args.identifier]
-
-        for g in all_groups:
-            path_parts = g['output_dir'].replace('\\', '/').split('/')
-            if any(ident in path_parts or ident in g['output_dir'] for ident in clean_ids):
-                groups.append(g)
+        for ident in args.identifier:
+            ident = ident.strip(",")
+            abs_ident = os.path.abspath(os.path.expanduser(ident))
+            if os.path.isfile(abs_ident) and abs_ident.lower().endswith((".fits", ".fit")):
+                stem = os.path.splitext(os.path.basename(abs_ident))[0]
+                parts = re.split(r'_?[Bb]and_?\d+', stem, maxsplit=1)
+                prefix = parts[0].rstrip('_') if parts[0] else stem
+                out_dir = os.path.join(os.path.dirname(abs_ident), prefix)
+                direct_groups.append({
+                    "name": prefix,
+                    "files": [abs_ident],
+                    "output_dir": out_dir,
+                })
+            elif os.path.isdir(abs_ident):
+                found = discover_groups(abs_ident)
+                if found:
+                    direct_groups.extend(found)
+                else:
+                    print(f"[WARN] No FITS files under directory: {abs_ident}")
             else:
-                matched_files = [
-                    f for f in g['files']
-                    if any(ident in os.path.basename(f) for ident in clean_ids)
-                ]
-                if matched_files:
-                    groups.append({
-                        "name": g['name'],
-                        "files": matched_files,
-                        "output_dir": g['output_dir']
-                    })
+                name_ids.append(ident)
 
-        if not groups:
-            print(f"[ERROR] No FITS files match the provided identifiers: {clean_ids}")
-            sys.exit(1)
+    if direct_groups and not name_ids:
+        groups = direct_groups
     else:
-        groups = all_groups
+        base_dir = os.getcwd()
+        all_groups = discover_groups(base_dir)
+        if not all_groups and not direct_groups:
+            print("[ERROR] No FITS files found in the current directory tree.")
+            sys.exit(1)
+
+        groups = list(direct_groups)
+        if name_ids:
+            for g in all_groups:
+                path_parts_lower = [p.lower() for p in g['output_dir'].replace('\\', '/').split('/')]
+                out_lower = g['output_dir'].replace('\\', '/').lower()
+                if any(ident.lower() in path_parts_lower or ident.lower() in out_lower for ident in name_ids):
+                    groups.append(g)
+                else:
+                    matched_files = [
+                        f for f in g['files']
+                        if any(ident.lower() in os.path.basename(f).lower() for ident in name_ids)
+                    ]
+                    if matched_files:
+                        groups.append({
+                            "name": g['name'],
+                            "files": matched_files,
+                            "output_dir": g['output_dir']
+                        })
+            if not groups:
+                print(f"[ERROR] No FITS files match the provided identifiers: {name_ids}")
+                sys.exit(1)
+        elif not groups:
+            groups = all_groups
 
     print(f"[INFO] Found {len(groups)} group(s) to process.\n")
 
