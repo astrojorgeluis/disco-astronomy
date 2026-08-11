@@ -152,7 +152,7 @@ function App() {
       } catch (e) { console.error("Exit failed", e); }
   };
 
-  // Wipe server session on refresh / tab close so forgotten clients don't hold uploads
+  // Wipe server session on refresh / tab close
   useEffect(() => {
       fetch('/reset_session', { method: 'POST' }).catch(e => console.warn("Cleanup failed", e));
       const handleTabClose = () => { navigator.sendBeacon('/reset_session'); };

@@ -6,8 +6,7 @@ Changelog
 Version 1.2.4 (current)
 -----------------------
 
-Conference-ready polish release focused on GUI professionalism, CLI
-correctness of labels/paths, backend robustness, and documentation sync.
+GUI, CLI, backend robustness, and documentation sync.
 
 GUI
 ~~~
@@ -19,9 +18,11 @@ GUI
 * Align default colormap with the pipeline render (``inferno``).
 * Help opens the online documentation; toolbar labels match the docs
   (Ellipse Tool, Pan, Inspector, Close).
-* Browser refresh no longer wipes the server session (cleared only via
-  Close / Exit or server shutdown).
-* Remove fabricated Cursor Probe sky offsets.
+* Refresh / tab close clears the server session (also via Close / Exit).
+* Status pill in the header (Idle / Ready / Running).
+* Matplotlib plotter: beam overlay, fixed layout when toggling contours,
+  and contour percentiles or N evenly spaced levels.
+* Remove fabricated Inspector sky-offset cards.
 
 Backend
 ~~~~~~~
@@ -48,11 +49,10 @@ CLI
 Docs / packaging
 ~~~~~~~~~~~~~~~~
 
-* Correct Auto-Tune (incl/PA only), dynamic port, CORS, SIMBAD, overlays,
+* Correct Auto-Tune (incl/PA/center), dynamic port, CORS, SIMBAD, overlays,
   and ``npm run build`` (not ``build:disco`` on v1).
 * Sphinx assets restored; BibTeX cite-key fixed; versions aligned to 1.2.4.
 * Minimal pytest suite and GitHub Actions CI (tests + frontend build).
-* See ``RELEASE.md`` for the PyPI / Zenodo / Pages checklist.
 
 
 Version 1.2.3

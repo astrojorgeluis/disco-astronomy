@@ -40,6 +40,6 @@ Thumbs.db
 .env
 .env.*
 
-# Cursor / IDE (local agent rules & logs)
+# Local IDE
 .cursor/
 *.log
