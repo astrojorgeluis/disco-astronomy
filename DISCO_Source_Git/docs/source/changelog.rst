@@ -3,8 +3,69 @@
 Changelog
 =========
 
-Version 1.2.4 (current)
+Version 1.2.5 (current)
 -----------------------
+
+DiscoNet synthetic training release, hybrid geometry polish, GUI refresh,
+and docs sync.
+
+CNN / training
+~~~~~~~~~~~~~~
+
+* Shared preprocess module ``disco.core.cnn_preprocess`` (percentiles,
+  elliptical beam map, scale map, label encode/decode) used by train and
+  inference.
+* Packaged weights retrained **synthetic-only** (20k crops, elliptical
+  beams, early-stop best ≈ epoch 64). Mixed CASA+synth did not improve
+  literature metrics; synth weights are shipped.
+* ``train_model.py``: object-ID split, mixup without blending PA sin/cos,
+  AMP, early stopping, FOV-normalised center labels.
+
+CLI / geometry
+~~~~~~~~~~~~~~
+
+* Hybrid refinement uses **L-BFGS-B** (bounds respected).
+* ``estimate_geometry_errors``: parabolic loss-curvature :math:`\pm`
+  documented as fit-quality indicator (not literature :math:`1\sigma`).
+* Beam / FITS robustness: elliptical beam channel, RESTFRQ helpers,
+  spacing tests.
+* CLI debug deprojection PNG uses the same sky-aligned sampling as the GUI
+  (North up; no empty-corner post-rotation).
+
+GUI
+~~~
+
+* FOV slider (arcsec) wired into ``/run_pipeline``; Radius Out capped by
+  FOV/2 with a stable slider track (FOV changes no longer nudge Rout).
+* Default stretch **linear**; default FOV ≈ half map side with nice rounding.
+* Sky-aligned deprojected / model / residual maps (North up) without
+  corner cropping.
+* Layout: File Header | Image Viewer + Render Configuration | Scientific
+  Analysis; JetBrains Mono; slate/violet palette; brand accent ``#a44aff``.
+* Ellipse-handle tip no longer flips during PA drag; Image Viewer zoom
+  preserved across mosaic resize after user adjustment.
+* Faster Image Viewer preview: block-downsample large FITS before PNG
+  (exports / Matplotlib / FITS download remain full quality).
+* Status pill shows **Loading…** while opening heavy FITS; Auto-Tune still
+  re-runs the pipeline with the refined geometry.
+* Matplotlib widget: FOV crop control; beam PA corrected for RA-left plots.
+* Analysis Settings: contour percentiles or N levels (same options as
+  Matplotlib). GUI Auto-Tune documented as approximate (not the CLI hybrid).
+
+Docs / packaging
+~~~~~~~~~~~~~~~~
+
+* Training docs describe the v1.2.5 synthetic recipe and optional CASA path.
+* Pipeline / API docs aligned with L-BFGS-B hybrid path.
+* Citation: Zenodo all-versions DOI ``10.5281/zenodo.19999239`` (resolves to
+  the latest release). After the GitHub Release, replace BibTeX in README/docs
+  with the official export from the Zenodo record (version DOI + ``swhid``).
+* GUI: ``npm run build`` writes to ``disco/static`` (Vite ``outDir``).
+* Version bump to 1.2.5.
+
+
+Version 1.2.4
+-------------
 
 GUI, CLI, backend robustness, and documentation sync.
 

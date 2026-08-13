@@ -171,7 +171,7 @@ def test_cnn_empty_crop_arity():
     header = fits.Header({"BMAJ": 1e-5, "BMIN": 1e-5, "BPA": 0.0})
     # Force empty crop by putting center far outside with tiny search
     result = predict_with_cnn(data, header, pixel_scale=1.0, cx=-1000, cy=-1000, search_rad=0.1, model=Dummy())
-    assert len(result) == 2
+    assert len(result) == 4
 
 
 def test_cli_help_includes_yes():

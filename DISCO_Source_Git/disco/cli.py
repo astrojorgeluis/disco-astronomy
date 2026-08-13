@@ -25,6 +25,7 @@ from disco.core.fits_utils import (
     save_debug_deproj_center, measure_rout_deproj, refine_center_local,
     deg_to_sex, pixel_to_icrs, icrs_to_pixel, get_obs_epoch,
     query_gaia_proper_motion, apply_proper_motion_correction,
+    normalize_flux_units, resolve_restfrq,
     _ASTROQUERY_AVAILABLE
 )
 warnings.filterwarnings("ignore", category=FITSFixedWarning)
@@ -98,20 +99,18 @@ def run_pipeline(files_to_process, group_name, output_dir, args, cnn_model):
                     raise ValueError("No 2D image HDU found")
                 data = np.nan_to_num(np.asarray(raw, dtype=np.float32))
 
-                bunit = str(header.get('BUNIT', '')).strip().upper()
-                if bunit == 'JY/BEAM':
-                    data *= 1000
-                    header['BUNIT'] = 'mJy/beam'
-                elif bunit == '' and np.max(data) < 5.0:
-                    tqdm.write(f"[WARN] {filename}: empty BUNIT and max<5 — applying ×1000 heuristic (verify units).")
-                    data *= 1000
-                elif bunit == '':
-                    tqdm.write(f"[WARN] {filename}: BUNIT missing; flux units may be incorrect.")
+                data, header, unit_warns = normalize_flux_units(data, header)
+                for msg in unit_warns:
+                    tqdm.write(f"[WARN] {filename}: {msg}")
 
                 if header.get('CDELT2') is None or abs(float(header.get('CDELT2', 0) or 0)) == 0:
                     tqdm.write(f"[WARN] {filename}: CDELT2 missing/zero — using 0.03 deg/pix fallback (likely wrong).")
-                if not header.get('RESTFRQ') and not header.get('CRVAL3'):
-                    tqdm.write(f"[WARN] {filename}: RESTFRQ missing — Tb conversion may use 230 GHz default.")
+                _rf, rf_fallback, rf_src = resolve_restfrq(header)
+                if rf_fallback:
+                    tqdm.write(
+                        f"[WARN] {filename}: RESTFRQ/FREQ axis missing — "
+                        f"Tb conversion uses 230 GHz default (source={rf_src})."
+                    )
 
                 pixel_scale = abs(header.get('CDELT2', 0.03)) * 3600
                 cx, cy      = find_center_robust(data, pixel_scale, header)
@@ -198,7 +197,6 @@ def run_pipeline(files_to_process, group_name, output_dir, args, cnn_model):
                             ref_ra, ref_dec, pmra_gaia, pmdec_gaia, dt_yr
                         )
                 px, py = icrs_to_pixel(item["header"], apply_ra, apply_dec)
-                #px, py = refine_center_local(item["data"], item["header"], item["pixel_scale"], px, py)
                 item["cx"], item["cy"] = px, py
             except Exception:
                 pass
@@ -259,6 +257,12 @@ def run_pipeline(files_to_process, group_name, output_dir, args, cnn_model):
             crop_rad = int((geom_rout / best_item["pixel_scale"]) * 1.5) + 10
             dc = d_pad[int(best_item["cy"]) + pad - crop_rad : int(best_item["cy"]) + pad + crop_rad,
                        int(best_item["cx"]) + pad - crop_rad : int(best_item["cx"]) + pad + crop_rad]
+            bounds = [
+                (0.0, 85.0),
+                (0.0, 180.0),
+                (-15.0, 15.0),
+                (-15.0, 15.0),
+            ]
             res = minimize(
                 geometric_loss,
                 x0=[30.0, 45.0, 0.0, 0.0],
@@ -266,10 +270,11 @@ def run_pipeline(files_to_process, group_name, output_dir, args, cnn_model):
                     final_rmin / best_item["pixel_scale"],
                     geom_rout / best_item["pixel_scale"],
                     150, 1),
-                method='Nelder-Mead',
-                options={'xatol': 0.05, 'fatol': 1e-5}
+                method="L-BFGS-B",
+                bounds=bounds,
+                options={"maxiter": 400, "ftol": 1e-8},
             )
-            incl, pa = res.x[0], res.x[1] % 180
+            incl, pa = float(np.clip(res.x[0], 0.0, 85.0)), float(res.x[1] % 180)
 
         master_incl, master_pa = float(incl), float(pa)
     pbar.update(1)
@@ -425,12 +430,6 @@ def run_pipeline(files_to_process, group_name, output_dir, args, cnn_model):
         max_val = np.nanmax(y_plot)
         y_norm  = y_plot / max_val if max_val > 0 else y_plot
         e_norm  = err_plot / max_val if max_val > 0 else err_plot
-
-        mx2 = np.nanmax(y_norm)
-        if mx2 > 0:
-            y_norm = y_norm / mx2
-            e_norm = e_norm / mx2
-
         y_norm_clip = np.clip(y_norm, -0.05, 1.05)
         ax.plot(r_plot, y_norm_clip, lw=2.5, label=lbl)
 

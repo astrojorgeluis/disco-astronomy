@@ -116,16 +116,17 @@ Hybrid Geometry Optimiser
    Parameters: ``maxiter=50``, ``tol=0.02``, ``mutation=(0.5, 1.0)``,
    ``recombination=0.7``, ``seed=42``.
 
-   **Stage 3 — Nelder-Mead refinement (fine):**
+   **Stage 3 — L-BFGS-B refinement (fine):**
 
    Starting from the differential-evolution result, ``scipy.optimize.minimize``
-   (Nelder-Mead) refines on the full-resolution image ``dc`` with a
-   :math:`400 \times 400` grid (``order=3``).
+   (**L-BFGS-B**) refines on the full-resolution image ``dc`` with a
+   :math:`400 \times 400` grid (``order=3``). Bounds on inclination and
+   centre offsets are respected.
 
    **Stage 4 — Secondary refinement (if near boundary):**
 
    If the optimised centre offset is within 80% of the bound (``near_edge``),
-   a second differential-evolution + Nelder-Mead cycle is run with the
+   a second differential-evolution + L-BFGS-B cycle is run with the
    accumulated offset applied to the reference centre, and tighter bounds
    (:math:`|\Delta x|, |\Delta y| \le 0.6` pixels). The final offset is the
    sum of both stages.
@@ -157,22 +158,25 @@ Uncertainty Estimation
 .. function:: estimate_geometry_errors(data, pixel_scale, cx, cy, incl, pa, rmin, rmax)
 
    Estimate 1-sigma uncertainties on the inclination and position angle via
-   a parabolic approximation of the geometric loss landscape.
+   a bounded L-BFGS-B refine plus a parabolic scan of the geometric loss
+   landscape (curvature estimate, **not** CNN epistemic confidence). See
+   the pipeline docs for the meaning of the :math:`5\times10^{-3}` factor.
 
-   The function first performs a local Nelder-Mead optimisation to confirm
-   the minimum, evaluates the loss :math:`L_{\rm min}`, and then scans
-   the loss along each angular axis independently at offsets
-   :math:`\delta \in [-11.75°, +11.75°]` (step 0.25°). A degree-2 polynomial
-   is fitted to the valid loss values (:math:`L < 2.5\,L_{\rm min}`). The
-   estimated 1-sigma uncertainty is:
+   The function first performs a local L-BFGS-B optimisation to confirm
+   the minimum (center fixed), evaluates the loss :math:`L_{\rm min}`, and
+   then scans the loss along each angular axis independently at continuous
+   offsets :math:`\delta \in [-12°, +12°]` (step 0.25°; PA wrap applied only
+   when evaluating the loss). A degree-2 polynomial is fitted to the valid
+   loss values (:math:`L < 2.5\,L_{\rm min}`). The estimated 1-sigma
+   uncertainty is:
 
    .. math::
 
       \sigma = \text{clip}\!\left(\sqrt{\frac{L_{\rm min} \times 5 \times 10^{-3}}{a}},\ 0.3°,\ 10°\right)
 
    where :math:`a` is the parabola's leading coefficient. Returns ``(2.0, 2.0)``
-   if the minimum loss is non-finite or exceeds :math:`10^{11}`, or if fewer
-   than 5 valid loss samples are available.
+   if the minimum loss is non-finite or exceeds :math:`10^{11}`; returns
+   ``5.0`` for an axis whose parabola fit fails.
 
    :param numpy.ndarray data: 2D image array.
    :param float pixel_scale: Arcsec per pixel.
@@ -195,7 +199,7 @@ Centre Refinement
    Refine the disk centroid by optimising centre offsets while holding
    inclination and position angle fixed.
 
-   A Nelder-Mead optimisation is performed with the centre offset constrained
+   An **L-BFGS-B** optimisation is performed with the centre offset constrained
    to :math:`\le 2\,b_{\rm maj}` pixels. If the optimised offset does not
    improve the loss, or if the offset exceeds the bound, the original centre
    is returned unchanged.

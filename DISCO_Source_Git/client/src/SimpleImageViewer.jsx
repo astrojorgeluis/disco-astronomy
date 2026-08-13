@@ -71,7 +71,7 @@ const DynamicAxes = ({ width, height, fieldOfView, transform, type, imgSize }) =
             xTicks.push(
                 <Group key={`tx${v}`} x={screenX} y={height}>
                     <Line points={[0, 0, 0, -6]} stroke={AXIS_COLOR} strokeWidth={1} />
-                    <Text text={axisFormatter(v)} x={-15} y={-20} fill={AXIS_COLOR} fontSize={10} fontFamily="monospace" fontStyle="bold" />
+                    <Text text={axisFormatter(v)} x={-15} y={-20} fill={AXIS_COLOR} fontSize={10} fontFamily="JetBrains Mono" fontStyle="bold" />
                 </Group>
             );
         }
@@ -102,7 +102,7 @@ const DynamicAxes = ({ width, height, fieldOfView, transform, type, imgSize }) =
             yTicks.push(
                 <Group key={`ty${v}`} x={0} y={screenY}>
                     <Line points={[0, 0, 6, 0]} stroke={AXIS_COLOR} strokeWidth={1} />
-                    <Text text={axisFormatter(v)} x={8} y={-5} fill={AXIS_COLOR} fontSize={10} fontFamily="monospace" fontStyle="bold" />
+                    <Text text={axisFormatter(v)} x={8} y={-5} fill={AXIS_COLOR} fontSize={10} fontFamily="JetBrains Mono" fontStyle="bold" />
                 </Group>
             );
         }
@@ -179,7 +179,9 @@ const SimpleImageViewer = forwardRef(({
     const [dragStartR, setDragStartR] = useState(null);
     const [dragCurrentR, setDragCurrentR] = useState(null);
 
-    const hasInitializedView = useRef(false);
+    // Fit on new graph/image; keep zoom across resizes after the user adjusts the view.
+    const userAdjustedViewRef = useRef(false);
+    const lastViewKeyRef = useRef('');
 
     const getCssColor = (varName) => {
         const style = getComputedStyle(document.body);
@@ -194,6 +196,7 @@ const SimpleImageViewer = forwardRef(({
         const cx = (dims.w - image.width * scale) / 2;
         const cy = (dims.h - image.height * scale) / 2;
         setTransform({ x: cx, y: cy, k: scale });
+        userAdjustedViewRef.current = false;
     }, [image, dims.w, dims.h]);
 
     useImperativeHandle(ref, () => ({ resetView: fitImage }));
@@ -212,11 +215,17 @@ const SimpleImageViewer = forwardRef(({
 
     useEffect(() => {
         if (!image || dims.w === 0 || dims.h === 0) return;
-        if (!hasInitializedView.current) {
+        // Always reset to default when switching Deproj/Model/Residuals/Polar (or new image).
+        const viewKey = `${type}|${imageSrc}|${image.width}x${image.height}`;
+        if (viewKey !== lastViewKeyRef.current) {
+            lastViewKeyRef.current = viewKey;
+            userAdjustedViewRef.current = false;
             fitImage();
-            hasInitializedView.current = true;
+            return;
         }
-    }, [image, dims.w, dims.h, fitImage]);
+        if (userAdjustedViewRef.current) return;
+        fitImage();
+    }, [image, imageSrc, type, dims.w, dims.h, fitImage]);
 
     const handleWheel = (e) => {
         e.evt.preventDefault();
@@ -226,6 +235,7 @@ const SimpleImageViewer = forwardRef(({
         const ptr = stage.getPointerPosition();
         const mousePointTo = { x: (ptr.x - transform.x) / oldScale, y: (ptr.y - transform.y) / oldScale };
         const newScale = e.evt.deltaY < 0 ? oldScale * scaleBy : oldScale / scaleBy;
+        userAdjustedViewRef.current = true;
         setTransform({ x: ptr.x - mousePointTo.x * newScale, y: ptr.y - mousePointTo.y * newScale, k: newScale });
     };
 
@@ -395,6 +405,7 @@ const SimpleImageViewer = forwardRef(({
                 }}
                 onDragMove={e => {
                     if (activeTool === 'pan') {
+                        userAdjustedViewRef.current = true;
                         setTransform({ x: e.target.x(), y: e.target.y(), k: transform.k });
                     }
                 }}
@@ -426,8 +437,8 @@ const SimpleImageViewer = forwardRef(({
 
             <div style={{ position: 'absolute', bottom: 10, left: 10, background: 'var(--disco-bg-panel)', border: '1px solid var(--disco-border)', padding: '6px 10px', borderRadius: 4, pointerEvents: 'none', minWidth: 100, boxShadow: '0 2px 5px rgba(0,0,0,0.2)' }}>
                 <div style={{ color: 'var(--disco-accent)', fontSize: 10, fontWeight: 'bold', marginBottom: 2 }}>CURSOR</div>
-                <div style={{ color: 'var(--disco-text)', fontSize: 11, fontFamily: 'monospace' }}>R: {cursorVal ? cursorVal.r.toFixed(3) : "---"}"</div>
-                <div style={{ color: 'var(--disco-text)', fontSize: 11, fontFamily: 'monospace' }}>V: {cursorVal ? cursorVal.v : "---"}</div>
+                <div style={{ color: 'var(--disco-text)', fontSize: 11, fontFamily: 'JetBrains Mono, monospace' }}>R: {cursorVal ? cursorVal.r.toFixed(3) : "---"}"</div>
+                <div style={{ color: 'var(--disco-text)', fontSize: 11, fontFamily: 'JetBrains Mono, monospace' }}>V: {cursorVal ? cursorVal.v : "---"}</div>
             </div>
 
             {activeTool === 'inspector' && (
@@ -441,7 +452,7 @@ const SimpleImageViewer = forwardRef(({
                     <div style={{ background: 'var(--disco-danger)', color: '#fff', padding: '2px 6px', borderRadius: 2, fontSize: 10, fontWeight: '800', boxShadow: '0 1px 3px rgba(0,0,0,0.2)' }}>MARKER MODE: CLICK TO ADD</div>
                 </div>
             )}
-            <div style={{ position: 'absolute', top: 10, right: 10, color: 'var(--disco-text-muted)', fontSize: 10, fontFamily: 'monospace' }}>Zoom: {(transform.k * 100).toFixed(0)}%</div>
+            <div style={{ position: 'absolute', top: 10, right: 10, color: 'var(--disco-text-muted)', fontSize: 10, fontFamily: 'JetBrains Mono, monospace' }}>Zoom: {(transform.k * 100).toFixed(0)}%</div>
         </div>
     );
 });

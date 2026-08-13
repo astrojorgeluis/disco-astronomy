@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "build:disco": "npm run build && shx rm -rf ../disco/static && shx cp -r dist ../disco/static"
+    "build:disco": "npm run build"
   },
   "dependencies": {
     "@blueprintjs/core": "^6.5.0",

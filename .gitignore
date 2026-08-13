@@ -43,3 +43,9 @@ Thumbs.db
 # Local IDE
 .cursor/
 *.log
+
+# Local CASA sims / catalogues (not for git)
+DISCO_Source_Git/training/simulations/
+DISCO_Source_Git/training/catalogo_piloto.csv
+DISCO_Source_Git/training/catalogo_smoke.csv
+DISCO_Source_Git/training/*.pth

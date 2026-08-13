@@ -15,7 +15,7 @@ const SmartInput = ({ value, onValueChange, ...props }) => {
     return <NumericInput {...props} value={str} onValueChange={handleChange} buttonPosition="none" />;
 };
 
-const MatplotlibWidget = ({ defaultType = 'data' }) => {
+const MatplotlibWidget = ({ defaultType = 'data', defaultFov = 0 }) => {
     const [image, setImage] = useState(null);
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState(null);
@@ -24,7 +24,7 @@ const MatplotlibWidget = ({ defaultType = 'data' }) => {
     const [options, setOptions] = useState({
         type: defaultType,
         cmap: 'magma',
-        stretch: 'asinh',
+        stretch: 'linear',
         vmin: null,
         vmax: null,
         show_axes: true,
@@ -35,6 +35,8 @@ const MatplotlibWidget = ({ defaultType = 'data' }) => {
         contour_levels: 5,
         contour_mode: 'percentiles',
         contour_percentiles: '50,70,90,95,99',
+        // 0 = full array extent; >0 crops the displayed FOV (arcsec, full width)
+        fov: Number.isFinite(defaultFov) && defaultFov > 0 ? defaultFov : 0,
         title: "",
         dpi: 150
     });
@@ -49,6 +51,7 @@ const MatplotlibWidget = ({ defaultType = 'data' }) => {
         options.vmin, options.vmax,
         options.show_axes, options.show_grid, options.show_colorbar, options.show_beam,
         options.contours, options.contour_levels, options.contour_mode, options.contour_percentiles,
+        options.fov,
         options.dpi, options.title
     ]);
 
@@ -123,7 +126,7 @@ const MatplotlibWidget = ({ defaultType = 'data' }) => {
 
                         <div>
                             <div className="compact-label">Stretch</div>
-                            <HTMLSelect fill value={options.stretch} onChange={e => updateOption('stretch', e.target.value)} options={['asinh', 'log', 'linear', 'sqrt']} />
+                            <HTMLSelect fill value={options.stretch} onChange={e => updateOption('stretch', e.target.value)} options={['linear', 'asinh', 'log', 'sqrt']} />
                         </div>
                     </>
                 )}
@@ -148,6 +151,36 @@ const MatplotlibWidget = ({ defaultType = 'data' }) => {
                     {!isProfile && <Switch label="Colorbar" checked={options.show_colorbar} onChange={e => updateOption('show_colorbar', e.target.checked)} />}
                     {!isProfile && <Switch label="Beam" checked={options.show_beam} onChange={e => updateOption('show_beam', e.target.checked)} disabled={options.type === 'polar'} />}
                 </div>
+
+                {!isProfile && options.type !== 'polar' && (
+                    <div style={{ marginTop: 4 }}>
+                        <div className="compact-label">FOV (arcsec, full width)</div>
+                        <SmartInput
+                            fill
+                            min={0}
+                            value={options.fov}
+                            onValueChange={v => updateOption('fov', Number.isFinite(v) ? Math.max(0, v) : 0)}
+                        />
+                        <div style={{ fontSize: 10, color: 'var(--disco-text-muted)', marginTop: 4 }}>
+                            0 = show full image. Uses the same header beam (BMAJ/BMIN/BPA) in arcsec.
+                        </div>
+                    </div>
+                )}
+
+                {!isProfile && options.type === 'polar' && (
+                    <div style={{ marginTop: 4 }}>
+                        <div className="compact-label">Max radius (arcsec)</div>
+                        <SmartInput
+                            fill
+                            min={0}
+                            value={options.fov}
+                            onValueChange={v => updateOption('fov', Number.isFinite(v) ? Math.max(0, v) : 0)}
+                        />
+                        <div style={{ fontSize: 10, color: 'var(--disco-text-muted)', marginTop: 4 }}>
+                            0 = full polar radius range.
+                        </div>
+                    </div>
+                )}
 
                 {!isProfile && (
                     <div style={{ marginTop: 8, padding: 8, background: 'var(--disco-bg-app)', borderRadius: 4, border: '1px solid var(--disco-border)' }}>

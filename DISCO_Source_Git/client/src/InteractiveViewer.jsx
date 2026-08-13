@@ -9,6 +9,12 @@ const InteractiveViewer = ({ imageSrc, params, setParams, activeTool, imgDimensi
   const [dimensions, setDimensions] = useState({ width: 100, height: 100 });
   const [stagePos, setStagePos] = useState({ x: 0, y: 0 });
   const [stageScale, setStageScale] = useState(1);
+  // Continuum PA is defined mod 180° → major axis has two tips. Keep the handle
+  // on the tip closest to the pointer so it does not flip during drag.
+  const handleSignRef = useRef(1);
+  // Preserve zoom/pan across mosaic resizes only after the user has adjusted the view.
+  const userAdjustedViewRef = useRef(false);
+  const lastImageKeyRef = useRef('');
 
   // RESIZE OBSERVER
   useEffect(() => {
@@ -25,23 +31,31 @@ const InteractiveViewer = ({ imageSrc, params, setParams, activeTool, imgDimensi
     return () => resizeObserver.disconnect();
   }, []);
 
-  // AUTO-FIT LOGIC
+  // AUTO-FIT: new image always; resize only if the user has not zoomed/panned yet
   useEffect(() => {
     if (!imgDimensions || dimensions.width === 0 || dimensions.height === 0) return;
+
+    const imageKey = `${imageSrc || ''}|${imgDimensions.width}x${imgDimensions.height}`;
+    if (imageKey !== lastImageKeyRef.current) {
+      lastImageKeyRef.current = imageKey;
+      userAdjustedViewRef.current = false;
+    } else if (userAdjustedViewRef.current) {
+      return;
+    }
 
     const { width: imgW, height: imgH } = imgDimensions;
     const { width: viewW, height: viewH } = dimensions;
 
     const scaleX = viewW / imgW;
     const scaleY = viewH / imgH;
-    const fitScale = Math.min(scaleX, scaleY) * 0.9; 
+    const fitScale = Math.min(scaleX, scaleY) * 0.9;
 
     const centerX = (viewW - imgW * fitScale) / 2;
     const centerY = (viewH - imgH * fitScale) / 2;
 
     setStageScale(fitScale);
     setStagePos({ x: centerX, y: centerY });
-  }, [imgDimensions, dimensions.width, dimensions.height]);
+  }, [imageSrc, imgDimensions, dimensions.width, dimensions.height]);
 
   // GEOMETRY HELPERS
   const konvaRotation = 270 - params.pa; 
@@ -51,6 +65,7 @@ const InteractiveViewer = ({ imageSrc, params, setParams, activeTool, imgDimensi
   };
 
   const round2 = (num) => Math.round(num * 100) / 100;
+  const rad = (deg) => deg * (Math.PI / 180);
 
   const handleDragCenter = (e) => {
     stopPropagation(e);
@@ -64,28 +79,41 @@ const InteractiveViewer = ({ imageSrc, params, setParams, activeTool, imgDimensi
   const handleDragRotator = (e) => {
     stopPropagation(e);
     const stage = e.target.getStage();
+    const pointer = stage.getPointerPosition();
+    if (!pointer) return;
     const transform = stage.getAbsoluteTransform().copy();
     transform.invert();
-    const pos = transform.point(stage.getPointerPosition());
-    
+    const pos = transform.point(pointer);
+
     const dx = pos.x - params.cx;
     const dy = pos.y - params.cy;
-    
-    // ANGLE CALCULATION
-    const angleRad = Math.atan2(dy, dx);
-    const angleDeg = angleRad * (180 / Math.PI);
-    let newPA = 270 - angleDeg; 
-    newPA = (newPA + 360) % 360; 
-    newPA = newPA % 180; 
-
-    // RADIUS CALCULATION
     const distPixels = Math.sqrt(dx * dx + dy * dy);
-    const newRoutArcsec = distPixels * pixelScale;
+    if (distPixels < 1e-6) return;
+
+    const angleDeg = Math.atan2(dy, dx) * (180 / Math.PI);
+    let newPA = (270 - angleDeg) % 360;
+    if (newPA < 0) newPA += 360;
+    newPA = newPA % 180;
+
+    const rot = 270 - newPA;
+    const c = Math.cos(rad(rot));
+    const s = Math.sin(rad(rot));
+    const tipPlus = { x: params.cx + distPixels * c, y: params.cy + distPixels * s };
+    const tipMinus = { x: params.cx - distPixels * c, y: params.cy - distPixels * s };
+    const dPlus = (pos.x - tipPlus.x) ** 2 + (pos.y - tipPlus.y) ** 2;
+    const dMinus = (pos.x - tipMinus.x) ** 2 + (pos.y - tipMinus.y) ** 2;
+    handleSignRef.current = dPlus <= dMinus ? 1 : -1;
+
+    const tip = handleSignRef.current > 0 ? tipPlus : tipMinus;
+    e.target.position(tip);
+
+    const maxRout = 0.5 * (params.fov || 3);
+    const newRout = Math.min(Math.max(distPixels * pixelScale, 0.05), maxRout);
 
     setParams({
       ...params,
       pa: round2(newPA),
-      rout: round2(newRoutArcsec)
+      rout: round2(newRout),
     });
   };
 
@@ -104,6 +132,7 @@ const InteractiveViewer = ({ imageSrc, params, setParams, activeTool, imgDimensi
     
     if (newScale < 0.001 || newScale > 200) return;
 
+    userAdjustedViewRef.current = true;
     setStagePos({
       x: -(mousePointTo.x - stage.getPointerPosition().x / newScale) * newScale,
       y: -(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale,
@@ -112,12 +141,11 @@ const InteractiveViewer = ({ imageSrc, params, setParams, activeTool, imgDimensi
   };
 
   // RENDERING CALCULATIONS
-  const rad = (deg) => deg * (Math.PI / 180);
   const radiusX_Pixels = params.rout / pixelScale; 
   const radiusY_Pixels = radiusX_Pixels * Math.cos(rad(params.incl));
   
-  const hx = params.cx + radiusX_Pixels * Math.cos(rad(konvaRotation));
-  const hy = params.cy + radiusX_Pixels * Math.sin(rad(konvaRotation));
+  const hx = params.cx + handleSignRef.current * radiusX_Pixels * Math.cos(rad(konvaRotation));
+  const hy = params.cy + handleSignRef.current * radiusX_Pixels * Math.sin(rad(konvaRotation));
 
   if (!imageSrc) {
       return (
@@ -139,6 +167,7 @@ const InteractiveViewer = ({ imageSrc, params, setParams, activeTool, imgDimensi
         y={stagePos.y}
         draggable={activeTool === 'pan'}
         onDragEnd={(e) => {
+            userAdjustedViewRef.current = true;
             setStagePos({ x: e.target.x(), y: e.target.y() });
         }}
       >
@@ -219,7 +248,7 @@ const InteractiveViewer = ({ imageSrc, params, setParams, activeTool, imgDimensi
           border: '1px solid var(--disco-border)',
           padding:'2px 6px', 
           fontSize:10, 
-          fontFamily: 'monospace',
+          fontFamily: 'JetBrains Mono, monospace',
           pointerEvents:'none', 
           borderRadius: 4
       }}>

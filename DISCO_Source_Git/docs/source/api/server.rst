@@ -235,19 +235,17 @@ Pipeline and Optimisation
 
 .. http:post:: /optimize_geometry
 
-   Run a grid-seeded Nelder-Mead optimisation of
-   :func:`disco.core.optimization.geometric_loss` to refine inclination and
-   position angle.
+   Run a grid-seeded **L-BFGS-B** optimisation of
+   :func:`disco.core.optimization.geometric_loss` to refine inclination,
+   position angle, and centre.
 
    **Procedure:**
 
    1. Convert GUI coordinates to image-space.
-   2. Apply zero-padding (1000 pixels) and crop around the centre.
-   3. Evaluate the loss at a grid of :math:`(i, \phi)` candidates:
-      ``test_incls = [10, 30, 50, 70]`` degrees,
-      ``test_pas   = range(0, 180, 30)`` degrees.
-   4. Run Nelder-Mead (bounds ``[0,85] × [0,180] × [-10,10]²``, ``dim=400``,
-      ``order=3``) starting from the best grid point.
+   2. Apply zero-padding and crop around the centre.
+   3. Evaluate the loss on a coarse :math:`(i, \phi)` grid (smoothed image).
+   4. Run L-BFGS-B on the full-resolution crop with bounds on
+      inclination, PA, and centre offsets.
 
    **Request body:** :class:`OptimizeParams`
 

@@ -7,13 +7,17 @@ authors:
     affiliation: "Universidad de Santiago de Chile (USACH) / YEMS Millennium Nucleus"
     orcid: "https://orcid.org/0009-0006-0883-7659"
 title: "DISCO: Deprojection Image Software for Circumstellar Objects"
-version: 1.2.4
+version: 1.2.5
+# All-versions DOI (always resolves to the latest release). After the GitHub
+# Release, optionally add the version-specific DOI from the Zenodo export.
 doi: "10.5281/zenodo.19999239"
-date-released: 2026-08-10
+date-released: 2026-08-13
 url: "https://github.com/astrojorgeluis/disco-astronomy"
+repository-code: "https://github.com/astrojorgeluis/disco-astronomy"
 keywords:
   - "astronomy"
   - "protoplanetary disks"
   - "deprojection"
   - "alma"
   - "python"
+license: MIT

@@ -13,12 +13,21 @@ import SimpleImageViewer from '../SimpleImageViewer';
 
 const DEFAULT_VIZ = {
     cmap: 'inferno',
-    stretch: 'asinh',
+    stretch: 'linear',
     vmin: null,
     vmax: null,
     vmax_percentile: 100,
     contours: false,
     contour_levels: 5,
+    contour_mode: 'percentiles',
+    contour_percentiles: '50,70,90,95,99',
+};
+
+const VIEW_LABELS = {
+    deproj: 'Deprojection',
+    model: 'Model',
+    residuals: 'Residuals',
+    polar: 'Polar',
 };
 
 const AnalysisDashboard = ({ 
@@ -45,7 +54,7 @@ const AnalysisDashboard = ({
     const [manualMinStr, setManualMinStr] = useState("");
     const [manualMaxStr, setManualMaxStr] = useState("");
     
-    const [useLogScale, setUseLogScale] = useState(true);
+    const [useLogScale, setUseLogScale] = useState(false);
     const [syncedRadius, setSyncedRadius] = useState(null);
     
     const [markers, setMarkers] = useState([]);
@@ -149,6 +158,8 @@ const AnalysisDashboard = ({
             stretch: finalStretch,
             contours: nextParams.contours,
             contour_levels: nextParams.contour_levels,
+            contour_mode: nextParams.contour_mode,
+            contour_percentiles: nextParams.contour_percentiles,
             show_axes: false,
             show_grid: false,
             show_colorbar: false,
@@ -180,6 +191,8 @@ const AnalysisDashboard = ({
             vmax_percentile: payload.vmax_percentile,
             contours: payload.contours,
             contour_levels: payload.contour_levels,
+            contour_mode: payload.contour_mode,
+            contour_percentiles: payload.contour_percentiles,
         }));
 
         const requestId = ++requestIdRef.current;
@@ -208,7 +221,7 @@ const AnalysisDashboard = ({
         }
     }, [results, vizParams, invertCmap, viewType, manualMinStr, manualMaxStr]);
 
-    // Re-render with user settings when results or view changes (do NOT overwrite with pipeline defaults)
+    // Re-render with user settings when results or view changes
     useEffect(() => {
         if (!results) {
             setCurrentImages({});
@@ -274,15 +287,65 @@ const AnalysisDashboard = ({
             <div className="compact-label">Color & Stretch</div>
             <div style={{display:'flex', gap:10, marginBottom:10}}>
                 <HTMLSelect fill value={vizParams.cmap} onChange={e => updateVisualization({cmap: e.target.value})} options={['magma', 'inferno', 'viridis', 'seismic', 'gray', 'jet', 'twilight']} />
-                <HTMLSelect fill value={vizParams.stretch} onChange={e => updateVisualization({stretch: e.target.value})} options={['asinh', 'linear', 'log', 'sqrt']} />
+                <HTMLSelect fill value={vizParams.stretch} onChange={e => updateVisualization({stretch: e.target.value})} options={['linear', 'asinh', 'log', 'sqrt']} />
             </div>
             <Switch label="Invert Colormap" checked={invertCmap} onChange={() => setInvertCmap(!invertCmap)} style={{marginBottom:15}}/>
             <Divider style={{marginBottom:15}}/>
             <div className="compact-label">Overlays</div>
-            <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:5}}>
-                <Switch label="Contours" checked={vizParams.contours} onChange={() => updateVisualization({ contours: !vizParams.contours })} style={{marginBottom:0}}/>
-                {vizParams.contours && (<div style={{display:'flex', alignItems:'center', gap:5}}><span style={{fontSize:10}}>Lvls:</span><NumericInput style={{width: 50}} buttonPosition="none" min={1} max={50} value={vizParams.contour_levels} onValueChange={(v) => updateVisualization({ contour_levels: v })} small/></div>)}
-            </div>
+            <Switch
+                label="Contours"
+                checked={vizParams.contours}
+                onChange={() => updateVisualization({ contours: !vizParams.contours })}
+                style={{ marginBottom: 8 }}
+            />
+            {vizParams.contours && (
+                <div style={{ marginBottom: 10, padding: 8, background: 'var(--disco-bg-app)', borderRadius: 4, border: '1px solid var(--disco-border)' }}>
+                    <div className="compact-label">Contour mode</div>
+                    <HTMLSelect
+                        fill
+                        value={vizParams.contour_mode || 'percentiles'}
+                        onChange={e => updateVisualization({ contour_mode: e.target.value })}
+                        options={[
+                            { label: 'Percentiles (choose which)', value: 'percentiles' },
+                            { label: 'Evenly spaced (N levels)', value: 'count' },
+                        ]}
+                        style={{ marginBottom: 8 }}
+                    />
+                    {(vizParams.contour_mode || 'percentiles') === 'percentiles' ? (
+                        <Label style={{ marginBottom: 0 }}>
+                            Percentiles
+                            <InputGroup
+                                value={vizParams.contour_percentiles || '50,70,90,95,99'}
+                                onChange={e => setVizParams(prev => ({ ...prev, contour_percentiles: e.target.value }))}
+                                placeholder="50,70,90,95,99"
+                            />
+                            <div style={{ fontSize: 10, color: 'var(--disco-text-muted)', marginTop: 4 }}>
+                                Comma-separated (0–100).
+                            </div>
+                            <Button
+                                small
+                                fill
+                                text="Apply percentiles"
+                                style={{ marginTop: 6 }}
+                                onClick={() => updateVisualization({})}
+                            />
+                        </Label>
+                    ) : (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <span style={{ fontSize: 10, color: 'var(--disco-text-muted)' }}>N levels:</span>
+                            <NumericInput
+                                style={{ width: 70 }}
+                                buttonPosition="none"
+                                min={1}
+                                max={50}
+                                value={vizParams.contour_levels}
+                                onValueChange={(v) => updateVisualization({ contour_levels: v, contour_mode: 'count' })}
+                                small
+                            />
+                        </div>
+                    )}
+                </div>
+            )}
             <Switch label="Axes & Labels" checked={showAxes} onChange={() => setShowAxes(!showAxes)} />
             <Switch label="Colorbar" checked={showColorbar} onChange={() => setShowColorbar(!showColorbar)} />
             <Divider style={{marginBottom:15}}/>
@@ -330,7 +393,12 @@ const AnalysisDashboard = ({
             <div className="dashboard-toolbar">
                 <ButtonGroup minimal>
                     {['deproj', 'model', 'residuals', 'polar'].map(type => (
-                        <Button key={type} className={`view-selector-btn ${viewType === type ? 'bp5-active' : ''}`} text={type.charAt(0).toUpperCase() + type.slice(1)} onClick={() => setViewType(type)}/>
+                        <Button
+                            key={type}
+                            className={`view-selector-btn ${viewType === type ? 'bp5-active' : ''}`}
+                            text={VIEW_LABELS[type] || type}
+                            onClick={() => setViewType(type)}
+                        />
                     ))}
                 </ButtonGroup>
                 <div style={{width:1, height:16, background:'var(--disco-border)'}} />

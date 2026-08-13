@@ -53,7 +53,7 @@ opens a browser window automatically after a short delay, and serves the
 pre-built React application bundled in ``disco/static/``.
 
 Once running, load a FITS file using the folder icon in the toolbar.
-The interface provides four view modes — **Deproj**, **Model**,
+The interface provides four view modes — **Deprojection**, **Model**,
 **Residuals**, and **Polar** — as well as interactive geometry controls and
 1D radial profile charts. See :ref:`gui` for a complete description of the
 interface and a step-by-step workflow guide.

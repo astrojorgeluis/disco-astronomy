@@ -31,6 +31,11 @@ from scipy.optimize import minimize, curve_fit
 from astropy.visualization import ImageNormalize, AsinhStretch, LogStretch, LinearStretch, SqrtStretch
 
 from disco.core.optimization import geometric_loss
+from disco.core.fits_utils import (
+    normalize_flux_units,
+    resolve_restfrq,
+    radial_pixel_grid,
+)
 
 try:
     from astroquery.simbad import Simbad
@@ -106,7 +111,6 @@ def extract_image_from_hdul(hdul):
         if data.ndim == 0:
             continue
         while data.ndim > 2:
-            # Prefer Stokes I / first plane for cubes
             data = data[0]
         if data.ndim != 2:
             continue
@@ -173,6 +177,8 @@ class PlotParams(BaseModel):
     show_grid: bool = False
     show_axes: bool = True
     show_colorbar: bool = True
+    # Full-width FOV in arcsec for cartesian views; max radius for polar. 0 = full.
+    fov: float = 0.0
     title: Optional[str] = ""
     dpi: int = 150
 
@@ -184,6 +190,8 @@ class PipelineParams(BaseModel):
     rout: float
     fit_rmin: float = 0.0
     fit_rmax: float = 0.0
+    # Full width of the deprojected square view (arcsec). 0 → legacy ~1000 px.
+    fov: float = 0.0
 
 class OptimizeParams(BaseModel):
     cx: float
@@ -197,16 +205,43 @@ class OptimizeParams(BaseModel):
 class LoadLocalParams(BaseModel):
     filename: str
 
-def array_to_base64(data_array, cmap='magma', stretch_val=0.03):
+def _downsample_max_side(data_array, max_side):
+    """Fast block-average downsample so matplotlib never sees huge FITS rasters."""
+    arr = np.asarray(data_array, dtype=np.float64)
+    if arr.ndim != 2:
+        return arr
+    ny, nx = arr.shape
+    m = max(ny, nx)
+    if m <= max_side or max_side < 64:
+        return arr
+    # Allow ~25% over max_side so 8192→~2730 (factor 3) instead of jumping to 2048.
+    factor = max(1, int(np.ceil(m / (float(max_side) * 1.25))))
+    ny2 = (ny // factor) * factor
+    nx2 = (nx // factor) * factor
+    if ny2 < factor or nx2 < factor:
+        return arr
+    cropped = arr[:ny2, :nx2]
+    return cropped.reshape(ny2 // factor, factor, nx2 // factor, factor).mean(axis=(1, 3))
+
+
+def array_to_base64(data_array, cmap='magma', stretch_val=0.03, max_px=2400):
     mx = np.nanmax(data_array)
     if np.isnan(mx) or mx <= 0:
         mx = 1.0
     norm = ImageNormalize(vmin=0.0, vmax=mx, stretch=AsinhStretch(stretch_val))
 
-    fig = plt.figure(figsize=(6, 6), dpi=150)
+    # Downsample first (big win on 4k–8k FITS), then rasterize near 1:1 so zoom
+    # in the Image Viewer stays usable without shipping full-resolution PNGs.
+    disp = _downsample_max_side(data_array, max_px)
+    ny, nx = disp.shape
+    dpi = 120
+    fig = plt.figure(figsize=(max(nx, 1) / dpi, max(ny, 1) / dpi), dpi=dpi)
     ax = fig.add_axes([0, 0, 1, 1])
     ax.axis('off')
-    ax.imshow(data_array, origin='lower', cmap=cmap, norm=norm, interpolation='nearest', aspect='auto')
+    ax.imshow(
+        disp, origin='lower', cmap=cmap, norm=norm,
+        interpolation='bilinear', aspect='equal',
+    )
 
     buf = io.BytesIO()
     plt.savefig(buf, format='png', bbox_inches='tight', pad_inches=0)
@@ -232,9 +267,14 @@ async def upload_file(file: UploadFile = File(...)):
             state.header = header
             state.filename = file_location
             clear_analysis_state()
-            if np.max(state.data) < 0.1:
-                state.data *= 1000
+            state.data, state.header, unit_warns = normalize_flux_units(state.data, state.header)
+            if unit_warns:
+                warning_units = "; ".join(unit_warns)
+            else:
+                warning_units = None
             pixel_scale, warning = get_pixel_scale_arcsec(state.header)
+            if warning_units:
+                warning = f"{warning}; {warning_units}" if warning else warning_units
             state.pixel_scale_warning = warning
         payload = {
             "filename": safe_name,
@@ -263,9 +303,11 @@ def load_local(params: LoadLocalParams):
             state.header = header
             state.filename = file_path
             clear_analysis_state()
-            if np.max(state.data) < 0.1:
-                state.data *= 1000
+            state.data, state.header, unit_warns = normalize_flux_units(state.data, state.header)
+            warning_units = "; ".join(unit_warns) if unit_warns else None
             pixel_scale, warning = get_pixel_scale_arcsec(state.header)
+            if warning_units:
+                warning = f"{warning}; {warning_units}" if warning else warning_units
             state.pixel_scale_warning = warning
         payload = {
             "status": "loaded",
@@ -285,7 +327,8 @@ def load_local(params: LoadLocalParams):
 def get_preview():
     if state.data is None:
         raise HTTPException(status_code=404, detail="No data")
-    img_b64 = array_to_base64(state.data, cmap='inferno', stretch_val=0.02)
+    # Higher cap for Image Viewer zoom; analysis thumbnails use array_to_base64 default.
+    img_b64 = array_to_base64(state.data, cmap='inferno', stretch_val=0.02, max_px=3072)
     return {"image": f"data:image/png;base64,{img_b64}"}
 
 @app.get("/get_header")
@@ -311,7 +354,6 @@ def optimize_geometry(params: OptimizeParams):
         data = ensure_2d_data(state.data)
         ny, nx = data.shape
 
-        # Display (Konva, origin top-left) → FITS array indexing (origin lower-left)
         eff_cy = ny - params.cy
         eff_cx = params.cx
 
@@ -326,7 +368,6 @@ def optimize_geometry(params: OptimizeParams):
 
         pixel_scale, _ = get_pixel_scale_arcsec(state.header)
 
-        # Use Rout when no ring-fit range is set (fit_rmax=0 was starving the loss)
         fit_rmax_eff = params.fit_rmax if params.fit_rmax > params.fit_rmin else params.rout
         search_rad = max(params.rout, fit_rmax_eff, 0.1)
         search_rad_pix = max(int(search_rad / pixel_scale), 5)
@@ -342,7 +383,6 @@ def optimize_geometry(params: OptimizeParams):
         rmin_pix = max(0.0, params.fit_rmin / pixel_scale)
         rmax_pix = max(fit_rmax_eff / pixel_scale, rmin_pix + 5)
 
-        # Mild smooth for the coarse grid search (same idea as CLI hybrid path)
         bmaj_pix = 0.0
         if state.header is not None and state.header.get('BMAJ'):
             try:
@@ -368,7 +408,6 @@ def optimize_geometry(params: OptimizeParams):
                     min_loss = l
                     best_guess = [ti, tp, 0.0, 0.0]
 
-        # L-BFGS-B respects bounds (Nelder-Mead ignores them in SciPy)
         bounds = [(0.0, 85.0), (0.0, 180.0), (-15.0, 15.0), (-15.0, 15.0)]
         res = minimize(
             geometric_loss,
@@ -385,7 +424,6 @@ def optimize_geometry(params: OptimizeParams):
             best_pa += 180
         best_incl = float(np.clip(best_incl, 0.0, 85.0))
 
-        # Convert optimized center back to display coordinates
         new_eff_cx = eff_cx + best_dx
         new_eff_cy = eff_cy + best_dy
         optimized_cx = float(new_eff_cx)
@@ -418,8 +456,21 @@ def run_pipeline(params: PipelineParams):
         pa_rad = np.radians(params.pa)
         incl_rad = np.radians(params.incl)
         pixel_scale, _ = get_pixel_scale_arcsec(state.header)
+        if pixel_scale <= 0:
+            raise HTTPException(status_code=400, detail="Invalid pixel scale in FITS header.")
 
-        crop_size = 2000
+        # FOV = full width of the deprojected square (arcsec). Cap for memory/CPU.
+        map_as = min(ny, nx) * pixel_scale
+        if params.fov and params.fov > 0:
+            fov_arcsec = float(np.clip(params.fov, 0.2, max(map_as, 0.2)))
+        else:
+            fov_arcsec = min(1000.0 * pixel_scale, map_as)
+        half_pix = int(round(0.5 * fov_arcsec / pixel_scale))
+        half_pix = int(np.clip(half_pix, 64, 1000))
+        dim = 2 * half_pix
+        fov_arcsec = dim * pixel_scale
+
+        crop_size = 2 * dim
         crop_rad = crop_size // 2
         pad = crop_rad
         d_pad = np.pad(data, pad, mode='constant', constant_values=0)
@@ -449,25 +500,29 @@ def run_pipeline(params: PipelineParams):
         except Exception:
             pass
 
-        dim = 1000
-        x = np.arange(dim) - 500
+        x = np.arange(dim) - half_pix
         X, Y = np.meshgrid(x, x)
-        Xc = X * np.cos(incl_rad)
-        Xrot = np.cos(pa_rad) * Xc + np.sin(pa_rad) * Y
-        Yrot = -np.sin(pa_rad) * Xc + np.cos(pa_rad) * Y
+        # Sky-aligned face-on grid (Y ~ North): rotate into disk frame, then
+        # apply the usual i/PA → image sampling. Avoids empty corners from a
+        # post-hoc image rotation.
+        Xd = X * np.cos(pa_rad) - Y * np.sin(pa_rad)
+        Yd = X * np.sin(pa_rad) + Y * np.cos(pa_rad)
+        Xc = Xd * np.cos(incl_rad)
+        Xrot = np.cos(pa_rad) * Xc + np.sin(pa_rad) * Yd
+        Yrot = -np.sin(pa_rad) * Xc + np.cos(pa_rad) * Yd
 
         coords_deproj = [Yrot + local_cy, -Xrot + local_cx]
         deproj = map_coordinates(dc, coords_deproj, order=3, cval=0.0)
         deproj = np.fliplr(deproj)
 
-        max_radius_pix = np.hypot(500, 500)
-        n_steps = int(max_radius_pix)
-        r_full = np.linspace(0, max_radius_pix, n_steps)
+        max_radius_pix = np.hypot(half_pix, half_pix)
+        r_full = radial_pixel_grid(int(np.ceil(max_radius_pix)) + 1)
+        n_steps = len(r_full)
         th = np.linspace(-180, 180, 361)
         R, TH = np.meshgrid(r_full, th)
-        Xd = R * np.cos(np.radians(TH))
-        Yd = R * np.sin(np.radians(TH))
-        coords_polar = [Yd + 500, Xd + 500]
+        Xd_p = R * np.cos(np.radians(TH))
+        Yd_p = R * np.sin(np.radians(TH))
+        coords_polar = [Yd_p + half_pix, Xd_p + half_pix]
         polar_full = map_coordinates(deproj, coords_polar, order=1)
         polar_full = np.flipud(polar_full)
 
@@ -486,7 +541,7 @@ def run_pipeline(params: PipelineParams):
         try:
             bmaj = state.header.get('BMAJ', 0) * 3600
             bmin = state.header.get('BMIN', 0) * 3600
-            restfrq = state.header.get('RESTFRQ', 230e9)
+            restfrq, _fallback, _src = resolve_restfrq(state.header)
             if bmaj > 0 and bmin > 0:
                 beam_sr = (np.pi * bmaj * bmin / (4 * np.log(2))) / 206265 ** 2
                 kB = 1.38e-16
@@ -498,16 +553,21 @@ def run_pipeline(params: PipelineParams):
             tb_prof = prof_display
 
         r_arcsec = r_display * pixel_scale
-        start = crop_rad - 500
-        end = crop_rad + 500
+        start = crop_rad - half_pix
+        end = crop_rad + half_pix
         dc_view = dc[start:end, start:end]
 
-        fov_arcsec = 1000 * pixel_scale
         limit_arcsec = fov_arcsec / 2
         ext_cartesian = [limit_arcsec, -limit_arcsec, -limit_arcsec, limit_arcsec]
         ext_polar = [0, params.rout, -180, 180]
 
-        state.results = {'data': dc_view, 'deproj': deproj, 'polar': polar_display, 'model': mod, 'residuals': resi}
+        state.results = {
+            'data': dc_view,
+            'deproj': deproj,
+            'polar': polar_display,
+            'model': mod,
+            'residuals': resi,
+        }
         state.extents = {'data': ext_cartesian, 'deproj': ext_cartesian, 'model': ext_cartesian, 'residuals': ext_cartesian, 'polar': ext_polar}
         prof_jy = prof_display / 1000.0
         state.profile_data = {'radius': r_arcsec.tolist(), 'tb': tb_prof.tolist(), 'raw': prof_jy.tolist()}
@@ -537,7 +597,7 @@ def run_pipeline(params: PipelineParams):
             except Exception:
                 fit_stats = None
 
-        fov_cartesian = 1000 * pixel_scale
+        fov_cartesian = fov_arcsec
         fov_polar = params.rout
 
         return {
@@ -663,7 +723,6 @@ def render_plot(params: PlotParams):
     aspect = 'auto' if params.type == 'polar' else 'equal'
     extent = state.extents.get(params.type, None) if state.extents else None
 
-    # Fallback extent (arcsec) so beam/axes work even before / after partial pipeline state
     if extent is None and params.type != 'polar':
         try:
             pixel_scale, _ = get_pixel_scale_arcsec(state.header)
@@ -676,11 +735,29 @@ def render_plot(params: PlotParams):
 
     im = ax.imshow(image_data, origin='lower', cmap=params.cmap, norm=norm, aspect=aspect, extent=extent)
 
+    # Optional FOV crop (arcsec). Cartesian: full width centered; polar: max radius.
+    fov = float(params.fov or 0.0)
+    if fov > 0 and extent is not None:
+        if params.type == 'polar':
+            r_max = min(fov, max(extent[0], extent[1]))
+            ax.set_xlim(0, r_max)
+            ax.set_ylim(extent[2], extent[3])
+        else:
+            half = 0.5 * fov
+            ax.set_xlim(half, -half)
+            ax.set_ylim(-half, half)
+
     if params.show_axes:
         if params.title:
             ax.set_title(params.title, fontweight='bold', fontsize=14)
         else:
-            titles = {'data': "Input Data", 'deproj': "Deprojected View", 'polar': "Polar Map", 'model': "Azimuthal Model", 'residuals': "Residual Map"}
+            titles = {
+                'data': "Input Data",
+                'deproj': "Deprojected View",
+                'polar': "Polar Map",
+                'model': "Azimuthal Model",
+                'residuals': "Residual Map",
+            }
             ax.set_title(titles.get(params.type, params.type.capitalize()), fontweight='bold', fontsize=14)
 
         ax.tick_params(direction='in', labelsize=10, color='black')
@@ -718,7 +795,6 @@ def render_plot(params: PlotParams):
                     levels = np.percentile(image_data[np.isfinite(image_data)], pcts)
             if levels is None:
                 n_levels = max(1, int(params.contour_levels))
-                # Explicit values between vmin/vmax keep canvas layout stable vs auto-count
                 levels = np.linspace(vmin, vmax, n_levels + 2)[1:-1]
             levels = np.asarray(levels, dtype=float)
             levels = levels[np.isfinite(levels)]
@@ -736,21 +812,29 @@ def render_plot(params: PlotParams):
                 bmaj = float(state.header['BMAJ']) * 3600
                 bmin = float(state.header.get('BMIN', state.header['BMAJ'])) * 3600
                 bpa = float(state.header.get('BPA', 0.0) or 0.0)
-                if extent is not None:
+                # Place beam in the visible corner (respect FOV crop if set).
+                if fov > 0:
+                    half = 0.5 * fov
+                    x0 = half - 0.08 * fov
+                    y0 = -half + 0.08 * fov
+                elif extent is not None:
                     width_phys = abs(extent[1] - extent[0])
                     height_phys = abs(extent[3] - extent[2])
-                    # Classic ALMA beam placement: bottom-left of frame
                     x0 = min(extent[0], extent[1]) + width_phys * 0.08
                     y0 = min(extent[2], extent[3]) + height_phys * 0.08
+                else:
+                    x0 = y0 = None
+                if x0 is not None:
+                    # Header BPA is E of N; with RA increasing to the left, use -BPA
+                    # so major-axis north (BPA=0) stays vertical on the plot.
                     beam_patch = Ellipse(
-                        (x0, y0), width=bmin, height=bmaj, angle=bpa,
+                        (x0, y0), width=bmin, height=bmaj, angle=-bpa,
                         facecolor='white', edgecolor='black', linewidth=1.0, zorder=20, alpha=0.95
                     )
                     ax.add_patch(beam_patch)
         except Exception:
             pass
 
-    # Fixed margins avoid the "canvas jump" when toggling contours/colorbar
     if params.show_axes:
         fig.subplots_adjust(left=0.12, right=0.90 if params.show_colorbar else 0.96, top=0.90, bottom=0.12)
         buf = io.BytesIO()

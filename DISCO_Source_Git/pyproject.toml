@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "disco-astronomy"
-version = "1.2.4"
+version = "1.2.5"
 description = "Deprojection Image Software for Circumstellar Objects"
 authors = [
   { name="astrojorgeluis", email="jorge.guzman.l@usach.cl" },
@@ -35,3 +35,6 @@ disco-start = "disco.main:run"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["disco*"]
+
+[tool.setuptools.package-data]
+disco = ["static/**/*", "models/**/*"]

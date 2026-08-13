@@ -59,18 +59,21 @@ DISCO bridges scientific Python libraries with a modern web interface, offering 
 
 If you use DISCO in your research, please cite the associated Zenodo record:
 
-Guzmán-Lazo, J. L. (2026). *DISCO: Deprojection Image Software for Circumstellar Objects* (v1.2.4). Zenodo. https://doi.org/10.5281/zenodo.19999239
+Guzmán-Lazo, J. L. (2026). *DISCO: Deprojection Image Software for Circumstellar Objects* (v1.2.5). Zenodo. https://doi.org/10.5281/zenodo.19999239
 
 ### BibTeX
 ```bibtex
 @software{guzman_lazo_2026_19999239,
-  author    = {Guzmán-Lazo, Jorge Luis},
-  title     = {DISCO: Deprojection Image Software for Circumstellar Objects},
-  year      = {2026},
-  version   = {v1.2.4},
-  publisher = {Zenodo},
-  doi       = {10.5281/zenodo.19999239},
-  url       = {https://doi.org/10.5281/zenodo.19999239}
+  author       = {Guzmán-Lazo, Jorge Luis},
+  title        = {DISCO: Deprojection Image Software for
+                   Circumstellar Objects
+                  },
+  month        = august,
+  year         = 2026,
+  publisher    = {Zenodo},
+  version      = {v1.2.5},
+  doi          = {10.5281/zenodo.19999239},
+  url          = {https://doi.org/10.5281/zenodo.19999239},
 }
 ```
 
@@ -82,14 +85,15 @@ DISCO was developed by **Jorge Luis Guzmán-Lazo** within the [YEMS Millennium N
 
 ## Key Features
 
-- **DiscoNet (CNN)** — Convolutional neural network that predicts disk geometric parameters (inclination, position angle, outer/inner radius) directly from FITS images.
-- **Hybrid Optimization** — Combines CNN predictions with fine-grained numerical refinement (Nelder-Mead) for physically consistent results.
-- **Dual Visualization** — Real-time rendering of deprojected images in both Cartesian and polar projections.
-- **Batch Processing** — Automated CLI pipeline supporting multiple targets and FITS files in a single run.
-- **Beam Homogenization** — Convolves images to a common target resolution for multi-epoch or multi-band consistency (enabled by default).
-- **SIMBAD Metadata** — Manual **SIMBAD** button queries object metadata (distance, spectral type) via the CDS SIMBAD service.
-- **Gaia Proper Motion Correction** — Corrects source centroid across multi-epoch observations using Gaia DR3 astrometry.
-- **CSV Export** — Outputs radial profiles and fitted parameters in tabular format.
+- **DiscoNet (CNN)** — Predicts inclination, position angle, and center offsets from a 128×128 multi-channel crop (intensity + elliptical beam + scale). Shipped weights (v1.2.5) are trained on **20k synthetic** disks.
+- **Hybrid Optimization** — CNN prior seeds a differential-evolution + **L-BFGS-B** refinement of a geometric loss on the real FITS image (CLI).
+- **Radial Profiles** — Deprojection and azimuthally averaged profiles, with optional beam homogenization for multi-band groups.
+- **Dual Visualization** — GUI with Cartesian / polar views and interactive ellipse overlay.
+- **Batch CLI** — `disco-start` processes one or many targets; `-y` for non-interactive runs.
+- **SIMBAD / Gaia** — GUI SIMBAD metadata; CLI Gaia DR3 proper-motion registration across epochs.
+- **CSV Export** — Geometry and radial profiles (`--csv on`).
+
+The plot annotation `i = … ± …` uses a **loss-curvature** estimate (`estimate_geometry_errors`), not a literature 1σ. Empirical accuracy is validated against published geometries (e.g. DSHARP).
 
 ---
 
@@ -164,6 +168,17 @@ disco-start gui
 
 This starts a local server on the first free port starting at 8000 and opens a browser tab automatically. Check the terminal for the URL (for example `http://localhost:8000`, or `8001` if 8000 is already in use).
 
+**From a source checkout** (editable install), build the frontend once before the first GUI launch:
+
+```bash
+cd DISCO_Source_Git/client
+npm ci
+npm run build          # writes disco/static/ (required)
+disco-start gui
+```
+
+If you see `GUI static assets not found`, the `npm run build` step is missing.
+
 ![GUI Screenshot](https://raw.githubusercontent.com/astrojorgeluis/disco-astronomy/main/DISCO_Source_Git/assets/gui_screenshot.png)
 
 ### Step-by-Step Guide
@@ -187,10 +202,10 @@ Activate the **Ellipse Tool** in the toolbar to display the geometry overlay on 
 Click **RUN PIPELINE**. DISCO computes the deprojected image, azimuthally-averaged radial profile, cumulative flux curve, and Gaussian ring fit for the current parameters.
 
 **4. Auto-tune the geometry (optional)**
-Click **Auto-Tune Geometry** in the analysis panel to run the optimizer automatically. It performs a grid-search seeded L-BFGS-B minimization of the geometric loss and applies the best-fit inclination, position angle, and center.
+Click **Auto-Tune Geometry** in the analysis panel to refine inclination, position angle, and center from the current sliders. This GUI path runs a coarse grid search followed by a local **L-BFGS-B** fit of the geometric loss (center moves only within a small pixel window). It is a helpful starting point, **not** a guaranteed global optimum: low-inclination disks, weak rings, or a poor seed can leave a local minimum. Check the ellipse by eye and adjust manually if needed. The stronger CNN + differential-evolution hybrid lives in the **CLI**, not in this button.
 
 **5. Explore the results**
-Switch between **Deproj / Model / Residuals / Polar** views to inspect different representations of the disk. Activate the **Inspector** tool and hover over the image to probe the radial profile in real time. Drag on the profile chart to define a fitting range for Gaussian ring analysis.
+Switch between **Deprojection / Model / Residuals / Polar** views to inspect different representations of the disk. Activate the **Inspector** tool and hover over the image to probe the radial profile in real time. Drag on the profile chart to define a fitting range for Gaussian ring analysis.
 
 **6. Export**
 Download the radial profile as CSV, save the current view as a FITS file, or open the **Matplotlib Widget** for a publication-ready figure. Use **Save Session** to preserve your parameters for later.
@@ -221,7 +236,7 @@ Once the pipeline has run, toggle between these representations using the tabs i
 
 | Mode | Description |
 |---|---|
-| **Deproj** | The deprojected (face-on) image computed from the current geometric parameters. |
+| **Deprojection** | Face-on deprojected image (sky-aligned, North up) from the current geometry. |
 | **Model** | The azimuthally-averaged synthetic model — a perfectly symmetric reconstruction of the disk. |
 | **Residuals** | Difference between the deprojected image and the model. Highlights non-axisymmetric structures such as spirals, arcs, or clumps. |
 | **Polar** | The deprojected image resampled into polar coordinates (Radius vs. Azimuth angle). |
@@ -231,7 +246,7 @@ Once the pipeline has run, toggle between these representations using the tabs i
 ### Analysis Tools
 
 **Auto-Tune Geometry**
-Runs a grid-search seeded L-BFGS-B minimization to find the optimal inclination, position angle, and center. Results are applied immediately to the sliders.
+Refines inclination, position angle, and center with a coarse inclination/PA grid plus local **L-BFGS-B** minimization of the geometric loss (`POST /optimize_geometry`). Treat the result as an approximate suggestion: it can miss the true geometry (local minima, PA degeneracy at low *i*, noisy or asymmetric disks). Always verify against the ellipse overlay. This is **not** the CLI hybrid (CNN prior + differential evolution + L-BFGS-B).
 
 **Gaussian Ring Fitting**
 Click and drag on the radial profile chart to define a fitting range. The pipeline fits a Gaussian to the selected interval and reports:
@@ -264,8 +279,9 @@ Click **Settings** in the analysis panel toolbar to access visualization control
 | **Colormap** | `magma`, `inferno`, `viridis`, `seismic`, `gray`, `jet` (all invertible) |
 | **Stretch** | `asinh`, `linear`, `log`, `sqrt` |
 | **Intensity Limits** | Manual `Vmin` / `Vmax`, or **Auto** (percentile-based scaling) |
-| **Contours** | Toggle on/off; configurable number of levels (1–50) |
-| **Overlays** | Axes, colorbar, contours (beam is shown when available in the header; Matplotlib Widget has a separate beam toggle) |
+| **Contours** | Off, or percentiles / N evenly spaced levels (same options as the Matplotlib Widget) |
+| **Overlays** | Axes, colorbar, contours (beam overlay in the Matplotlib Widget) |
+| **Default stretch** | `linear` |
 
 ---
 
@@ -273,7 +289,7 @@ Click **Settings** in the analysis panel toolbar to access visualization control
 
 | Action | Description |
 |---|---|
-| **Download FITS** | Saves the currently displayed view (Deproj, Model, Residuals, or Polar) as a standard `.fits` file. |
+| **Download FITS** | Saves the currently displayed view (Deprojection, Model, Residuals, or Polar) as a standard `.fits` file. |
 | **CSV Export** | Downloads the 1D radial profile — Radius, Raw Intensity, and Brightness Temperature — as `radial_profile.csv`. |
 | **Matplotlib Widget** | Opens a secondary panel with a high-DPI Matplotlib figure and configurable axes, colorbar, and beam overlay. |
 | **Save Session** | Serializes `{filename, params, pixelScale, timestamp}` to a downloadable `.json` file. |

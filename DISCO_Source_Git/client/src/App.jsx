@@ -22,25 +22,26 @@ const showToast = async (props) => {
 const WINDOWS = {
   CONTROLS: 'Render Configuration',
   VIEWER: 'Image Viewer',
-  CATALOG: 'File Browser',
-  ANALYSIS: 'Analysis Results'
+  CATALOG: 'File Header',
+  ANALYSIS: 'Scientific Analysis'
 };
 
+// Layout: header | (viewer / config) | analysis
 const INITIAL_LAYOUT = {
     direction: 'row',
-    splitPercentage: 20,
-    first: {
-        direction: 'column',
-        first: WINDOWS.CONTROLS, 
-        splitPercentage: 38,     
-        second: WINDOWS.VIEWER   
-    },
+    splitPercentage: 13,
+    first: WINDOWS.CATALOG,
     second: {
-            direction: 'row',
-            first: WINDOWS.CATALOG,  
-            splitPercentage: 15,     
-            second: WINDOWS.ANALYSIS  
-        }
+        direction: 'row',
+        splitPercentage: 26,
+        first: {
+            direction: 'column',
+            first: WINDOWS.VIEWER,
+            splitPercentage: 62,
+            second: WINDOWS.CONTROLS,
+        },
+        second: WINDOWS.ANALYSIS,
+    },
 };
 
 // UI HELPERS
@@ -57,12 +58,16 @@ const SmartNumericInput = ({ value, onValueChange, ...props }) => {
     return <NumericInput {...props} value={strVal} onValueChange={handleChange} />;
 };
 
-const ControlRow = ({ label, value, onChange, min, max, unit }) => {
+const ControlRow = ({ label, value, onChange, min, max, unit, stepSize }) => {
+  const lo = Number(min);
+  const hi = Math.max(Number(max), lo + 0.01);
+  const step = stepSize ?? (hi > 5 ? 0.1 : 0.05);
+  const clamped = Math.min(Math.max(Number(value) || lo, lo), hi);
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 65px', gap: 8, alignItems: 'center', marginBottom: 6 }}>
         <div className="compact-label">{label}</div>
-        <Slider min={min} max={max} stepSize={0.1} labelRenderer={false} value={value} onChange={onChange} className="compact-slider"/>
-        <SmartNumericInput fill={true} value={value} onValueChange={onChange} buttonPosition="none" min={min} max={max} small rightElement={unit ? <span style={{lineHeight:'20px', paddingRight:4, opacity:0.6, fontSize:11}}>{unit}</span> : null} />
+        <Slider min={lo} max={hi} stepSize={step} labelRenderer={false} value={clamped} onChange={onChange} className="compact-slider"/>
+        <SmartNumericInput fill={true} value={clamped} onValueChange={onChange} buttonPosition="none" min={lo} max={hi} small rightElement={unit ? <span style={{lineHeight:'20px', paddingRight:4, opacity:0.6, fontSize:11}}>{unit}</span> : null} />
     </div>
   );
 };
@@ -94,6 +99,7 @@ function App() {
   const [isSimbadLoading, setIsSimbadLoading] = useState(false);
   const [isPipelineLoading, setIsPipelineLoading] = useState(false);
   const [isAutoTuning, setIsAutoTuning] = useState(false);
+  const [isFileLoading, setIsFileLoading] = useState(false);
   const [simbadResults, setSimbadResults] = useState(null);
   const [isSimbadModalOpen, setIsSimbadModalOpen] = useState(false);
   const [isMatplotlibModalOpen, setIsMatplotlibModalOpen] = useState(false);
@@ -106,7 +112,7 @@ function App() {
   const [simbadInfo, setSimbadInfo] = useState([]); 
   const [inlinePlots, setInlinePlots] = useState({});
 
-  const [params, setParams] = useState({ incl: 0, pa: 0, cx: 300, cy: 300, rout: 1.2, fit_rmin: 0.0, fit_rmax: 0.0 });
+  const [params, setParams] = useState({ incl: 0, pa: 0, cx: 300, cy: 300, rout: 1.2, fov: 3.0, fit_rmin: 0.0, fit_rmax: 0.0 });
   const [results, setResults] = useState(null); 
   const [profileData, setProfileData] = useState(null); 
   const [fitStats, setFitStats] = useState(null); 
@@ -147,7 +153,7 @@ function App() {
       try {
           await fetch('/reset_session', { method: 'POST' });
           setFilename("No Data Loaded"); setImageSrc(null); setResults(null); setProfileData(null); setFitStats(null); setHeaderInfo([]); setSimbadResults(null); setGeometry(null); setImgDimensions(null);
-          setParams({ incl: 0, pa: 0, cx: 300, cy: 300, rout: 1.2, fit_rmin: 0.0, fit_rmax: 0.0 });
+          setParams({ incl: 0, pa: 0, cx: 300, cy: 300, rout: 1.2, fov: 3.0, fit_rmin: 0.0, fit_rmax: 0.0 });
           showToast({ message: "Session closed.", intent: "success", icon: "trash" });
       } catch (e) { console.error("Exit failed", e); }
   };
@@ -203,6 +209,7 @@ function App() {
     const file = event.target.files[0];
     if (!file) return;
     const extension = file.name.split('.').pop().toLowerCase();
+    setIsFileLoading(true);
 
     if (extension === 'json') {
         const reader = new FileReader();
@@ -230,13 +237,20 @@ function App() {
                             const headerData = await headerRes.json();
                             setHeaderInfo(headerData.header || []);
                         }
-                    } catch (e) { console.warn("Auto-load failed", e); }
+                    } catch (err) { console.warn("Auto-load failed", err); }
                 }
                 showToast({ message: "Session Restored", intent: "success", icon: "tick", timeout: 2000 });
             } catch (err) {
                 console.error(err);
                 showToast({ message: "Invalid session file.", intent: "danger" });
+            } finally {
+                setIsFileLoading(false);
+                if (fileInputRef.current) fileInputRef.current.value = '';
             }
+        };
+        reader.onerror = () => {
+            setIsFileLoading(false);
+            if (fileInputRef.current) fileInputRef.current.value = '';
         };
         reader.readAsText(file);
         return;
@@ -271,11 +285,30 @@ function App() {
             const headerData = await headerRes.json();
             setHeaderInfo(headerData.header || []);
         } catch(e) { console.error("Header fetch error", e); }
-        setParams(prev => ({ ...prev, cx: realWidth / 2, cy: realHeight / 2 }));
+        // Slider max = full map side. Default FOV is a nicer fraction of that
+        // (full-map values like 8.97" → "9" felt arbitrary and too wide).
+        const mapAs = Math.min(realWidth, realHeight) * scale;
+        const niceStep = (v) => {
+            if (v < 2) return Math.round(v * 10) / 10;      // 0.1"
+            if (v < 5) return Math.round(v * 2) / 2;        // 0.5"
+            return Math.round(v);                             // 1"
+        };
+        const defaultFov = Math.max(0.5, Math.min(mapAs, niceStep(0.5 * mapAs)));
+        const defaultRout = Math.min(1.2, Math.max(0.1, 0.35 * defaultFov));
+        setParams(prev => ({
+            ...prev,
+            cx: realWidth / 2,
+            cy: realHeight / 2,
+            fov: defaultFov,
+            rout: defaultRout,
+        }));
         showToast({ message: "FITS loaded", intent: "success", timeout: 2000 });
     } catch (error) {
         console.error("Error loading file:", error);
         showToast({ message: "Error loading file.", intent: "danger" });
+    } finally {
+        setIsFileLoading(false);
+        if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
 
@@ -339,7 +372,7 @@ function App() {
         const response = await fetch('/run_pipeline', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ filepath: "", cx: activeParams.cx, cy: activeParams.cy, pa: activeParams.pa, incl: activeParams.incl, rout: activeParams.rout, contrast: 2.0, fit_rmin: activeParams.fit_rmin, fit_rmax: activeParams.fit_rmax })
+            body: JSON.stringify({ filepath: "", cx: activeParams.cx, cy: activeParams.cy, pa: activeParams.pa, incl: activeParams.incl, rout: activeParams.rout, fov: activeParams.fov, contrast: 2.0, fit_rmin: activeParams.fit_rmin, fit_rmax: activeParams.fit_rmax })
         });
         if (!response.ok) throw new Error("Pipeline error");
         const data = await response.json();
@@ -376,22 +409,61 @@ function App() {
     if (id === WINDOWS.CONTROLS) {
         return (
             <MosaicWindow {...windowProps}>
-                <div className="config-panel" style={{height:'100%', padding:15, overflowY:'auto'}}>
-                    <div className="compact-label">Active Data</div>
-                    <div className="data-box">
-                        <Icon icon="document" size={12} color="var(--disco-accent)"/>
-                        <div className="data-box-text" title={filename}>{filename}</div>
+                <div className="config-panel" style={{height:'100%', padding:'10px 12px', display:'flex', flexDirection:'column', overflow:'hidden', boxSizing:'border-box'}}>
+                    <div style={{flex:1, minHeight:0, overflowY:'auto'}}>
+                        <div className="compact-label">Active Data</div>
+                        <div className="data-box" style={{marginBottom:10, padding:6}}>
+                            <Icon icon="document" size={12} color="var(--disco-accent)"/>
+                            <div className="data-box-text" title={filename}>{filename}</div>
+                        </div>
+                        <div className="compact-label">Geometry Fit</div>
+                        <ControlRow label="Inclination" value={params.incl} onChange={v=>setParams(p => ({...p, incl:v}))} min={0} max={90} unit="°" />
+                        <ControlRow label="Pos Angle" value={params.pa} onChange={v=>setParams(p => ({...p, pa:v}))} min={0} max={180} unit="°" />
+                        <ControlRow
+                            label="FOV"
+                            value={params.fov}
+                            onChange={v => setParams(p => {
+                                const mapAs = imgDimensions
+                                    ? Math.min(imgDimensions.width, imgDimensions.height) * (pixelScale || 0.03)
+                                    : 10;
+                                const fov = Math.min(Math.max(v, 0.5), Math.max(mapAs, 0.5));
+                                const maxRout = 0.5 * fov;
+                                // Only shrink Rout if it no longer fits; never bump it with FOV.
+                                if (p.rout > maxRout + 1e-9) {
+                                    return { ...p, fov, rout: maxRout };
+                                }
+                                return { ...p, fov };
+                            })}
+                            min={0.5}
+                            max={imgDimensions ? Math.max(0.5, Math.min(imgDimensions.width, imgDimensions.height) * (pixelScale || 0.03)) : 10}
+                            unit='"'
+                        />
+                        <ControlRow
+                            label="Radius Out"
+                            value={params.rout}
+                            onChange={v => setParams(p => {
+                                // Cap by FOV/2 scientifically; slider max stays map/2 so FOV
+                                // changes do not rescale this track / fire spurious updates.
+                                const mapHalf = imgDimensions
+                                    ? 0.5 * Math.min(imgDimensions.width, imgDimensions.height) * (pixelScale || 0.03)
+                                    : 5;
+                                const maxRout = Math.min(Math.max(mapHalf, 0.05), 0.5 * (p.fov || 3));
+                                const rout = Math.min(Math.max(v, 0.05), maxRout);
+                                if (Math.abs(rout - p.rout) < 1e-9) return p;
+                                return { ...p, rout };
+                            })}
+                            min={0.05}
+                            max={imgDimensions
+                                ? Math.max(0.05, 0.5 * Math.min(imgDimensions.width, imgDimensions.height) * (pixelScale || 0.03))
+                                : 5}
+                            unit='"'
+                        />
+                        <div style={{marginTop: 8, display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginBottom:8}}>
+                            <div> <div className="compact-label">Center X</div> <SmartNumericInput fill value={params.cx} onValueChange={v=>setParams(p => ({...p, cx:v}))} buttonPosition="none" small/> </div>
+                            <div> <div className="compact-label">Center Y</div> <SmartNumericInput fill value={params.cy} onValueChange={v=>setParams(p => ({...p, cy:v}))} buttonPosition="none" small/> </div>
+                        </div>
                     </div>
-                    <div className="compact-label">Geometry Fit</div>
-                    <ControlRow label="Inclination" value={params.incl} onChange={v=>setParams(p => ({...p, incl:v}))} min={0} max={90} unit="°" />
-                    <ControlRow label="Pos Angle" value={params.pa} onChange={v=>setParams(p => ({...p, pa:v}))} min={0} max={180} unit="°" />
-                    <ControlRow label="Radius Out" value={params.rout} onChange={v=>setParams(p => ({...p, rout:v}))} min={0.1} max={10} unit='"' />
-                    <div style={{marginTop: 10, display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:15}}>
-                        <div> <div className="compact-label">Center X</div> <SmartNumericInput fill value={params.cx} onValueChange={v=>setParams(p => ({...p, cx:v}))} buttonPosition="none" small/> </div>
-                        <div> <div className="compact-label">Center Y</div> <SmartNumericInput fill value={params.cy} onValueChange={v=>setParams(p => ({...p, cy:v}))} buttonPosition="none" small/> </div>
-                    </div>
-                    <div style={{flex:1}} />
-                    <Button className="btn-yellow" fill text={isPipelineLoading ? "Processing..." : "RUN PIPELINE"} icon={isPipelineLoading ? <Spinner size={16} className="bp5-icon-standard"/> : "play"} disabled={isPipelineLoading} onClick={() => handleRunPipeline(false)} style={{height:30}}/>
+                    <Button className="btn-yellow" fill text={isPipelineLoading ? "Processing..." : "RUN PIPELINE"} icon={isPipelineLoading ? <Spinner size={16} className="bp5-icon-standard"/> : "play"} disabled={isPipelineLoading} onClick={() => handleRunPipeline(false)} style={{height:30, flexShrink:0, marginTop:8}}/>
                 </div>
             </MosaicWindow>
         );
@@ -439,16 +511,18 @@ function App() {
         ); 
     }
     return <MosaicWindow {...windowProps}><div/></MosaicWindow>;
-  }, [headerInfo, filename, params, imageSrc, activeTool, results, isSimbadLoading, isPipelineLoading, fitStats, isAutoTuning]);
+  }, [headerInfo, filename, params, imageSrc, activeTool, results, isSimbadLoading, isPipelineLoading, fitStats, isAutoTuning, imgDimensions, pixelScale]);
 
-  const appStatus = (isPipelineLoading || isAutoTuning || isSimbadLoading)
+  const appStatus = (isPipelineLoading || isAutoTuning || isSimbadLoading || isFileLoading)
       ? 'running'
       : (imageSrc ? 'ready' : 'idle');
   const statusMeta = {
       idle: { label: 'Idle', color: 'var(--disco-text-subtle)' },
       ready: { label: 'Ready', color: 'var(--disco-success)' },
       running: {
-          label: isAutoTuning ? 'Auto-tuning…' : (isSimbadLoading ? 'Querying…' : 'Running…'),
+          label: isFileLoading
+              ? 'Loading…'
+              : (isAutoTuning ? 'Auto-tuning…' : (isSimbadLoading ? 'Querying…' : 'Running…')),
           color: 'var(--disco-warning)',
       },
   }[appStatus];
@@ -458,8 +532,8 @@ function App() {
         <input type="file" ref={fileInputRef} style={{display:'none'}} onChange={handleFileUpload} accept=".fits,.fit,.json"/>
         
         {/* HEADER & TOOLBAR */}
-        <div style={{ height: '30px', background: 'var(--disco-header)', display:'flex', alignItems:'center', padding:'0 8px', borderBottom:'1px solid var(--disco-border)' }}>
-            <div style={{ fontWeight:'800', marginRight: 15, color: 'var(--disco-accent)', fontSize:12, letterSpacing:1 }}>DISCO</div>
+        <div style={{ height: '26px', background: 'var(--disco-header)', display:'flex', alignItems:'center', padding:'0 8px', borderBottom:'1px solid var(--disco-border)' }}>
+            <div className="disco-brand" style={{ marginRight: 12, fontSize: 11 }}>DISCO</div>
             <Popover content={ViewMenu} position={Position.BOTTOM_LEFT} minimal><Button minimal small text="View" className="header-btn" style={{ fontSize:11 }}/></Popover>
             <div
                 className="disco-status-pill"
@@ -527,7 +601,7 @@ function App() {
         {/* DIALOGS */}
         <Dialog isOpen={isMatplotlibModalOpen} onClose={() => setIsMatplotlibModalOpen(false)} title="Scientific Plotter" icon="chart" style={{width:'90vw', height:'90vh', maxWidth:'1400px'}} className="bp5-dark">
             <div className={Classes.DIALOG_BODY} style={{flex:1, height:'100%', padding:0, margin:0, background:'var(--disco-bg-panel)'}}> 
-               {isMatplotlibModalOpen && <MatplotlibWidget defaultType={matplotlibInitialType} />}
+               {isMatplotlibModalOpen && <MatplotlibWidget defaultType={matplotlibInitialType} defaultFov={params.fov} />}
             </div>
         </Dialog>
 

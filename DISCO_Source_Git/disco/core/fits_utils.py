@@ -19,6 +19,92 @@ except ImportError:
     print("Warning: astroquery is not available. Gaia-based center refinement will be disabled.")
     _ASTROQUERY_AVAILABLE = False
 
+DEFAULT_RESTFRQ_HZ = 230e9
+BUNIT_HEURISTIC_MAX = 5.0
+
+
+def resolve_restfrq(header):
+    """Resolve observing frequency in Hz for Tb conversion.
+
+    Preference order: ``RESTFRQ`` → spectral ``CRVALn`` (FREQ axis) →
+    ``DEFAULT_RESTFRQ_HZ`` (230 GHz) with a warning flag.
+
+    Returns
+    -------
+    restfrq_hz : float
+    used_fallback : bool
+        True when the 230 GHz default was used.
+    source : str
+        Short label of which header path supplied the value.
+    """
+    restfrq = header.get("RESTFRQ", None)
+    try:
+        restfrq = float(restfrq) if restfrq is not None else 0.0
+    except (TypeError, ValueError):
+        restfrq = 0.0
+
+    if restfrq > 0:
+        return restfrq, False, "RESTFRQ"
+
+    for axis, ctype_key, crval_key in (
+        (3, "CTYPE3", "CRVAL3"),
+        (4, "CTYPE4", "CRVAL4"),
+    ):
+        ctype = str(header.get(ctype_key, "") or "")
+        if "FREQ" in ctype.upper():
+            try:
+                crval = float(header.get(crval_key, 0) or 0)
+            except (TypeError, ValueError):
+                crval = 0.0
+            if crval > 0:
+                return crval, False, crval_key
+
+    return DEFAULT_RESTFRQ_HZ, True, "default_230GHz"
+
+
+def normalize_flux_units(data, header, heuristic_max=BUNIT_HEURISTIC_MAX):
+    """Normalize image flux toward mJy/beam using ``BUNIT``.
+
+    * ``JY/BEAM`` → ×1000 and set ``BUNIT`` to ``mJy/beam``.
+    * Empty ``BUNIT`` and ``max(data) < heuristic_max`` → ×1000 heuristic + warn.
+    * Empty ``BUNIT`` otherwise → warn only.
+
+    Returns
+    -------
+    data : ndarray
+    header : header-like (mutated in place when BUNIT is updated)
+    warnings : list[str]
+    """
+    warnings = []
+    data = np.asarray(data, dtype=np.float64)
+    bunit = str(header.get("BUNIT", "") or "").strip().upper()
+
+    if bunit in ("JY/BEAM", "JY/B"):
+        data = data * 1000.0
+        header["BUNIT"] = "mJy/beam"
+    elif bunit == "":
+        peak = float(np.nanmax(data)) if data.size else 0.0
+        if np.isfinite(peak) and peak < heuristic_max:
+            warnings.append(
+                f"empty BUNIT and max<{heuristic_max:g} — applying ×1000 heuristic (verify units)."
+            )
+            data = data * 1000.0
+        else:
+            warnings.append("BUNIT missing; flux units may be incorrect.")
+
+    return data, header, warnings
+
+
+def radial_pixel_grid(max_radius_pix):
+    """Integer-pixel radial sample grid ``0, 1, …, N-1`` (1 px spacing).
+
+    Avoids ``linspace(0, N, N)``, whose step is ``N/(N-1) ≈ 1.002``.
+    """
+    n = int(max_radius_pix)
+    if n <= 0:
+        return np.zeros(0, dtype=float)
+    return np.arange(n, dtype=float)
+
 
 def get_alma_beam(sigma_maj, sigma_min, bpa_rad, size=15):
     x = np.arange(-size, size + 1)
@@ -187,7 +273,8 @@ def extract_profile(data, header, incl, pa, pixel_scale, cx, cy, limit_arcsec):
     deproj = map_coordinates(data, coords, order=3, mode='constant', cval=0.0)
 
     max_radius_pix = int(dim / 2.0)
-    R, TH = np.meshgrid(np.linspace(0, max_radius_pix, max_radius_pix), np.linspace(-180, 180, 361))
+    r_pix = radial_pixel_grid(max_radius_pix)
+    R, TH = np.meshgrid(r_pix, np.linspace(-180, 180, 361))
     polar_coords = [R * np.sin(np.radians(TH)) + dim / 2.0, R * np.cos(np.radians(TH)) + dim / 2.0]
     polar_full   = map_coordinates(np.fliplr(deproj), polar_coords, order=1, mode='constant', cval=0.0)
 
@@ -195,7 +282,7 @@ def extract_profile(data, header, incl, pa, pixel_scale, cx, cy, limit_arcsec):
     prof_full     = np.nanmean(polar_flipped, axis=0)
     std_full      = np.nanstd(polar_flipped, axis=0)
 
-    r_arcsec = np.linspace(0, max_radius_pix, max_radius_pix) * pixel_scale
+    r_arcsec = r_pix * pixel_scale
     bmaj     = header.get('BMAJ', 0) * 3600
     if bmaj > 0:
         n_eff = np.maximum(1.0, 2 * np.pi * np.maximum(r_arcsec, pixel_scale) / bmaj)
@@ -203,14 +290,7 @@ def extract_profile(data, header, incl, pa, pixel_scale, cx, cy, limit_arcsec):
         n_eff = np.ones_like(r_arcsec) * 361.0
     err_full = std_full / np.sqrt(n_eff)
 
-    restfrq = header.get('RESTFRQ', 0)
-    if restfrq == 0:
-        if 'CTYPE3' in header and 'FREQ' in header['CTYPE3']:
-            restfrq = header.get('CRVAL3', 230e9)
-        elif 'CTYPE4' in header and 'FREQ' in header['CTYPE4']:
-            restfrq = header.get('CRVAL4', 230e9)
-        else:
-            restfrq = 230e9
+    restfrq, _, _ = resolve_restfrq(header)
 
     bmaj = header.get('BMAJ', 0) * 3600
     bmin = header.get('BMIN', 0) * 3600
@@ -233,9 +313,14 @@ def save_debug_deproj_center(image, cx, cy, incl, pa, rout_arcsec, pixel_scale, 
     x = np.arange(dim) - dim / 2.0
     X, Y = np.meshgrid(x, x)
 
-    Xc = X * np.cos(np.radians(incl))
-    Xrot = np.cos(np.radians(pa)) * Xc + np.sin(np.radians(pa)) * Y
-    Yrot = -np.sin(np.radians(pa)) * Xc + np.cos(np.radians(pa)) * Y
+    pa_rad = np.radians(pa)
+    incl_rad = np.radians(incl)
+    # Sky-aligned sampling (same as GUI pipeline) — no post-rotation crop.
+    Xd = X * np.cos(pa_rad) - Y * np.sin(pa_rad)
+    Yd = X * np.sin(pa_rad) + Y * np.cos(pa_rad)
+    Xc = Xd * np.cos(incl_rad)
+    Xrot = np.cos(pa_rad) * Xc + np.sin(pa_rad) * Yd
+    Yrot = -np.sin(pa_rad) * Xc + np.cos(pa_rad) * Yd
 
     crop_rad = int((rout_arcsec / pixel_scale) * 1.5) + 15
     crop_rad = min(crop_rad, image.shape[0]//2, image.shape[1]//2)

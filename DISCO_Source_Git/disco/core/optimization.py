@@ -3,6 +3,10 @@ from scipy.ndimage import map_coordinates, gaussian_filter
 from scipy.optimize import minimize, differential_evolution
 from disco.core.cnn_inference import predict_with_cnn
 
+# Relative ΔL/L_min for parabolic σ on incl/PA.
+UNCERTAINTY_REL_DL = 5e-3
+
+
 def geometric_loss(params, image, base_cx, base_cy, crop_rad, rmin_pix, rmax_pix, dim=150, order=1):
     incl, pa, dcx, dcy = params
 
@@ -28,7 +32,8 @@ def geometric_loss(params, image, base_cx, base_cy, crop_rad, rmin_pix, rmax_pix
 
     deproj  = map_coordinates(image, coords, order=order, mode='constant', cval=0.0)
     r_steps = int(dim / 2)
-    R, TH   = np.meshgrid(np.linspace(0, dim / 2, r_steps), np.linspace(-np.pi, np.pi, 180))
+    r_pix = np.arange(r_steps, dtype=float)  # 1 px steps in the deproj grid
+    R, TH   = np.meshgrid(r_pix, np.linspace(-np.pi, np.pi, 180))
     polar   = map_coordinates(deproj, [R * np.sin(TH) + dim / 2, R * np.cos(TH) + dim / 2],
                               order=1, mode='constant', cval=0.0)
 
@@ -62,11 +67,25 @@ def geometric_loss(params, image, base_cx, base_cy, crop_rad, rmin_pix, rmax_pix
     return np.sum(huber * r_weights)
 
 
+def _local_refine(x0, bounds, largs, maxiter=320):
+    """Bounded local refinement with L-BFGS-B."""
+    return minimize(
+        geometric_loss,
+        x0=np.asarray(x0, dtype=float),
+        args=largs,
+        method="L-BFGS-B",
+        bounds=bounds,
+        options={"maxiter": maxiter, "ftol": 1e-9},
+    )
+
+
 def auto_tune_geometry_hybrid(data, header, pixel_scale, cx, cy, model, search_rad, rmin):
+    cnn_dx, cnn_dy = 0.0, 0.0
     try:
-        cnn_incl, cnn_pa = predict_with_cnn(data, header, pixel_scale, cx, cy, search_rad, model)
+        cnn_incl, cnn_pa, cnn_dx, cnn_dy = predict_with_cnn(
+            data, header, pixel_scale, cx, cy, search_rad, model
+        )
     except ValueError as e:
-        # Missing BMAJ / invalid crop — fall back to neutral CNN seed
         tqdm_msg = f"[WARN] CNN prior unavailable ({e}). Using analytical seed."
         try:
             from tqdm import tqdm
@@ -74,13 +93,17 @@ def auto_tune_geometry_hybrid(data, header, pixel_scale, cx, cy, model, search_r
         except Exception:
             print(tqdm_msg)
         cnn_incl, cnn_pa = 30.0, 45.0
+        cnn_dx, cnn_dy = 0.0, 0.0
+
+    cx0 = float(cx) + float(cnn_dx)
+    cy0 = float(cy) + float(cnn_dy)
 
     pad         = 500
     d_pad       = np.pad(data, pad, mode='constant', constant_values=0)
-    real_cy_int = int(cy) + pad
-    real_cx_int = int(cx) + pad
-    offset_y    = (cy + pad) - real_cy_int
-    offset_x    = (cx + pad) - real_cx_int
+    real_cy_int = int(cy0) + pad
+    real_cx_int = int(cx0) + pad
+    offset_y    = (cy0 + pad) - real_cy_int
+    offset_x    = (cx0 + pad) - real_cx_int
     search_rad_pix = int(search_rad / pixel_scale)
     crop_rad       = int(search_rad_pix * 1.5) + 10
 
@@ -121,11 +144,7 @@ def auto_tune_geometry_hybrid(data, header, pixel_scale, cx, cy, model, search_r
         mutation=(0.5, 1.0), recombination=0.7
     )
 
-    res_final_1 = minimize(
-        geometric_loss, x0=res_global_1.x, args=largs_fine,
-        method='Nelder-Mead', bounds=bounds_1,
-        options={'xatol': 0.05, 'fatol': 1e-5, 'maxiter': 320}
-    )
+    res_final_1 = _local_refine(res_global_1.x, bounds_1, largs_fine, maxiter=320)
 
     best_1 = res_final_1.x
     incl_1, pa_1, dcx_1, dcy_1 = float(best_1[0]), float(best_1[1]), float(best_1[2]), float(best_1[3])
@@ -157,11 +176,7 @@ def auto_tune_geometry_hybrid(data, header, pixel_scale, cx, cy, model, search_r
 
         x0_mix = 0.5 * x0_2 + 0.5 * res_global_2.x
 
-        res_final_2 = minimize(
-            geometric_loss, x0=x0_mix, args=largs_fine_2,
-            method='Nelder-Mead', bounds=bounds_2,
-            options={'xatol': 0.04, 'fatol': 1e-5, 'maxiter': 260}
-        )
+        res_final_2 = _local_refine(x0_mix, bounds_2, largs_fine_2, maxiter=260)
 
         incl_f, pa_f, dcx_2, dcy_2 = res_final_2.x
         best_incl = float(np.clip(incl_f, 0.0, 85.0))
@@ -182,10 +197,23 @@ def auto_tune_geometry_hybrid(data, header, pixel_scale, cx, cy, model, search_r
     if best_incl < 5.0:
         best_pa = float(cnn_pa)
 
-    return best_incl, best_pa, float(cnn_incl), float(cnn_pa), best_dcx, best_dcy
+    return (
+        best_incl,
+        best_pa,
+        float(cnn_incl),
+        float(cnn_pa),
+        float(best_dcx + cnn_dx),
+        float(best_dcy + cnn_dy),
+    )
+
+
+def _pa_offset(center_pa, delta):
+    """PA at center+delta with continuous unwrapping for the loss scan."""
+    return float((center_pa + delta) % 180.0)
 
 
 def estimate_geometry_errors(data, pixel_scale, cx, cy, incl, pa, rmin, rmax):
+    """Parabolic curvature σ on incl/PA around the hybrid solution (degrees)."""
     pad         = 500
     d_pad       = np.pad(data, pad, mode='constant', constant_values=0)
     real_cy_int = int(cy) + pad
@@ -206,16 +234,14 @@ def estimate_geometry_errors(data, pixel_scale, cx, cy, incl, pa, rmin, rmax):
 
     largs = (dc, base_cx, base_cy, crop_rad, rmin_pix, rmax_pix, 320, 3)
 
-    bnds = [(max(0.0, incl - 30.0), min(85.0, incl + 30.0)), (None, None), (0.0, 0.0), (0.0, 0.0)]
+    bnds = [
+        (max(0.0, incl - 30.0), min(85.0, incl + 30.0)),
+        (None, None),
+        (0.0, 0.0),
+        (0.0, 0.0),
+    ]
 
-    res = minimize(
-        geometric_loss,
-        x0=[incl, pa, 0.0, 0.0],
-        args=largs,
-        method='Nelder-Mead',
-        bounds=bnds,
-        options={'xatol': 0.05, 'fatol': 1e-5, 'maxiter': 600}
-    )
+    res = _local_refine([incl, pa, 0.0, 0.0], bnds, largs, maxiter=600)
 
     opt_incl = float(np.clip(res.x[0], 0.0, 85.0))
     opt_pa   = float(res.x[1] % 180.0)
@@ -228,13 +254,15 @@ def estimate_geometry_errors(data, pixel_scale, cx, cy, incl, pa, rmin, rmax):
 
     def _parabolic_error(center, fixed, scan_incl):
         pts = np.concatenate([-deltas[::-1], [0.0], deltas])
-        losses = np.array([
-            geometric_loss(
-                [np.clip(center + d, 0, 85), fixed, 0.0, 0.0] if scan_incl
-                else [fixed, (center + d) % 180, 0.0, 0.0],
-                *largs
-            ) for d in pts
-        ])
+        losses = []
+        for d in pts:
+            if scan_incl:
+                params = [np.clip(center + d, 0, 85), fixed, 0.0, 0.0]
+            else:
+                params = [fixed, _pa_offset(center, d), 0.0, 0.0]
+            losses.append(geometric_loss(params, *largs))
+        losses = np.asarray(losses, dtype=float)
+
         valid = np.isfinite(losses) & (losses < loss_min * 2.5)
         if valid.sum() < 5:
             return 5.0
@@ -242,7 +270,7 @@ def estimate_geometry_errors(data, pixel_scale, cx, cy, incl, pa, rmin, rmax):
         a = coeffs[0]
         if a <= 0:
             return 5.0
-        return float(np.clip(np.sqrt(loss_min * 5e-3 / a), 0.3, 10.0))
+        return float(np.clip(np.sqrt(loss_min * UNCERTAINTY_REL_DL / a), 0.3, 10.0))
 
     return _parabolic_error(opt_incl, opt_pa, True), _parabolic_error(opt_pa, opt_incl, False)
 
@@ -285,8 +313,9 @@ def refine_center_geometry(data, header, pixel_scale, cx, cy, incl, pa, rmin, rm
     res = minimize(
         lambda p: geometric_loss([incl, pa, p[0], p[1]], *largs),
         x0=[0.0, 0.0],
-        method='Nelder-Mead',
-        options={'xatol': 0.1, 'fatol': 1e-4, 'maxiter': 300}
+        method='L-BFGS-B',
+        bounds=[(-center_lim, center_lim), (-center_lim, center_lim)],
+        options={'maxiter': 300, 'ftol': 1e-9},
     )
 
     dcx, dcy = float(res.x[0]), float(res.x[1])
