@@ -315,8 +315,8 @@ group; a walk still visits nested folders as separate groups (one
 subdirectory per object).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> — legacy heuristic: split each stem on
 <code class="docutils literal notranslate"><span class="pre">_?[Bb]and_?\d+</span></code> and aggregate files that share the prefix
-(<code class="docutils literal notranslate"><span class="pre">Object_Band6.fits</span></code> → group <code class="docutils literal notranslate"><span class="pre">Object</span></code>). Tokens such as <code class="docutils literal notranslate"><span class="pre">B6_</span></code> or
-<code class="docutils literal notranslate"><span class="pre">priism_b6</span></code> do <strong>not</strong> match.</p></li>
+(<code class="docutils literal notranslate"><span class="pre">Object_Band6.fits</span></code> → group <code class="docutils literal notranslate"><span class="pre">Object</span></code>). Short tokens such as
+<code class="docutils literal notranslate"><span class="pre">B6_</span></code> do <strong>not</strong> match.</p></li>
 </ul>
 <p>Each group dictionary contains the group name, sorted file paths, and
 output directory.</p>

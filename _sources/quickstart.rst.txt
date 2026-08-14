@@ -77,8 +77,8 @@ another broad path.
    # Process a named object (each matching FITS separately by default)
    disco-start AS209
 
-   # One folder = one source; take geometry from the robust map
-   disco-start path/to/AS209/ --group dir --ref robust0.fits
+   # One folder = one source; choose the geometry image with --ref
+   disco-start path/to/AS209/ --group dir --ref continuum.fits
 
    # Provide a direct path to a FITS file
    disco-start path/to/disk.fits

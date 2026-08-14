@@ -20,8 +20,8 @@ the working directory tree via ``os.walk``. Grouping is selected with
   subdirectory per object).
 * ``name`` — legacy heuristic: split each stem on
   ``_?[Bb]and_?\d+`` and aggregate files that share the prefix
-  (``Object_Band6.fits`` → group ``Object``). Tokens such as ``B6_`` or
-  ``priism_b6`` do **not** match.
+  (``Object_Band6.fits`` → group ``Object``). Short tokens such as
+  ``B6_`` do **not** match.
 
 Each group dictionary contains the group name, sorted file paths, and
 output directory.

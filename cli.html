@@ -360,10 +360,10 @@ If omitted, all FITS files in the working directory tree are processed.</p></td>
 <td><p>How to group FITS files. <code class="docutils literal notranslate"><span class="pre">file</span></code> (default): each FITS is its own
 group — safest for a mixed folder. <code class="docutils literal notranslate"><span class="pre">dir</span></code>: all FITS <em>directly</em> in
 the same folder are one group (nested directories stay separate).
-Use this for one object with several bands or methods.
+Use this for one object with several images or bands.
 <code class="docutils literal notranslate"><span class="pre">name</span></code>: legacy split on <code class="docutils literal notranslate"><span class="pre">BandN</span></code> / <code class="docutils literal notranslate"><span class="pre">_Band6</span></code> in the filename
-(<code class="docutils literal notranslate"><span class="pre">B6_</span></code> / <code class="docutils literal notranslate"><span class="pre">priism_b6</span></code> are not split). Homogenisation applies
-<strong>inside</strong> a group only.</p></td>
+(short tokens such as <code class="docutils literal notranslate"><span class="pre">B6_</span></code> are not split). Homogenisation
+applies <strong>inside</strong> a group only.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--ref</span> <span class="pre">REF</span></code></p></td>
 <td><p>auto</p></td>
@@ -471,13 +471,12 @@ mixed maps homogenised together.</p></td>
 <td><p>All FITS <strong>directly</strong> in the same folder are one group. Nested
 directories stay separate (<code class="docutils literal notranslate"><span class="pre">AS209/*.fits</span></code> vs
 <code class="docutils literal notranslate"><span class="pre">HD163296/*.fits</span></code>).</p></td>
-<td><p>One object per folder, with several bands or methods
-(<code class="docutils literal notranslate"><span class="pre">robust0</span></code>, PRIISM, Band 6/7, …).</p></td>
+<td><p>One object per folder, with several images or bands.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">name</span></code></p></td>
 <td><p>Legacy: inside each folder, split stems on <code class="docutils literal notranslate"><span class="pre">BandN</span></code> /
-<code class="docutils literal notranslate"><span class="pre">_Band6</span></code> / <code class="docutils literal notranslate"><span class="pre">band7</span></code>. Tokens such as <code class="docutils literal notranslate"><span class="pre">B6_</span></code> or <code class="docutils literal notranslate"><span class="pre">priism_b6</span></code>
-are <strong>not</strong> split.</p></td>
+<code class="docutils literal notranslate"><span class="pre">_Band6</span></code> / <code class="docutils literal notranslate"><span class="pre">band7</span></code>. Short tokens such as <code class="docutils literal notranslate"><span class="pre">B6_</span></code> are
+<strong>not</strong> split.</p></td>
 <td><p>Old <code class="docutils literal notranslate"><span class="pre">Object_Band6.fits</span></code> naming only.</p></td>
 </tr>
 </tbody>
@@ -489,8 +488,8 @@ keeps groups whose paths or filenames contain <code class="docutils literal notr
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Each FITS separately (default)</span>
 disco-start<span class="w"> </span>/data/batch/<span class="w"> </span>--group<span class="w"> </span>file
 
-<span class="c1"># One object folder with Band 6, Band 7, PRIISM, robust 0, …</span>
-disco-start<span class="w"> </span>/data/AS209/<span class="w"> </span>--group<span class="w"> </span>dir<span class="w"> </span>--ref<span class="w"> </span>robust0.fits
+<span class="c1"># One object folder with several images or bands</span>
+disco-start<span class="w"> </span>/data/AS209/<span class="w"> </span>--group<span class="w"> </span>dir<span class="w"> </span>--ref<span class="w"> </span>continuum.fits
 
 <span class="c1"># Parent directory: one subdirectory per source</span>
 disco-start<span class="w"> </span>/data/sample/<span class="w"> </span>--group<span class="w"> </span>dir
@@ -503,15 +502,14 @@ disco-start<span class="w"> </span>/data/fits/<span class="w"> </span>--group<sp
 <section id="geometry-reference-ref">
 <h2>Geometry reference (<code class="docutils literal notranslate"><span class="pre">--ref</span></code>)<a class="headerlink" href="#geometry-reference-ref" title="Link to this heading"></a></h2>
 <p>In a <strong>multi-file group</strong>, DiscoNet + hybrid (and Rout / centre) run on
-<strong>one</strong> map. Without <code class="docutils literal notranslate"><span class="pre">--ref</span></code>, that map is the highest
-<span class="math notranslate nohighlight">\(\mathrm{SNR}/\Omega_{\mathrm{beam}}^{3/2}\)</span>. Cropped restorations
-(PRIISM, super-resolution) can win that score even when they are a poor
-CNN prior.</p>
+<strong>one</strong> image. Without <code class="docutils literal notranslate"><span class="pre">--ref</span></code>, that image is the highest
+<span class="math notranslate nohighlight">\(\mathrm{SNR}/\Omega_{\mathrm{beam}}^{3/2}\)</span>. Use <code class="docutils literal notranslate"><span class="pre">--ref</span></code> to
+choose a specific file instead of that automatic score.</p>
 <p><code class="docutils literal notranslate"><span class="pre">--ref</span></code> pins the geometry image inside <strong>each</strong> group:</p>
 <ul class="simple">
-<li><p>basename — <code class="docutils literal notranslate"><span class="pre">--ref</span> <span class="pre">robust0.fits</span></code></p></li>
+<li><p>basename — <code class="docutils literal notranslate"><span class="pre">--ref</span> <span class="pre">continuum.fits</span></code></p></li>
 <li><p>unique substring — <code class="docutils literal notranslate"><span class="pre">--ref</span> <span class="pre">Band6</span></code> (error if 0 or 2+ files match)</p></li>
-<li><p>path — <code class="docutils literal notranslate"><span class="pre">--ref</span> <span class="pre">/data/AS209/robust0.fits</span></code></p></li>
+<li><p>path — <code class="docutils literal notranslate"><span class="pre">--ref</span> <span class="pre">/data/AS209/continuum.fits</span></code></p></li>
 </ul>
 <p>Other files in the group still get homogenisation (if enabled) and
 profiles <strong>using that geometry</strong>. If both <code class="docutils literal notranslate"><span class="pre">--incl</span></code> and <code class="docutils literal notranslate"><span class="pre">--pa</span></code> are
@@ -529,8 +527,8 @@ disco-start<span class="w"> </span>--group<span class="w"> </span>file
 <span class="c1"># Process a single object by name prefix</span>
 disco-start<span class="w"> </span>AS209<span class="w"> </span>--group<span class="w"> </span>file
 
-<span class="c1"># One folder = one source (multi-band / multi-method)</span>
-disco-start<span class="w"> </span>path/to/AS209/<span class="w"> </span>--group<span class="w"> </span>dir<span class="w"> </span>--ref<span class="w"> </span>robust0.fits
+<span class="c1"># One folder = one source; choose the geometry image with --ref</span>
+disco-start<span class="w"> </span>path/to/AS209/<span class="w"> </span>--group<span class="w"> </span>dir<span class="w"> </span>--ref<span class="w"> </span>continuum.fits
 
 <span class="c1"># Process a FITS file directly</span>
 disco-start<span class="w"> </span>path/to/disk.fits
