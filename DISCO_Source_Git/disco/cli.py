@@ -621,7 +621,7 @@ def main():
         help=(
             "How to group FITS files: 'file' = each FITS is its own group "
             "(default, safest); 'dir' = all FITS in the same folder are one "
-            "group (multi-band / multi-method); 'name' = legacy split on "
+            "group (several images or bands); 'name' = legacy split on "
             "BandN in the filename"
         ),
     )

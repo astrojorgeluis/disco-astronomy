@@ -55,10 +55,10 @@ Optional Arguments
      - How to group FITS files. ``file`` (default): each FITS is its own
        group — safest for a mixed folder. ``dir``: all FITS *directly* in
        the same folder are one group (nested directories stay separate).
-       Use this for one object with several bands or methods.
+       Use this for one object with several images or bands.
        ``name``: legacy split on ``BandN`` / ``_Band6`` in the filename
-       (``B6_`` / ``priism_b6`` are not split). Homogenisation applies
-       **inside** a group only.
+       (short tokens such as ``B6_`` are not split). Homogenisation
+       applies **inside** a group only.
    * - ``--ref REF``
      - auto
      - Geometry reference inside each group (CNN + hybrid, Rout, centre).
@@ -151,12 +151,11 @@ choose the mode.
      - All FITS **directly** in the same folder are one group. Nested
        directories stay separate (``AS209/*.fits`` vs
        ``HD163296/*.fits``).
-     - One object per folder, with several bands or methods
-       (``robust0``, PRIISM, Band 6/7, …).
+     - One object per folder, with several images or bands.
    * - ``name``
      - Legacy: inside each folder, split stems on ``BandN`` /
-       ``_Band6`` / ``band7``. Tokens such as ``B6_`` or ``priism_b6``
-       are **not** split.
+       ``_Band6`` / ``band7``. Short tokens such as ``B6_`` are
+       **not** split.
      - Old ``Object_Band6.fits`` naming only.
 
 v1.2.5 always used the ``name`` heuristic. From **v1.2.6** the default is
@@ -169,8 +168,8 @@ keeps groups whose paths or filenames contain ``AS209``.
    # Each FITS separately (default)
    disco-start /data/batch/ --group file
 
-   # One object folder with Band 6, Band 7, PRIISM, robust 0, …
-   disco-start /data/AS209/ --group dir --ref robust0.fits
+   # One object folder with several images or bands
+   disco-start /data/AS209/ --group dir --ref continuum.fits
 
    # Parent directory: one subdirectory per source
    disco-start /data/sample/ --group dir
@@ -182,16 +181,15 @@ Geometry reference (``--ref``)
 ------------------------------
 
 In a **multi-file group**, DiscoNet + hybrid (and Rout / centre) run on
-**one** map. Without ``--ref``, that map is the highest
-:math:`\mathrm{SNR}/\Omega_{\mathrm{beam}}^{3/2}`. Cropped restorations
-(PRIISM, super-resolution) can win that score even when they are a poor
-CNN prior.
+**one** image. Without ``--ref``, that image is the highest
+:math:`\mathrm{SNR}/\Omega_{\mathrm{beam}}^{3/2}`. Use ``--ref`` to
+choose a specific file instead of that automatic score.
 
 ``--ref`` pins the geometry image inside **each** group:
 
-* basename — ``--ref robust0.fits``
+* basename — ``--ref continuum.fits``
 * unique substring — ``--ref Band6`` (error if 0 or 2+ files match)
-* path — ``--ref /data/AS209/robust0.fits``
+* path — ``--ref /data/AS209/continuum.fits``
 
 Other files in the group still get homogenisation (if enabled) and
 profiles **using that geometry**. If both ``--incl`` and ``--pa`` are
@@ -212,8 +210,8 @@ Usage Examples
    # Process a single object by name prefix
    disco-start AS209 --group file
 
-   # One folder = one source (multi-band / multi-method)
-   disco-start path/to/AS209/ --group dir --ref robust0.fits
+   # One folder = one source; choose the geometry image with --ref
+   disco-start path/to/AS209/ --group dir --ref continuum.fits
 
    # Process a FITS file directly
    disco-start path/to/disk.fits

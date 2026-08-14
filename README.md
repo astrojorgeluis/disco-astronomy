@@ -313,8 +313,8 @@ DISCO does **not** guess your folder layout. You choose how FITS files become a 
 | `--group` | Meaning | When to use |
 |---|---|---|
 | **`file`** (default) | Each `.fits` file is its own group. | Safest. A flat folder of many unrelated sources, or you do not want mixed maps homogenized together. |
-| **`dir`** | All FITS **directly inside the same folder** are one group. Nested folders stay separate (`AS209/*.fits` vs `HD163296/*.fits`). | One object per folder, with several bands or methods (`robust0`, PRIISM, Band 6/7, …). |
-| **`name`** | Legacy: inside each folder, split filenames on `BandN` / `_Band6` / `band7`. Tokens like `B6_` or `priism_b6` are **not** split. | Old `Object_Band6.fits` naming only. |
+| **`dir`** | All FITS **directly inside the same folder** are one group. Nested folders stay separate (`AS209/*.fits` vs `HD163296/*.fits`). | One object per folder, with several images or bands. |
+| **`name`** | Legacy: inside each folder, split filenames on `BandN` / `_Band6` / `band7`. Short tokens like `B6_` are **not** split. | Old `Object_Band6.fits` naming only. |
 
 v1.2.5 always used the `name` heuristic. From **v1.2.6** the default is `file` so unrelated cubes in one directory are not treated as one source.
 
@@ -322,7 +322,7 @@ v1.2.5 always used the `name` heuristic. From **v1.2.6** the default is `file` s
 # Default: one pipeline run per FITS (no mixing)
 disco-start /path/to/folder/ --group file
 
-# One source, several reductions/bands in the same folder
+# One source, several images/bands in the same folder
 disco-start /path/to/AS209/ --group dir
 
 # Parent with one subdirectory per object
@@ -338,19 +338,19 @@ Name filters still apply on top: `disco-start AS209 --group dir` keeps groups wh
 
 ### Geometry reference (`--ref`)
 
-In a **multi-file group**, DISCO picks one map for DiscoNet + hybrid (and for Rout / centre). By default that is the highest `SNR / beam_area^1.5`. Cropped restorations (PRIISM, super-resolution) can win that score even when they are a poor CNN prior.
+In a **multi-file group**, DISCO picks one image for DiscoNet + hybrid (and for Rout / centre). By default that is the highest `SNR / beam_area^1.5`. Use `--ref` if you want a specific file instead of that automatic choice.
 
 `--ref` forces which file in **that group** is the geometry image:
 
 ```bash
 # Basename
-disco-start /path/to/AS209/ --group dir --ref robust0.fits
+disco-start /path/to/AS209/ --group dir --ref continuum.fits
 
 # Unique substring (must match exactly one file in the group)
 disco-start /path/to/AS209/ --group dir --ref Band6
 
 # Path
-disco-start /path/to/AS209/ --group dir --ref /path/to/AS209/robust0.fits
+disco-start /path/to/AS209/ --group dir --ref /path/to/AS209/continuum.fits
 ```
 
 - Other files in the group still get homogenization (if `--homobeam on`) and profiles **using that geometry**.
@@ -370,8 +370,8 @@ disco-start --group file
 # Process a single object by name filter
 disco-start AS209 --group file
 
-# Multi-band / multi-method folder as one group, geometry from the robust map
-disco-start path/to/AS209/ --group dir --ref robust0.fits
+# One folder as one group; choose the geometry image with --ref
+disco-start path/to/AS209/ --group dir --ref continuum.fits
 
 # Process a FITS file directly
 disco-start path/to/disk.fits

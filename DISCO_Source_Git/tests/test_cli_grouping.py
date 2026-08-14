@@ -24,8 +24,8 @@ def test_group_file_each_fits_own_group(tmp_path):
 
 def test_group_dir_same_folder_one_group(tmp_path):
     folder = tmp_path / "AS209"
-    _touch_fits(folder / "priism_b6.fits")
-    _touch_fits(folder / "robust0.fits")
+    _touch_fits(folder / "continuum.fits")
+    _touch_fits(folder / "Band7.fits")
     groups = discover_groups(str(folder), mode="dir")
     assert len(groups) == 1
     assert groups[0]["name"] == "AS209"
@@ -42,8 +42,8 @@ def test_group_dir_nested_folders_are_separate(tmp_path):
 
 def test_group_name_legacy_band_prefix(tmp_path):
     d = tmp_path / "data"
-    _touch_fits(d / "test_Band6_priism.fits")
-    _touch_fits(d / "test_Band7_priism.fits")
+    _touch_fits(d / "test_Band6.fits")
+    _touch_fits(d / "test_Band7.fits")
     _touch_fits(d / "other_Band6.fits")
     groups = discover_groups(str(d), mode="name")
     prefixes = sorted(
@@ -56,21 +56,21 @@ def test_group_name_legacy_band_prefix(tmp_path):
 
 def test_group_name_does_not_split_b6_underscore(tmp_path):
     d = tmp_path / "data"
-    _touch_fits(d / "priism_b6.fits")
-    _touch_fits(d / "priism_b7.fits")
+    _touch_fits(d / "src_b6.fits")
+    _touch_fits(d / "src_b7.fits")
     groups = discover_groups(str(d), mode="name")
-    # No BandN token → two prefixes, not one "priism" group
+    # No BandN token → two groups, not one "src" group
     assert len(groups) == 2
 
 
 def test_resolve_ref_basename_and_substring():
     temp = [
-        {"filename": "robust0.fits", "filepath": "/data/robust0.fits"},
-        {"filename": "priism_b6.fits", "filepath": "/data/priism_b6.fits"},
+        {"filename": "continuum.fits", "filepath": "/data/continuum.fits"},
+        {"filename": "Band7.fits", "filepath": "/data/Band7.fits"},
     ]
-    assert resolve_geometry_ref(temp, "robust0.fits") == 0
-    assert resolve_geometry_ref(temp, "priism") == 1
-    assert resolve_geometry_ref(temp, "/data/robust0.fits") == 0
+    assert resolve_geometry_ref(temp, "continuum.fits") == 0
+    assert resolve_geometry_ref(temp, "Band7") == 1
+    assert resolve_geometry_ref(temp, "/data/continuum.fits") == 0
 
 
 def test_resolve_ref_errors_on_zero_or_many():
@@ -81,4 +81,4 @@ def test_resolve_ref_errors_on_zero_or_many():
     with pytest.raises(ValueError, match="matched 2"):
         resolve_geometry_ref(temp, "Band6")
     with pytest.raises(ValueError, match="matched 0"):
-        resolve_geometry_ref(temp, "robust0")
+        resolve_geometry_ref(temp, "continuum")
