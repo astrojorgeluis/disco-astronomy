@@ -57,9 +57,8 @@ Docs / packaging
 
 * Training docs describe the v1.2.5 synthetic recipe and optional CASA path.
 * Pipeline / API docs aligned with L-BFGS-B hybrid path.
-* Citation: Zenodo all-versions DOI ``10.5281/zenodo.19999239`` (resolves to
-  the latest release). After the GitHub Release, replace BibTeX in README/docs
-  with the official export from the Zenodo record (version DOI + ``swhid``).
+* Citation uses the Zenodo all-versions DOI ``10.5281/zenodo.19999239``
+  (resolves to the latest release; no Software Heritage id yet).
 * GUI: ``npm run build`` writes to ``disco/static`` (Vite ``outDir``).
 * Version bump to 1.2.5.
 
