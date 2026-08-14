@@ -59,16 +59,14 @@ DISCO bridges scientific Python libraries with a modern web interface, offering 
 
 If you use DISCO in your research, please cite the associated Zenodo record:
 
-Guzmán-Lazo, J. L. (2026). *DISCO: Deprojection Image Software for Circumstellar Objects* (v1.2.5). Zenodo. https://doi.org/10.5281/zenodo.19999239
+Guzmán-Lazo, J. L. (2026). DISCO: Deprojection Image Software for Circumstellar Objects (Version v1.2.5) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.19999239
 
 ### BibTeX
 ```bibtex
 @software{guzman_lazo_2026_19999239,
   author       = {Guzmán-Lazo, Jorge Luis},
-  title        = {DISCO: Deprojection Image Software for
-                   Circumstellar Objects
-                  },
-  month        = august,
+  title        = {DISCO: Deprojection Image Software for Circumstellar Objects},
+  month        = aug,
   year         = 2026,
   publisher    = {Zenodo},
   version      = {v1.2.5},
