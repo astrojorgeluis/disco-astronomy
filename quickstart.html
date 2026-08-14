@@ -343,9 +343,13 @@ interface and a step-by-step workflow guide.</p>
 <hr class="docutils" />
 <section id="automated-cli-mode">
 <h2>Automated CLI Mode<a class="headerlink" href="#automated-cli-mode" title="Link to this heading"></a></h2>
-<p>For batch processing of one or more targets from the current working
-directory:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Process a single named object (matches FITS files containing &quot;AS209&quot;)</span>
+<p>For batch processing, <strong>change into the directory that contains your FITS
+files</strong> (or pass explicit paths). With no identifier, the CLI scans the
+current working directory tree — avoid running it from your home folder or
+another broad path.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/path/to/your/fits/
+
+<span class="c1"># Process a single named object (matches FITS files containing &quot;AS209&quot;)</span>
 disco-start<span class="w"> </span>AS209
 
 <span class="c1"># Process multiple named objects in a single run</span>
@@ -376,7 +380,8 @@ for the full argument reference.</p>
 <p>Before scanning, the CLI prints a warning with the current working directory
 and asks for confirmation (<code class="docutils literal notranslate"><span class="pre">Are</span> <span class="pre">you</span> <span class="pre">sure</span> <span class="pre">you</span> <span class="pre">want</span> <span class="pre">to</span> <span class="pre">continue?</span> <span class="pre">[y/N]</span></code>).
 Answer <code class="docutils literal notranslate"><span class="pre">y</span></code> / <code class="docutils literal notranslate"><span class="pre">yes</span></code> to proceed. This prompt is intentional — do not skip
-it in normal interactive use.</p>
+it in normal interactive use, and check that the printed directory is the
+data folder you intend to scan.</p>
 </section>
 </section>
 

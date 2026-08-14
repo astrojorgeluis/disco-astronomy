@@ -103,12 +103,17 @@ working directory and asks:
    Are you sure you want to continue? [y/N]:
 
 Answer ``y`` or ``yes`` to proceed, or anything else to cancel. The prompt
-is intentional so users confirm before FITS scanning begins.
+is intentional so users confirm before FITS scanning begins. Prefer running
+the CLI from the directory that contains your science FITS (or pass explicit
+paths); a bare ``disco-start`` walks the current directory tree.
 
 Usage Examples
 --------------
 
 .. code-block:: bash
+
+   # Prefer: cd into the folder with your FITS first
+   cd /path/to/your/fits/
 
    # Process all FITS files discovered in the working directory
    disco-start

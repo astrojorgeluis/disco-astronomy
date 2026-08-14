@@ -411,11 +411,16 @@ working directory and asks:</p>
 </pre></div>
 </div>
 <p>Answer <code class="docutils literal notranslate"><span class="pre">y</span></code> or <code class="docutils literal notranslate"><span class="pre">yes</span></code> to proceed, or anything else to cancel. The prompt
-is intentional so users confirm before FITS scanning begins.</p>
+is intentional so users confirm before FITS scanning begins. Prefer running
+the CLI from the directory that contains your science FITS (or pass explicit
+paths); a bare <code class="docutils literal notranslate"><span class="pre">disco-start</span></code> walks the current directory tree.</p>
 </section>
 <section id="usage-examples">
 <h2>Usage Examples<a class="headerlink" href="#usage-examples" title="Link to this heading"></a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Process all FITS files discovered in the working directory</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prefer: cd into the folder with your FITS first</span>
+<span class="nb">cd</span><span class="w"> </span>/path/to/your/fits/
+
+<span class="c1"># Process all FITS files discovered in the working directory</span>
 disco-start
 
 <span class="c1"># Process a single object by name prefix</span>

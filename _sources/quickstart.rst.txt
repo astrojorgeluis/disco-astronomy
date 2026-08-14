@@ -65,10 +65,14 @@ Stop the server with ``Ctrl+C``.
 Automated CLI Mode
 ------------------
 
-For batch processing of one or more targets from the current working
-directory:
+For batch processing, **change into the directory that contains your FITS
+files** (or pass explicit paths). With no identifier, the CLI scans the
+current working directory tree — avoid running it from your home folder or
+another broad path.
 
 .. code-block:: bash
+
+   cd /path/to/your/fits/
 
    # Process a single named object (matches FITS files containing "AS209")
    disco-start AS209
@@ -101,4 +105,5 @@ for the full argument reference.
 Before scanning, the CLI prints a warning with the current working directory
 and asks for confirmation (``Are you sure you want to continue? [y/N]``).
 Answer ``y`` / ``yes`` to proceed. This prompt is intentional — do not skip
-it in normal interactive use.
+it in normal interactive use, and check that the printed directory is the
+data folder you intend to scan.
