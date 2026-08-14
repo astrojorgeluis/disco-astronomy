@@ -229,12 +229,6 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">DiscoNet Training Pipeline</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#shipped-model-v1-2-5">Shipped model (v1.2.5)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#optional-casa-path-not-used-for-the-v1-2-5-release-weights">Optional CASA path (not used for the v1.2.5 release weights)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#step-1-generate-catalogue-py">Step 1 — <code class="docutils literal notranslate"><span class="pre">generate_catalogue.py</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#step-2-simulate-catalogue-py">Step 2 — <code class="docutils literal notranslate"><span class="pre">simulate_catalogue.py</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#step-3-train-model-py-mixed">Step 3 — <code class="docutils literal notranslate"><span class="pre">train_model.py</span></code> (mixed)</a></li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="#network-and-loss">Network and loss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#checkpoint-schema">Checkpoint schema</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#validation-note">Validation note</a></li>
@@ -302,15 +296,15 @@
 <span id="training"></span><h1>DiscoNet Training Pipeline<a class="headerlink" href="#disconet-training-pipeline" title="Link to this heading"></a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The training scripts in <code class="docutils literal notranslate"><span class="pre">training/</span></code> are <strong>not</strong> installed with the
+<p>The training script in <code class="docutils literal notranslate"><span class="pre">training/</span></code> is <strong>not</strong> installed with the
 <code class="docutils literal notranslate"><span class="pre">disco-astronomy</span></code> package. End users only need the bundled weights
-<code class="docutils literal notranslate"><span class="pre">disco/models/disco_model_stable.pth</span></code>. CASA is required only if you
-regenerate FITS simulations with <code class="docutils literal notranslate"><span class="pre">simulate_catalogue.py</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">disco/models/disco_model_stable.pth</span></code>. DiscoNet is trained on
+synthetic disks generated in Python.</p>
 </div>
 <section id="shipped-model-v1-2-5">
 <h2>Shipped model (v1.2.5)<a class="headerlink" href="#shipped-model-v1-2-5" title="Link to this heading"></a></h2>
-<p>The packaged DiscoNet checkpoint was trained in <strong>synthetic-only</strong> mode
-(<code class="docutils literal notranslate"><span class="pre">train_model.py</span> <span class="pre">--synthetic-only</span></code>):</p>
+<p>The packaged DiscoNet checkpoint was trained with
+<code class="docutils literal notranslate"><span class="pre">train_model.py</span></code> on synthetic crops:</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 35.0%" />
@@ -323,7 +317,7 @@ regenerate FITS simulations with <code class="docutils literal notranslate"><spa
 </thead>
 <tbody>
 <tr class="row-even"><td><p>Dataset</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">SyntheticDataset</span></code>: 20 000 on-the-fly 128×128 crops (no CASA FITS)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SyntheticDataset</span></code>: 20 000 on-the-fly 128×128 crops</p></td>
 </tr>
 <tr class="row-odd"><td><p>Morphology mix</p></td>
 <td><p>25% smooth, 40% simple (1–2 gaps), 35% complex (3–5 gaps)</p></td>
@@ -354,35 +348,11 @@ regenerate FITS simulations with <code class="docutils literal notranslate"><spa
 </table>
 <p>Reproduce the shipped recipe:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>DISCO_Source_Git/training
-python<span class="w"> </span>train_model.py<span class="w"> </span>--synthetic-only<span class="w"> </span>--synthetic-samples<span class="w"> </span><span class="m">20000</span><span class="w"> </span><span class="se">\</span>
+python<span class="w"> </span>train_model.py<span class="w"> </span>--synthetic-samples<span class="w"> </span><span class="m">20000</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--epochs<span class="w"> </span><span class="m">80</span><span class="w"> </span>--batch-size<span class="w"> </span><span class="m">32</span><span class="w"> </span>--amp<span class="w"> </span>--patience<span class="w"> </span><span class="m">15</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">42</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--save<span class="w"> </span>disco_model_stable.pth
 </pre></div>
 </div>
-</section>
-<section id="optional-casa-path-not-used-for-the-v1-2-5-release-weights">
-<h2>Optional CASA path (not used for the v1.2.5 release weights)<a class="headerlink" href="#optional-casa-path-not-used-for-the-v1-2-5-release-weights" title="Link to this heading"></a></h2>
-<p>A hybrid train (CASA FITS + synthetic) is supported but did <strong>not</strong> beat
-synthetic-only on the literature test set used for v1.2.5. The three
-scripts remain for reproducibility:</p>
-<section id="step-1-generate-catalogue-py">
-<h3>Step 1 — <code class="docutils literal notranslate"><span class="pre">generate_catalogue.py</span></code><a class="headerlink" href="#step-1-generate-catalogue-py" title="Link to this heading"></a></h3>
-<p>Writes a CSV of randomised disk + ALMA observing parameters
-(<code class="docutils literal notranslate"><span class="pre">incl_deg</span></code>, <code class="docutils literal notranslate"><span class="pre">pa_deg</span></code>, <code class="docutils literal notranslate"><span class="pre">rout_arcsec</span></code>, <code class="docutils literal notranslate"><span class="pre">rmin_arcsec</span></code>, band, array,
-PWV, time, flux, center offsets <code class="docutils literal notranslate"><span class="pre">dx_arcsec</span></code> / <code class="docutils literal notranslate"><span class="pre">dy_arcsec</span></code>, …).</p>
-</section>
-<section id="step-2-simulate-catalogue-py">
-<h3>Step 2 — <code class="docutils literal notranslate"><span class="pre">simulate_catalogue.py</span></code><a class="headerlink" href="#step-2-simulate-catalogue-py" title="Link to this heading"></a></h3>
-<p>For each catalogue row: build a Jy/pixel sky model, run CASA
-<code class="docutils literal notranslate"><span class="pre">simobserve</span></code> + <code class="docutils literal notranslate"><span class="pre">tclean</span></code>, export FITS, stamp training keywords
-(<code class="docutils literal notranslate"><span class="pre">INCL</span></code>, <code class="docutils literal notranslate"><span class="pre">PA</span></code>, <code class="docutils literal notranslate"><span class="pre">DX_AS</span></code>, …), optional post-export domain noise.</p>
-</section>
-<section id="step-3-train-model-py-mixed">
-<h3>Step 3 — <code class="docutils literal notranslate"><span class="pre">train_model.py</span></code> (mixed)<a class="headerlink" href="#step-3-train-model-py-mixed" title="Link to this heading"></a></h3>
-<p>Without <code class="docutils literal notranslate"><span class="pre">--synthetic-only</span></code>, combines <code class="docutils literal notranslate"><span class="pre">FITSDataset</span></code> (simulated FITS +
-augment) with <code class="docutils literal notranslate"><span class="pre">SyntheticDataset</span></code>. Split is by object ID (no crop leak
-into validation). Mixup does not blend PA sin/cos targets.</p>
-</section>
 </section>
 <section id="network-and-loss">
 <h2>Network and loss<a class="headerlink" href="#network-and-loss" title="Link to this heading"></a></h2>

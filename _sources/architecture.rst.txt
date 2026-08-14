@@ -34,9 +34,7 @@ The DISCO repository is organised into three top-level namespaces:
    │       └── components/
    │           └── AnalysisDashboard.jsx
    ├── training/                  # Training utilities (not installed)
-   │   ├── generate_catalogue.py  # Synthetic disk parameter catalogue
-   │   ├── simulate_catalogue.py  # FITS model simulation via CASA
-   │   └── train_model.py         # DiscoNet training loop
+   │   └── train_model.py         # DiscoNet synthetic training loop
    ├── pyproject.toml
    ├── MANIFEST.in
    └── README.md

@@ -5,16 +5,16 @@ DiscoNet Training Pipeline
 
 .. note::
 
-   The training scripts in ``training/`` are **not** installed with the
+   The training script in ``training/`` is **not** installed with the
    ``disco-astronomy`` package. End users only need the bundled weights
-   ``disco/models/disco_model_stable.pth``. CASA is required only if you
-   regenerate FITS simulations with ``simulate_catalogue.py``.
+   ``disco/models/disco_model_stable.pth``. DiscoNet is trained on
+   synthetic disks generated in Python.
 
 Shipped model (v1.2.5)
 ----------------------
 
-The packaged DiscoNet checkpoint was trained in **synthetic-only** mode
-(``train_model.py --synthetic-only``):
+The packaged DiscoNet checkpoint was trained with
+``train_model.py`` on synthetic crops:
 
 .. list-table::
    :header-rows: 1
@@ -23,7 +23,7 @@ The packaged DiscoNet checkpoint was trained in **synthetic-only** mode
    * - Item
      - Value
    * - Dataset
-     - ``SyntheticDataset``: 20 000 on-the-fly 128×128 crops (no CASA FITS)
+     - ``SyntheticDataset``: 20 000 on-the-fly 128×128 crops
    * - Morphology mix
      - 25% smooth, 40% simple (1–2 gaps), 35% complex (3–5 gaps)
    * - Inclination / PA
@@ -45,37 +45,9 @@ Reproduce the shipped recipe:
 .. code-block:: bash
 
    cd DISCO_Source_Git/training
-   python train_model.py --synthetic-only --synthetic-samples 20000 \
+   python train_model.py --synthetic-samples 20000 \
      --epochs 80 --batch-size 32 --amp --patience 15 --seed 42 \
      --save disco_model_stable.pth
-
-Optional CASA path (not used for the v1.2.5 release weights)
-------------------------------------------------------------
-
-A hybrid train (CASA FITS + synthetic) is supported but did **not** beat
-synthetic-only on the literature test set used for v1.2.5. The three
-scripts remain for reproducibility:
-
-Step 1 — ``generate_catalogue.py``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Writes a CSV of randomised disk + ALMA observing parameters
-(``incl_deg``, ``pa_deg``, ``rout_arcsec``, ``rmin_arcsec``, band, array,
-PWV, time, flux, center offsets ``dx_arcsec`` / ``dy_arcsec``, …).
-
-Step 2 — ``simulate_catalogue.py``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-For each catalogue row: build a Jy/pixel sky model, run CASA
-``simobserve`` + ``tclean``, export FITS, stamp training keywords
-(``INCL``, ``PA``, ``DX_AS``, …), optional post-export domain noise.
-
-Step 3 — ``train_model.py`` (mixed)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Without ``--synthetic-only``, combines ``FITSDataset`` (simulated FITS +
-augment) with ``SyntheticDataset``. Split is by object ID (no crop leak
-into validation). Mixup does not blend PA sin/cos targets.
 
 Network and loss
 ----------------

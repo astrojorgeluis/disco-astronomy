@@ -228,12 +228,6 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="training.html">DiscoNet Training Pipeline</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="training.html#shipped-model-v1-2-5">Shipped model (v1.2.5)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="training.html#optional-casa-path-not-used-for-the-v1-2-5-release-weights">Optional CASA path (not used for the v1.2.5 release weights)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="training.html#step-1-generate-catalogue-py">Step 1 — <code class="docutils literal notranslate"><span class="pre">generate_catalogue.py</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="training.html#step-2-simulate-catalogue-py">Step 2 — <code class="docutils literal notranslate"><span class="pre">simulate_catalogue.py</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="training.html#step-3-train-model-py-mixed">Step 3 — <code class="docutils literal notranslate"><span class="pre">train_model.py</span></code> (mixed)</a></li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="training.html#network-and-loss">Network and loss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="training.html#checkpoint-schema">Checkpoint schema</a></li>
 <li class="toctree-l2"><a class="reference internal" href="training.html#validation-note">Validation note</a></li>
@@ -304,6 +298,8 @@
 <p>CLI grouping is explicit: <code class="docutils literal notranslate"><span class="pre">--group</span> <span class="pre">file|dir|name</span></code> and <code class="docutils literal notranslate"><span class="pre">--ref</span></code> for the
 geometry map. Default <code class="docutils literal notranslate"><span class="pre">--group</span> <span class="pre">file</span></code> no longer mixes unrelated FITS via
 the old <code class="docutils literal notranslate"><span class="pre">BandN</span></code> filename heuristic.</p>
+<p>PyPI also ships <code class="docutils literal notranslate"><span class="pre">1.2.6.post1</span></code> with the same code; only the package
+README wording was corrected. Cite the software as v1.2.6.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">--group</span> <span class="pre">file</span></code> (default): one group per FITS file.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--group</span> <span class="pre">dir</span></code>: all FITS directly in the same folder are one group
@@ -314,6 +310,8 @@ group by filename, unique substring, or path; must match exactly one
 file. <code class="docutils literal notranslate"><span class="pre">--incl</span></code> + <code class="docutils literal notranslate"><span class="pre">--pa</span></code> still override fitted angles.</p></li>
 <li><p>Docs / README explain grouping and <code class="docutils literal notranslate"><span class="pre">--ref</span></code>; confirmation prompt still
 prints the grouping mode.</p></li>
+<li><p>Training docs and <code class="docutils literal notranslate"><span class="pre">training/</span></code> are synthetic-only. CASA simulation
+scripts are not part of DISCO.</p></li>
 </ul>
 </section>
 <section id="version-1-2-5">
@@ -369,7 +367,7 @@ Matplotlib). GUI Auto-Tune documented as approximate (not the CLI hybrid).</p></
 <section id="docs-packaging">
 <h3>Docs / packaging<a class="headerlink" href="#docs-packaging" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p>Training docs describe the v1.2.5 synthetic recipe and optional CASA path.</p></li>
+<li><p>Training docs describe the v1.2.5 synthetic recipe.</p></li>
 <li><p>Pipeline / API docs aligned with L-BFGS-B hybrid path.</p></li>
 <li><p>Citation uses the Zenodo all-versions DOI <code class="docutils literal notranslate"><span class="pre">10.5281/zenodo.19999239</span></code>
 (resolves to the latest release; no Software Heritage id yet).</p></li>
