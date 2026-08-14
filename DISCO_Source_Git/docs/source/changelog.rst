@@ -10,6 +10,9 @@ CLI grouping is explicit: ``--group file|dir|name`` and ``--ref`` for the
 geometry map. Default ``--group file`` no longer mixes unrelated FITS via
 the old ``BandN`` filename heuristic.
 
+PyPI also ships ``1.2.6.post1`` with the same code; only the package
+README wording was corrected. Cite the software as v1.2.6.
+
 * ``--group file`` (default): one group per FITS file.
 * ``--group dir``: all FITS directly in the same folder are one group
   (nested directories remain separate).
