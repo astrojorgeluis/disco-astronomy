@@ -89,7 +89,7 @@ DISCO was developed by **Jorge Luis Guzmán-Lazo** within the [YEMS Millennium N
 - **Hybrid Optimization** — CNN prior seeds a differential-evolution + **L-BFGS-B** refinement of a geometric loss on the real FITS image (CLI).
 - **Radial Profiles** — Deprojection and azimuthally averaged profiles, with optional beam homogenization for multi-band groups.
 - **Dual Visualization** — GUI with Cartesian / polar views and interactive ellipse overlay.
-- **Batch CLI** — `disco-start` processes one or many targets; `-y` for non-interactive runs.
+- **Batch CLI** — `disco-start` processes one or many targets (with a confirmation prompt before scanning FITS).
 - **SIMBAD / Gaia** — GUI SIMBAD metadata; CLI Gaia DR3 proper-motion registration across epochs.
 - **CSV Export** — Geometry and radial profiles (`--csv on`).
 
@@ -329,15 +329,11 @@ disco-start AS209 --rout 1.2 --homobeam off
 
 # Specify a custom homogenization beam size
 disco-start AS209 Elias29 --homobeam on --beam 0.15
-
-# Skip the interactive confirmation prompt (scripts / non-interactive)
-disco-start AS209 --yes
-disco-start path/to/disk.fits -y
 ```
 
 > If no `identifier` is provided, DISCO discovers and processes **all** FITS files found in the current directory tree.
 
-Before scanning, the CLI prints a warning with the current working directory and asks `Are you sure you want to continue? [y/N]`. Pass `-y` / `--yes` to skip the prompt (required in non-interactive sessions).
+Before scanning, the CLI prints a warning with the current working directory and asks `Are you sure you want to continue? [y/N]`. Confirm with `y` / `yes` to proceed (this is intentional — avoid skipping it in normal use).
 
 ### CLI Reference
 
@@ -358,7 +354,7 @@ usage: disco-start [-h] [--rout ROUT] [--rmin RMIN] [--incl INCL] [--pa PA]
 | `--homobeam {on,off}` | `on` | Enable / disable beam homogenization. **Enabled by default.** |
 | `--csv {on,off}` | `off` | Write CSV outputs: global parameters, per-band metadata, and tabulated radial profiles. |
 | `--debug {on,off}` | `off` | Save a diagnostic PNG overlaying the optimized center and outer radius on the deprojected image. |
-| `-y`, `--yes` | off | Skip the interactive confirmation prompt before FITS scanning. |
+| `-y`, `--yes` | off | Escape hatch to skip the confirmation prompt. Prefer answering `y` at the prompt in normal use. |
 
 ---
 

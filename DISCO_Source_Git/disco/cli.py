@@ -549,7 +549,8 @@ def main():
     parser.add_argument("--homobeam", type=str,   default="on",  choices=["on", "off"], help="Toggle beam homogenization")
     parser.add_argument("--csv",       type=str,   default="off", choices=["on", "off"], help="Export CSV data")
     parser.add_argument("--debug",     type=str,   default="off", choices=["on", "off"], help="Save debug deprojected image")
-    parser.add_argument("-y", "--yes", action="store_true", help="Skip interactive confirmation prompt")
+    parser.add_argument("-y", "--yes", action="store_true",
+                        help="Escape hatch: skip confirmation (prefer answering y at the prompt)")
     args = parser.parse_args()
 
     print("\n" + "-"*60)

@@ -57,9 +57,8 @@ argument.
 
    Parse command-line arguments and orchestrate the full pipeline execution
    across all matched groups. Before scanning, prints a confirmation prompt
-   (``Are you sure you want to continue? [y/N]``) unless ``-y`` / ``--yes``
-   is set; non-interactive sessions without ``--yes`` exit with an error.
-   Identifiers may be object name prefixes, directory paths, or direct
+   (``Are you sure you want to continue? [y/N]``); answer ``y`` / ``yes`` to
+   proceed. The prompt is intentional for interactive use. Identifiers may be object name prefixes, directory paths, or direct
    ``.fits`` paths. Loads the DiscoNet model once before iterating over
    groups. Groups are processed sequentially with a ``tqdm`` outer progress
    bar. Processing failures for individual groups are logged but do not

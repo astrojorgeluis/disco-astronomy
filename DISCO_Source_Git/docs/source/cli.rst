@@ -89,9 +89,8 @@ Optional Arguments
        centre and outer radius overlay.
    * - ``-y``, ``--yes``
      - off
-     - Skip the interactive confirmation prompt before FITS scanning.
-       Required in non-interactive sessions (no TTY); otherwise the CLI
-       exits with an error asking you to pass ``--yes``.
+     - Escape hatch to skip the confirmation prompt. Prefer answering
+       ``y`` at the prompt in normal interactive use.
 
 Confirmation Prompt
 -------------------
@@ -103,8 +102,8 @@ working directory and asks:
 
    Are you sure you want to continue? [y/N]:
 
-Answer ``y`` or ``yes`` to proceed, or anything else to cancel. Use
-``-y`` / ``--yes`` to bypass this prompt (for scripts and CI).
+Answer ``y`` or ``yes`` to proceed, or anything else to cancel. The prompt
+is intentional so users confirm before FITS scanning begins.
 
 Usage Examples
 --------------
@@ -134,10 +133,6 @@ Usage Examples
 
    # Specify a custom homogenisation beam size
    disco-start AS209 Elias29 --homobeam on --beam 0.15
-
-   # Skip confirmation (scripts / non-interactive)
-   disco-start AS209 --yes
-   disco-start path/to/disk.fits -y
 
 CNN Model Loading
 -----------------
