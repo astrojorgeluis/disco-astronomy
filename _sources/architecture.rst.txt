@@ -21,6 +21,7 @@ The DISCO repository is organised into three top-level namespaces:
    │   └── core/
    │       ├── __init__.py
    │       ├── cnn_inference.py   # DiscoNet architecture & inference helper
+   │       ├── cnn_preprocess.py  # Shared CNN crop / beam / label encode-decode
    │       ├── fits_utils.py      # FITS I/O, beam utilities, WCS helpers
    │       └── optimization.py    # Geometric loss & hybrid optimiser
    ├── client/                    # React frontend source (Vite project)
@@ -58,6 +59,7 @@ the primary Python modules.
                        disco.cli:main()                                     │
                            ├── disco.core.cnn_inference                     │
                            │       DiscoNet, predict_with_cnn               │
+                           ├── disco.core.cnn_preprocess                    │
                            ├── disco.core.optimization                      │
                            │       geometric_loss                           │
                            │       auto_tune_geometry_hybrid                │
@@ -122,12 +124,9 @@ assets in place:
    # From client/
    npm ci && npm run build
 
-.. warning::
-
-   On v1, use ``npm run build`` only. Do **not** use ``npm run build:disco`` —
-   that script can delete the Vite output instead of installing it under
-   ``disco/static/``.
+The Vite ``outDir`` is ``../disco/static``. ``npm run build:disco`` is an alias
+for the same command.
 
 The resulting bundle is shipped as part of the ``disco-astronomy`` PyPI
-distribution via the ``MANIFEST.in`` directive
-``recursive-include disco/static *``.
+distribution via ``MANIFEST.in`` / package-data
+``recursive-include disco/static *`` (build the frontend before ``python -m build``).

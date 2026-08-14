@@ -89,8 +89,8 @@ reference image. This function:
 4. Runs ``scipy.optimize.differential_evolution`` within CNN-constrained
    parameter bounds to find a global minimum of
    :func:`disco.core.optimization.geometric_loss` on the smoothed image.
-5. Refines this solution with ``scipy.optimize.minimize`` (Nelder-Mead) on
-   the full-resolution image.
+5. Refines this solution with ``scipy.optimize.minimize`` (**L-BFGS-B**,
+   bounds respected) on the full-resolution image.
 6. If the optimised centre offset is near the search boundary, a second
    optimisation stage is initiated with the accumulated offset as a new
    origin.
@@ -101,7 +101,7 @@ reference image. This function:
 
 **Without CNN model (fallback):**
 
-A direct ``scipy.optimize.minimize`` call (Nelder-Mead) minimises
+A direct ``scipy.optimize.minimize`` call (**L-BFGS-B**) minimises
 :func:`disco.core.optimization.geometric_loss` starting from the fixed
 initial point :math:`(i_0, \phi_0, \Delta x_0, \Delta y_0) = (30°, 45°, 0, 0)`.
 
@@ -110,21 +110,33 @@ Phase 3 — Uncertainty Estimation
 
 Geometric uncertainties are computed by
 :func:`disco.core.optimization.estimate_geometry_errors` using a parabolic
-approximation of the loss landscape:
+approximation of the loss landscape. The reported :math:`\pm` is a
+**geometric-loss curvature** estimate around the hybrid solution (after the
+center has already been updated). It is **not** a CNN epistemic uncertainty
+and is **not** a literature :math:`1\sigma`; large CNN↔hybrid disagreement
+is handled separately by the hybrid veto.
 
-1. The optimised geometry is refined locally with Nelder-Mead.
-2. The loss at the minimum, :math:`L_{\rm min}`, is evaluated.
+1. The geometry is refined locally with **L-BFGS-B**.
+2. The loss at the minimum, :math:`L_{\rm min}`, is evaluated with the center
+   held fixed (``dx=dy=0`` in the already-centered crop).
 3. A one-dimensional scan in each angular parameter is performed over a
    grid of offsets :math:`\delta \in [-12°, +12°]` at 0.25° intervals.
+   PA is scanned in continuous offset space (wrap applied only when
+   evaluating the loss).
 4. A degree-2 polynomial is fitted to the valid loss values. The estimated
-   1-sigma uncertainty is:
+   uncertainty is:
 
    .. math::
 
       \sigma_\theta = \sqrt{\frac{L_{\rm min} \times 5 \times 10^{-3}}{a}}
 
    where :math:`a` is the leading coefficient of the parabola, clipped to
-   :math:`[0.3°, 10°]`.
+   :math:`[0.3°, 10°]`. The factor :math:`5\times10^{-3}` corresponds to a
+   relative loss rise :math:`\Delta L / L_{\rm min} \approx 0.5\%`. Fallbacks:
+   ``2°`` if the minimum is invalid, ``5°`` if the parabola fit fails.
+
+Empirical accuracy of the **hybrid** pipeline is validated against
+published disk geometries (e.g. DSHARP); see :ref:`training`.
 
 The outer radius is then estimated by a weighted fusion of two independent
 estimates:

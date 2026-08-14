@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>disco.server &mdash; DISCO v1.2.4</title>
+  <title>disco.server &mdash; DISCO v1.2.5</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/custom_disco.css?v=499842b1" />
@@ -14,7 +14,7 @@
     <link rel="shortcut icon" href="../../_static/disco_icon.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=928db92d"></script>
+      <script src="../../_static/documentation_options.js?v=36f53d34"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -221,9 +221,16 @@
 <p class="caption" role="heading"><span class="caption-text">Supplementary</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../training.html">DiscoNet Training Pipeline</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../training.html#step-1-catalogue-generation-training-generate-catalogue-py">Step 1: Catalogue Generation (<code class="docutils literal notranslate"><span class="pre">training/generate_catalogue.py</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../training.html#step-2-fits-simulation-training-simulate-catalogue-py">Step 2: FITS Simulation (<code class="docutils literal notranslate"><span class="pre">training/simulate_catalogue.py</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../training.html#step-3-model-training-training-train-model-py">Step 3: Model Training (<code class="docutils literal notranslate"><span class="pre">training/train_model.py</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../training.html#shipped-model-v1-2-5">Shipped model (v1.2.5)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../training.html#optional-casa-path-not-used-for-the-v1-2-5-release-weights">Optional CASA path (not used for the v1.2.5 release weights)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../training.html#step-1-generate-catalogue-py">Step 1 — <code class="docutils literal notranslate"><span class="pre">generate_catalogue.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../training.html#step-2-simulate-catalogue-py">Step 2 — <code class="docutils literal notranslate"><span class="pre">simulate_catalogue.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../training.html#step-3-train-model-py-mixed">Step 3 — <code class="docutils literal notranslate"><span class="pre">train_model.py</span></code> (mixed)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../training.html#network-and-loss">Network and loss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../training.html#checkpoint-schema">Checkpoint schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../training.html#validation-note">Validation note</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../file_io.html">File Input and Output</a><ul>
@@ -240,11 +247,18 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../changelog.html#version-1-2-4-current">Version 1.2.4 (current)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../changelog.html#version-1-2-5-current">Version 1.2.5 (current)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../changelog.html#cnn-training">CNN / training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../changelog.html#cli-geometry">CLI / geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../changelog.html#gui">GUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../changelog.html#docs-packaging">Docs / packaging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../changelog.html#version-1-2-4">Version 1.2.4</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../changelog.html#id2">GUI</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../changelog.html#backend">Backend</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../changelog.html#cli">CLI</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../changelog.html#docs-packaging">Docs / packaging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../changelog.html#id3">Docs / packaging</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../changelog.html#version-1-2-3">Version 1.2.3</a></li>
@@ -311,6 +325,11 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">astropy.visualization</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageNormalize</span><span class="p">,</span> <span class="n">AsinhStretch</span><span class="p">,</span> <span class="n">LogStretch</span><span class="p">,</span> <span class="n">LinearStretch</span><span class="p">,</span> <span class="n">SqrtStretch</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">disco.core.optimization</span><span class="w"> </span><span class="kn">import</span> <span class="n">geometric_loss</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">disco.core.fits_utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">normalize_flux_units</span><span class="p">,</span>
+    <span class="n">resolve_restfrq</span><span class="p">,</span>
+    <span class="n">radial_pixel_grid</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">astroquery.simbad</span><span class="w"> </span><span class="kn">import</span> <span class="n">Simbad</span>
@@ -386,7 +405,6 @@
         <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">continue</span>
         <span class="k">while</span> <span class="n">data</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="c1"># Prefer Stokes I / first plane for cubes</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">continue</span>
@@ -455,6 +473,8 @@
     <span class="n">show_grid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">show_axes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">show_colorbar</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="c1"># Full-width FOV in arcsec for cartesian views; max radius for polar. 0 = full.</span>
+    <span class="n">fov</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">dpi</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">150</span></div>
 
@@ -468,7 +488,9 @@
     <span class="n">incl</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">rout</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">fit_rmin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
-    <span class="n">fit_rmax</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span></div>
+    <span class="n">fit_rmax</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="c1"># Full width of the deprojected square view (arcsec). 0 → legacy ~1000 px.</span>
+    <span class="n">fov</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span></div>
 
 
 <div class="viewcode-block" id="OptimizeParams">
@@ -489,16 +511,43 @@
     <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">array_to_base64</span><span class="p">(</span><span class="n">data_array</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;magma&#39;</span><span class="p">,</span> <span class="n">stretch_val</span><span class="o">=</span><span class="mf">0.03</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_downsample_max_side</span><span class="p">(</span><span class="n">data_array</span><span class="p">,</span> <span class="n">max_side</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fast block-average downsample so matplotlib never sees huge FITS rasters.&quot;&quot;&quot;</span>
+    <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data_array</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">arr</span>
+    <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">m</span> <span class="o">&lt;=</span> <span class="n">max_side</span> <span class="ow">or</span> <span class="n">max_side</span> <span class="o">&lt;</span> <span class="mi">64</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">arr</span>
+    <span class="c1"># Allow ~25% over max_side so 8192→~2730 (factor 3) instead of jumping to 2048.</span>
+    <span class="n">factor</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">m</span> <span class="o">/</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">max_side</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.25</span><span class="p">))))</span>
+    <span class="n">ny2</span> <span class="o">=</span> <span class="p">(</span><span class="n">ny</span> <span class="o">//</span> <span class="n">factor</span><span class="p">)</span> <span class="o">*</span> <span class="n">factor</span>
+    <span class="n">nx2</span> <span class="o">=</span> <span class="p">(</span><span class="n">nx</span> <span class="o">//</span> <span class="n">factor</span><span class="p">)</span> <span class="o">*</span> <span class="n">factor</span>
+    <span class="k">if</span> <span class="n">ny2</span> <span class="o">&lt;</span> <span class="n">factor</span> <span class="ow">or</span> <span class="n">nx2</span> <span class="o">&lt;</span> <span class="n">factor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">arr</span>
+    <span class="n">cropped</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[:</span><span class="n">ny2</span><span class="p">,</span> <span class="p">:</span><span class="n">nx2</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">cropped</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ny2</span> <span class="o">//</span> <span class="n">factor</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="n">nx2</span> <span class="o">//</span> <span class="n">factor</span><span class="p">,</span> <span class="n">factor</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">array_to_base64</span><span class="p">(</span><span class="n">data_array</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;magma&#39;</span><span class="p">,</span> <span class="n">stretch_val</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span> <span class="n">max_px</span><span class="o">=</span><span class="mi">2400</span><span class="p">):</span>
     <span class="n">mx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">data_array</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">mx</span><span class="p">)</span> <span class="ow">or</span> <span class="n">mx</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">mx</span> <span class="o">=</span> <span class="mf">1.0</span>
     <span class="n">norm</span> <span class="o">=</span> <span class="n">ImageNormalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">mx</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="n">AsinhStretch</span><span class="p">(</span><span class="n">stretch_val</span><span class="p">))</span>
 
-    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+    <span class="c1"># Downsample first (big win on 4k–8k FITS), then rasterize near 1:1 so zoom</span>
+    <span class="c1"># in the Image Viewer stays usable without shipping full-resolution PNGs.</span>
+    <span class="n">disp</span> <span class="o">=</span> <span class="n">_downsample_max_side</span><span class="p">(</span><span class="n">data_array</span><span class="p">,</span> <span class="n">max_px</span><span class="p">)</span>
+    <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">disp</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">dpi</span> <span class="o">=</span> <span class="mi">120</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">dpi</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">dpi</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
     <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">data_array</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span>
+        <span class="n">disp</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span>
+        <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;bilinear&#39;</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="s1">&#39;equal&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="n">buf</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;png&#39;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">,</span> <span class="n">pad_inches</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -524,9 +573,14 @@
             <span class="n">state</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="n">header</span>
             <span class="n">state</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">file_location</span>
             <span class="n">clear_analysis_state</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.1</span><span class="p">:</span>
-                <span class="n">state</span><span class="o">.</span><span class="n">data</span> <span class="o">*=</span> <span class="mi">1000</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="p">,</span> <span class="n">unit_warns</span> <span class="o">=</span> <span class="n">normalize_flux_units</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">unit_warns</span><span class="p">:</span>
+                <span class="n">warning_units</span> <span class="o">=</span> <span class="s2">&quot;; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">unit_warns</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">warning_units</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">pixel_scale</span><span class="p">,</span> <span class="n">warning</span> <span class="o">=</span> <span class="n">get_pixel_scale_arcsec</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">warning_units</span><span class="p">:</span>
+                <span class="n">warning</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">warning</span><span class="si">}</span><span class="s2">; </span><span class="si">{</span><span class="n">warning_units</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">warning</span> <span class="k">else</span> <span class="n">warning_units</span>
             <span class="n">state</span><span class="o">.</span><span class="n">pixel_scale_warning</span> <span class="o">=</span> <span class="n">warning</span>
         <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;filename&quot;</span><span class="p">:</span> <span class="n">safe_name</span><span class="p">,</span>
@@ -555,9 +609,11 @@
             <span class="n">state</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="n">header</span>
             <span class="n">state</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">file_path</span>
             <span class="n">clear_analysis_state</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.1</span><span class="p">:</span>
-                <span class="n">state</span><span class="o">.</span><span class="n">data</span> <span class="o">*=</span> <span class="mi">1000</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="p">,</span> <span class="n">unit_warns</span> <span class="o">=</span> <span class="n">normalize_flux_units</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="p">)</span>
+            <span class="n">warning_units</span> <span class="o">=</span> <span class="s2">&quot;; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">unit_warns</span><span class="p">)</span> <span class="k">if</span> <span class="n">unit_warns</span> <span class="k">else</span> <span class="kc">None</span>
             <span class="n">pixel_scale</span><span class="p">,</span> <span class="n">warning</span> <span class="o">=</span> <span class="n">get_pixel_scale_arcsec</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">warning_units</span><span class="p">:</span>
+                <span class="n">warning</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">warning</span><span class="si">}</span><span class="s2">; </span><span class="si">{</span><span class="n">warning_units</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">warning</span> <span class="k">else</span> <span class="n">warning_units</span>
             <span class="n">state</span><span class="o">.</span><span class="n">pixel_scale_warning</span> <span class="o">=</span> <span class="n">warning</span>
         <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;loaded&quot;</span><span class="p">,</span>
@@ -577,7 +633,8 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">get_preview</span><span class="p">():</span>
     <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">404</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;No data&quot;</span><span class="p">)</span>
-    <span class="n">img_b64</span> <span class="o">=</span> <span class="n">array_to_base64</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">stretch_val</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
+    <span class="c1"># Higher cap for Image Viewer zoom; analysis thumbnails use array_to_base64 default.</span>
+    <span class="n">img_b64</span> <span class="o">=</span> <span class="n">array_to_base64</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">stretch_val</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span> <span class="n">max_px</span><span class="o">=</span><span class="mi">3072</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;image&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;data:image/png;base64,</span><span class="si">{</span><span class="n">img_b64</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
 
 <span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/get_header&quot;</span><span class="p">)</span>
@@ -603,7 +660,6 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">ensure_2d_data</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
         <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span>
 
-        <span class="c1"># Display (Konva, origin top-left) → FITS array indexing (origin lower-left)</span>
         <span class="n">eff_cy</span> <span class="o">=</span> <span class="n">ny</span> <span class="o">-</span> <span class="n">params</span><span class="o">.</span><span class="n">cy</span>
         <span class="n">eff_cx</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">cx</span>
 
@@ -618,7 +674,6 @@
 
         <span class="n">pixel_scale</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_pixel_scale_arcsec</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="p">)</span>
 
-        <span class="c1"># Use Rout when no ring-fit range is set (fit_rmax=0 was starving the loss)</span>
         <span class="n">fit_rmax_eff</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">fit_rmax</span> <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">fit_rmax</span> <span class="o">&gt;</span> <span class="n">params</span><span class="o">.</span><span class="n">fit_rmin</span> <span class="k">else</span> <span class="n">params</span><span class="o">.</span><span class="n">rout</span>
         <span class="n">search_rad</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">rout</span><span class="p">,</span> <span class="n">fit_rmax_eff</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
         <span class="n">search_rad_pix</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">search_rad</span> <span class="o">/</span> <span class="n">pixel_scale</span><span class="p">),</span> <span class="mi">5</span><span class="p">)</span>
@@ -634,7 +689,6 @@
         <span class="n">rmin_pix</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">fit_rmin</span> <span class="o">/</span> <span class="n">pixel_scale</span><span class="p">)</span>
         <span class="n">rmax_pix</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">fit_rmax_eff</span> <span class="o">/</span> <span class="n">pixel_scale</span><span class="p">,</span> <span class="n">rmin_pix</span> <span class="o">+</span> <span class="mi">5</span><span class="p">)</span>
 
-        <span class="c1"># Mild smooth for the coarse grid search (same idea as CLI hybrid path)</span>
         <span class="n">bmaj_pix</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;BMAJ&#39;</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
@@ -660,7 +714,6 @@
                     <span class="n">min_loss</span> <span class="o">=</span> <span class="n">l</span>
                     <span class="n">best_guess</span> <span class="o">=</span> <span class="p">[</span><span class="n">ti</span><span class="p">,</span> <span class="n">tp</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
 
-        <span class="c1"># L-BFGS-B respects bounds (Nelder-Mead ignores them in SciPy)</span>
         <span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">85.0</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">180.0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">15.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">15.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">)]</span>
         <span class="n">res</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span>
             <span class="n">geometric_loss</span><span class="p">,</span>
@@ -677,7 +730,6 @@
             <span class="n">best_pa</span> <span class="o">+=</span> <span class="mi">180</span>
         <span class="n">best_incl</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">best_incl</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">85.0</span><span class="p">))</span>
 
-        <span class="c1"># Convert optimized center back to display coordinates</span>
         <span class="n">new_eff_cx</span> <span class="o">=</span> <span class="n">eff_cx</span> <span class="o">+</span> <span class="n">best_dx</span>
         <span class="n">new_eff_cy</span> <span class="o">=</span> <span class="n">eff_cy</span> <span class="o">+</span> <span class="n">best_dy</span>
         <span class="n">optimized_cx</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">new_eff_cx</span><span class="p">)</span>
@@ -710,8 +762,21 @@
         <span class="n">pa_rad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">pa</span><span class="p">)</span>
         <span class="n">incl_rad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">incl</span><span class="p">)</span>
         <span class="n">pixel_scale</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_pixel_scale_arcsec</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pixel_scale</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Invalid pixel scale in FITS header.&quot;</span><span class="p">)</span>
 
-        <span class="n">crop_size</span> <span class="o">=</span> <span class="mi">2000</span>
+        <span class="c1"># FOV = full width of the deprojected square (arcsec). Cap for memory/CPU.</span>
+        <span class="n">map_as</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span> <span class="o">*</span> <span class="n">pixel_scale</span>
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">fov</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">fov</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">fov_arcsec</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">fov</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">map_as</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fov_arcsec</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1000.0</span> <span class="o">*</span> <span class="n">pixel_scale</span><span class="p">,</span> <span class="n">map_as</span><span class="p">)</span>
+        <span class="n">half_pix</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">fov_arcsec</span> <span class="o">/</span> <span class="n">pixel_scale</span><span class="p">))</span>
+        <span class="n">half_pix</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">half_pix</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
+        <span class="n">dim</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">half_pix</span>
+        <span class="n">fov_arcsec</span> <span class="o">=</span> <span class="n">dim</span> <span class="o">*</span> <span class="n">pixel_scale</span>
+
+        <span class="n">crop_size</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">dim</span>
         <span class="n">crop_rad</span> <span class="o">=</span> <span class="n">crop_size</span> <span class="o">//</span> <span class="mi">2</span>
         <span class="n">pad</span> <span class="o">=</span> <span class="n">crop_rad</span>
         <span class="n">d_pad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pad</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">,</span> <span class="n">constant_values</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -741,25 +806,29 @@
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">pass</span>
 
-        <span class="n">dim</span> <span class="o">=</span> <span class="mi">1000</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span> <span class="o">-</span> <span class="mi">500</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span> <span class="o">-</span> <span class="n">half_pix</span>
         <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-        <span class="n">Xc</span> <span class="o">=</span> <span class="n">X</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">incl_rad</span><span class="p">)</span>
-        <span class="n">Xrot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">pa_rad</span><span class="p">)</span> <span class="o">*</span> <span class="n">Xc</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">pa_rad</span><span class="p">)</span> <span class="o">*</span> <span class="n">Y</span>
-        <span class="n">Yrot</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">pa_rad</span><span class="p">)</span> <span class="o">*</span> <span class="n">Xc</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">pa_rad</span><span class="p">)</span> <span class="o">*</span> <span class="n">Y</span>
+        <span class="c1"># Sky-aligned face-on grid (Y ~ North): rotate into disk frame, then</span>
+        <span class="c1"># apply the usual i/PA → image sampling. Avoids empty corners from a</span>
+        <span class="c1"># post-hoc image rotation.</span>
+        <span class="n">Xd</span> <span class="o">=</span> <span class="n">X</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">pa_rad</span><span class="p">)</span> <span class="o">-</span> <span class="n">Y</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">pa_rad</span><span class="p">)</span>
+        <span class="n">Yd</span> <span class="o">=</span> <span class="n">X</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">pa_rad</span><span class="p">)</span> <span class="o">+</span> <span class="n">Y</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">pa_rad</span><span class="p">)</span>
+        <span class="n">Xc</span> <span class="o">=</span> <span class="n">Xd</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">incl_rad</span><span class="p">)</span>
+        <span class="n">Xrot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">pa_rad</span><span class="p">)</span> <span class="o">*</span> <span class="n">Xc</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">pa_rad</span><span class="p">)</span> <span class="o">*</span> <span class="n">Yd</span>
+        <span class="n">Yrot</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">pa_rad</span><span class="p">)</span> <span class="o">*</span> <span class="n">Xc</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">pa_rad</span><span class="p">)</span> <span class="o">*</span> <span class="n">Yd</span>
 
         <span class="n">coords_deproj</span> <span class="o">=</span> <span class="p">[</span><span class="n">Yrot</span> <span class="o">+</span> <span class="n">local_cy</span><span class="p">,</span> <span class="o">-</span><span class="n">Xrot</span> <span class="o">+</span> <span class="n">local_cx</span><span class="p">]</span>
         <span class="n">deproj</span> <span class="o">=</span> <span class="n">map_coordinates</span><span class="p">(</span><span class="n">dc</span><span class="p">,</span> <span class="n">coords_deproj</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">cval</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
         <span class="n">deproj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fliplr</span><span class="p">(</span><span class="n">deproj</span><span class="p">)</span>
 
-        <span class="n">max_radius_pix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
-        <span class="n">n_steps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">max_radius_pix</span><span class="p">)</span>
-        <span class="n">r_full</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_radius_pix</span><span class="p">,</span> <span class="n">n_steps</span><span class="p">)</span>
+        <span class="n">max_radius_pix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">half_pix</span><span class="p">,</span> <span class="n">half_pix</span><span class="p">)</span>
+        <span class="n">r_full</span> <span class="o">=</span> <span class="n">radial_pixel_grid</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">max_radius_pix</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">n_steps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">r_full</span><span class="p">)</span>
         <span class="n">th</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">361</span><span class="p">)</span>
         <span class="n">R</span><span class="p">,</span> <span class="n">TH</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">r_full</span><span class="p">,</span> <span class="n">th</span><span class="p">)</span>
-        <span class="n">Xd</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">TH</span><span class="p">))</span>
-        <span class="n">Yd</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">TH</span><span class="p">))</span>
-        <span class="n">coords_polar</span> <span class="o">=</span> <span class="p">[</span><span class="n">Yd</span> <span class="o">+</span> <span class="mi">500</span><span class="p">,</span> <span class="n">Xd</span> <span class="o">+</span> <span class="mi">500</span><span class="p">]</span>
+        <span class="n">Xd_p</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">TH</span><span class="p">))</span>
+        <span class="n">Yd_p</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">TH</span><span class="p">))</span>
+        <span class="n">coords_polar</span> <span class="o">=</span> <span class="p">[</span><span class="n">Yd_p</span> <span class="o">+</span> <span class="n">half_pix</span><span class="p">,</span> <span class="n">Xd_p</span> <span class="o">+</span> <span class="n">half_pix</span><span class="p">]</span>
         <span class="n">polar_full</span> <span class="o">=</span> <span class="n">map_coordinates</span><span class="p">(</span><span class="n">deproj</span><span class="p">,</span> <span class="n">coords_polar</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">polar_full</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flipud</span><span class="p">(</span><span class="n">polar_full</span><span class="p">)</span>
 
@@ -778,7 +847,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">bmaj</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;BMAJ&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3600</span>
             <span class="n">bmin</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;BMIN&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3600</span>
-            <span class="n">restfrq</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;RESTFRQ&#39;</span><span class="p">,</span> <span class="mf">230e9</span><span class="p">)</span>
+            <span class="n">restfrq</span><span class="p">,</span> <span class="n">_fallback</span><span class="p">,</span> <span class="n">_src</span> <span class="o">=</span> <span class="n">resolve_restfrq</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">bmaj</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">bmin</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">beam_sr</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">bmaj</span> <span class="o">*</span> <span class="n">bmin</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)))</span> <span class="o">/</span> <span class="mi">206265</span> <span class="o">**</span> <span class="mi">2</span>
                 <span class="n">kB</span> <span class="o">=</span> <span class="mf">1.38e-16</span>
@@ -790,16 +859,21 @@
             <span class="n">tb_prof</span> <span class="o">=</span> <span class="n">prof_display</span>
 
         <span class="n">r_arcsec</span> <span class="o">=</span> <span class="n">r_display</span> <span class="o">*</span> <span class="n">pixel_scale</span>
-        <span class="n">start</span> <span class="o">=</span> <span class="n">crop_rad</span> <span class="o">-</span> <span class="mi">500</span>
-        <span class="n">end</span> <span class="o">=</span> <span class="n">crop_rad</span> <span class="o">+</span> <span class="mi">500</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">crop_rad</span> <span class="o">-</span> <span class="n">half_pix</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">crop_rad</span> <span class="o">+</span> <span class="n">half_pix</span>
         <span class="n">dc_view</span> <span class="o">=</span> <span class="n">dc</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
 
-        <span class="n">fov_arcsec</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="n">pixel_scale</span>
         <span class="n">limit_arcsec</span> <span class="o">=</span> <span class="n">fov_arcsec</span> <span class="o">/</span> <span class="mi">2</span>
         <span class="n">ext_cartesian</span> <span class="o">=</span> <span class="p">[</span><span class="n">limit_arcsec</span><span class="p">,</span> <span class="o">-</span><span class="n">limit_arcsec</span><span class="p">,</span> <span class="o">-</span><span class="n">limit_arcsec</span><span class="p">,</span> <span class="n">limit_arcsec</span><span class="p">]</span>
         <span class="n">ext_polar</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">rout</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">]</span>
 
-        <span class="n">state</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">dc_view</span><span class="p">,</span> <span class="s1">&#39;deproj&#39;</span><span class="p">:</span> <span class="n">deproj</span><span class="p">,</span> <span class="s1">&#39;polar&#39;</span><span class="p">:</span> <span class="n">polar_display</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="n">mod</span><span class="p">,</span> <span class="s1">&#39;residuals&#39;</span><span class="p">:</span> <span class="n">resi</span><span class="p">}</span>
+        <span class="n">state</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">dc_view</span><span class="p">,</span>
+            <span class="s1">&#39;deproj&#39;</span><span class="p">:</span> <span class="n">deproj</span><span class="p">,</span>
+            <span class="s1">&#39;polar&#39;</span><span class="p">:</span> <span class="n">polar_display</span><span class="p">,</span>
+            <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="n">mod</span><span class="p">,</span>
+            <span class="s1">&#39;residuals&#39;</span><span class="p">:</span> <span class="n">resi</span><span class="p">,</span>
+        <span class="p">}</span>
         <span class="n">state</span><span class="o">.</span><span class="n">extents</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">ext_cartesian</span><span class="p">,</span> <span class="s1">&#39;deproj&#39;</span><span class="p">:</span> <span class="n">ext_cartesian</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="n">ext_cartesian</span><span class="p">,</span> <span class="s1">&#39;residuals&#39;</span><span class="p">:</span> <span class="n">ext_cartesian</span><span class="p">,</span> <span class="s1">&#39;polar&#39;</span><span class="p">:</span> <span class="n">ext_polar</span><span class="p">}</span>
         <span class="n">prof_jy</span> <span class="o">=</span> <span class="n">prof_display</span> <span class="o">/</span> <span class="mf">1000.0</span>
         <span class="n">state</span><span class="o">.</span><span class="n">profile_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="n">r_arcsec</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="s1">&#39;tb&#39;</span><span class="p">:</span> <span class="n">tb_prof</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="s1">&#39;raw&#39;</span><span class="p">:</span> <span class="n">prof_jy</span><span class="o">.</span><span class="n">tolist</span><span class="p">()}</span>
@@ -829,7 +903,7 @@
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="n">fit_stats</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="n">fov_cartesian</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="n">pixel_scale</span>
+        <span class="n">fov_cartesian</span> <span class="o">=</span> <span class="n">fov_arcsec</span>
         <span class="n">fov_polar</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">rout</span>
 
         <span class="k">return</span> <span class="p">{</span>
@@ -955,7 +1029,6 @@
     <span class="n">aspect</span> <span class="o">=</span> <span class="s1">&#39;auto&#39;</span> <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;polar&#39;</span> <span class="k">else</span> <span class="s1">&#39;equal&#39;</span>
     <span class="n">extent</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">extents</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">extents</span> <span class="k">else</span> <span class="kc">None</span>
 
-    <span class="c1"># Fallback extent (arcsec) so beam/axes work even before / after partial pipeline state</span>
     <span class="k">if</span> <span class="n">extent</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s1">&#39;polar&#39;</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">pixel_scale</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_pixel_scale_arcsec</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="p">)</span>
@@ -968,11 +1041,29 @@
 
     <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image_data</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">cmap</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="n">aspect</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">)</span>
 
+    <span class="c1"># Optional FOV crop (arcsec). Cartesian: full width centered; polar: max radius.</span>
+    <span class="n">fov</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">fov</span> <span class="ow">or</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">fov</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">extent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;polar&#39;</span><span class="p">:</span>
+            <span class="n">r_max</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">fov</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">extent</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">extent</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">r_max</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">extent</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">extent</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">half</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">fov</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">half</span><span class="p">,</span> <span class="o">-</span><span class="n">half</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="n">half</span><span class="p">,</span> <span class="n">half</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">show_axes</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">title</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">titles</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="s2">&quot;Input Data&quot;</span><span class="p">,</span> <span class="s1">&#39;deproj&#39;</span><span class="p">:</span> <span class="s2">&quot;Deprojected View&quot;</span><span class="p">,</span> <span class="s1">&#39;polar&#39;</span><span class="p">:</span> <span class="s2">&quot;Polar Map&quot;</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="s2">&quot;Azimuthal Model&quot;</span><span class="p">,</span> <span class="s1">&#39;residuals&#39;</span><span class="p">:</span> <span class="s2">&quot;Residual Map&quot;</span><span class="p">}</span>
+            <span class="n">titles</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="s2">&quot;Input Data&quot;</span><span class="p">,</span>
+                <span class="s1">&#39;deproj&#39;</span><span class="p">:</span> <span class="s2">&quot;Deprojected View&quot;</span><span class="p">,</span>
+                <span class="s1">&#39;polar&#39;</span><span class="p">:</span> <span class="s2">&quot;Polar Map&quot;</span><span class="p">,</span>
+                <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="s2">&quot;Azimuthal Model&quot;</span><span class="p">,</span>
+                <span class="s1">&#39;residuals&#39;</span><span class="p">:</span> <span class="s2">&quot;Residual Map&quot;</span><span class="p">,</span>
+            <span class="p">}</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">titles</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()),</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 
         <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">direction</span><span class="o">=</span><span class="s1">&#39;in&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
@@ -1010,7 +1101,6 @@
                     <span class="n">levels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">image_data</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">image_data</span><span class="p">)],</span> <span class="n">pcts</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">levels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">n_levels</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">contour_levels</span><span class="p">))</span>
-                <span class="c1"># Explicit values between vmin/vmax keep canvas layout stable vs auto-count</span>
                 <span class="n">levels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">n_levels</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">levels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">levels</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
             <span class="n">levels</span> <span class="o">=</span> <span class="n">levels</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">levels</span><span class="p">)]</span>
@@ -1028,21 +1118,29 @@
                 <span class="n">bmaj</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;BMAJ&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="mi">3600</span>
                 <span class="n">bmin</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;BMIN&#39;</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;BMAJ&#39;</span><span class="p">]))</span> <span class="o">*</span> <span class="mi">3600</span>
                 <span class="n">bpa</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;BPA&#39;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="ow">or</span> <span class="mf">0.0</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">extent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Place beam in the visible corner (respect FOV crop if set).</span>
+                <span class="k">if</span> <span class="n">fov</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">half</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">fov</span>
+                    <span class="n">x0</span> <span class="o">=</span> <span class="n">half</span> <span class="o">-</span> <span class="mf">0.08</span> <span class="o">*</span> <span class="n">fov</span>
+                    <span class="n">y0</span> <span class="o">=</span> <span class="o">-</span><span class="n">half</span> <span class="o">+</span> <span class="mf">0.08</span> <span class="o">*</span> <span class="n">fov</span>
+                <span class="k">elif</span> <span class="n">extent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">width_phys</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">extent</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">extent</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
                     <span class="n">height_phys</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">extent</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">extent</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-                    <span class="c1"># Classic ALMA beam placement: bottom-left of frame</span>
                     <span class="n">x0</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">extent</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">extent</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="n">width_phys</span> <span class="o">*</span> <span class="mf">0.08</span>
                     <span class="n">y0</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">extent</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">extent</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">+</span> <span class="n">height_phys</span> <span class="o">*</span> <span class="mf">0.08</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">x0</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="n">x0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># Header BPA is E of N; with RA increasing to the left, use -BPA</span>
+                    <span class="c1"># so major-axis north (BPA=0) stays vertical on the plot.</span>
                     <span class="n">beam_patch</span> <span class="o">=</span> <span class="n">Ellipse</span><span class="p">(</span>
-                        <span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">bmin</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">bmaj</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">bpa</span><span class="p">,</span>
+                        <span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">bmin</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">bmaj</span><span class="p">,</span> <span class="n">angle</span><span class="o">=-</span><span class="n">bpa</span><span class="p">,</span>
                         <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.95</span>
                     <span class="p">)</span>
                     <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">beam_patch</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">pass</span>
 
-    <span class="c1"># Fixed margins avoid the &quot;canvas jump&quot; when toggling contours/colorbar</span>
     <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">show_axes</span><span class="p">:</span>
         <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="mf">0.12</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mf">0.90</span> <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">show_colorbar</span> <span class="k">else</span> <span class="mf">0.96</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mf">0.90</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mf">0.12</span><span class="p">)</span>
         <span class="n">buf</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>

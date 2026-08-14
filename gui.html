@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Graphical User Interface &mdash; DISCO v1.2.4</title>
+  <title>Graphical User Interface &mdash; DISCO v1.2.5</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom_disco.css?v=499842b1" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/disco_icon.png"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=928db92d"></script>
+      <script src="_static/documentation_options.js?v=36f53d34"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
@@ -225,9 +225,16 @@
 <p class="caption" role="heading"><span class="caption-text">Supplementary</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="training.html">DiscoNet Training Pipeline</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="training.html#step-1-catalogue-generation-training-generate-catalogue-py">Step 1: Catalogue Generation (<code class="docutils literal notranslate"><span class="pre">training/generate_catalogue.py</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="training.html#step-2-fits-simulation-training-simulate-catalogue-py">Step 2: FITS Simulation (<code class="docutils literal notranslate"><span class="pre">training/simulate_catalogue.py</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="training.html#step-3-model-training-training-train-model-py">Step 3: Model Training (<code class="docutils literal notranslate"><span class="pre">training/train_model.py</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training.html#shipped-model-v1-2-5">Shipped model (v1.2.5)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training.html#optional-casa-path-not-used-for-the-v1-2-5-release-weights">Optional CASA path (not used for the v1.2.5 release weights)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="training.html#step-1-generate-catalogue-py">Step 1 — <code class="docutils literal notranslate"><span class="pre">generate_catalogue.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="training.html#step-2-simulate-catalogue-py">Step 2 — <code class="docutils literal notranslate"><span class="pre">simulate_catalogue.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="training.html#step-3-train-model-py-mixed">Step 3 — <code class="docutils literal notranslate"><span class="pre">train_model.py</span></code> (mixed)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="training.html#network-and-loss">Network and loss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training.html#checkpoint-schema">Checkpoint schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training.html#validation-note">Validation note</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="file_io.html">File Input and Output</a><ul>
@@ -244,11 +251,18 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-4-current">Version 1.2.4 (current)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-5-current">Version 1.2.5 (current)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#cnn-training">CNN / training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#cli-geometry">CLI / geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="changelog.html#gui">GUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#docs-packaging">Docs / packaging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-4">Version 1.2.4</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#id2">GUI</a></li>
 <li class="toctree-l3"><a class="reference internal" href="changelog.html#backend">Backend</a></li>
 <li class="toctree-l3"><a class="reference internal" href="changelog.html#cli">CLI</a></li>
-<li class="toctree-l3"><a class="reference internal" href="changelog.html#docs-packaging">Docs / packaging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#id3">Docs / packaging</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-3">Version 1.2.3</a></li>
@@ -307,11 +321,13 @@ For reproducible, automated batch processing, use the CLI instead
 The image will appear in the viewer and the FITS header will populate
 automatically in the CATALOG panel.</p>
 <p><strong>2. Adjust the disk geometry</strong></p>
-<p>In the <strong>CONTROLS</strong> panel on the left, use the sliders to set the initial
+<p>In the <strong>Render Configuration</strong> panel, use the sliders to set the initial
 geometric parameters:</p>
 <ul class="simple">
 <li><p><strong>Inclination</strong> — disk inclination in degrees (0° = face-on, 90° = edge-on).</p></li>
 <li><p><strong>Position Angle</strong> — orientation of the disk major axis in degrees.</p></li>
+<li><p><strong>FOV</strong> — full width of the deprojected square view in arcseconds
+(defaults to about half the map side; Radius Out cannot exceed FOV/2).</p></li>
 <li><p><strong>Radius Out</strong> — estimated outer disk radius in arcseconds.</p></li>
 <li><p><strong>Center X / Y</strong> — pixel coordinates of the disk centre (auto-initialised
 to the image midpoint on load).</p></li>
@@ -324,16 +340,20 @@ visually align it with the disk before running the pipeline.</p>
 azimuthally-averaged radial profile, cumulative flux curve, and Gaussian ring
 fit for the current parameters.</p>
 <p><strong>4. Auto-tune the geometry (optional)</strong></p>
-<p>Click <strong>Auto-Tune Geometry</strong> in the ANALYSIS panel to run the optimiser
-automatically. It performs a grid-search seeded Nelder-Mead minimisation of
-the geometric loss and applies the best-fit inclination and position angle
-(centre is not updated) — no manual tuning of those angles required. See
-<a class="reference internal" href="api/optimization.html#api-optimization"><span class="std std-ref">disco.core.optimization</span></a> for the full algorithm description.</p>
+<p>Click <strong>Auto-Tune Geometry</strong> in the ANALYSIS panel to refine inclination,
+position angle, and centre from the current sliders. The GUI path runs a
+coarse grid search plus a local <strong>L-BFGS-B</strong> fit of the geometric loss
+(with only a small allowed centre shift). Treat the output as an
+<strong>approximate suggestion</strong>, not a guaranteed global optimum: low-inclination
+disks, weak rings, or a poor seed can leave a local minimum. Always check
+the ellipse by eye. The stronger CNN + differential-evolution hybrid is used
+by the <strong>CLI</strong>, not by this button. See <a class="reference internal" href="api/optimization.html#api-optimization"><span class="std std-ref">disco.core.optimization</span></a>.</p>
 <p><strong>5. Explore the results</strong></p>
-<p>Switch between <strong>Deproj</strong>, <strong>Model</strong>, <strong>Residuals</strong>, and <strong>Polar</strong> view tabs
-to inspect different representations of the disk. Activate the <strong>Inspector</strong>
-tool and hover over the image to probe the radial profile in real time. Drag
-on the profile chart to define a fitting range for Gaussian ring analysis.</p>
+<p>Switch between <strong>Deprojection</strong>, <strong>Model</strong>, <strong>Residuals</strong>, and <strong>Polar</strong>
+view tabs to inspect different representations of the disk. Deprojected
+maps are sky-aligned (North up). Activate the <strong>Inspector</strong> tool and hover
+over the image to probe the radial profile in real time. Drag on the profile
+chart to define a fitting range for Gaussian ring analysis.</p>
 <p><strong>6. Export</strong></p>
 <p>Download the radial profile as CSV, save the currently displayed view as a
 FITS file, or open the <strong>Matplotlib Widget</strong> for a publication-ready figure.
@@ -509,9 +529,10 @@ returned optimised inclination, position angle, and centre:</p>
 </div>
 <p>The optimisation is a grid-search seeded L-BFGS-B minimisation of
 <a class="reference internal" href="api/optimization.html#disco.core.optimization.geometric_loss" title="disco.core.optimization.geometric_loss"><code class="xref py py-func docutils literal notranslate"><span class="pre">disco.core.optimization.geometric_loss()</span></code></a> (see <a class="reference internal" href="api/optimization.html#api-optimization"><span class="std std-ref">disco.core.optimization</span></a>).
-Note that the GUI’s Auto-Tune uses the analytical grid-search path;
-the CNN-seeded hybrid optimiser (<code class="docutils literal notranslate"><span class="pre">auto_tune_geometry_hybrid</span></code>) is used
-exclusively by the CLI pipeline.</p>
+The GUI Auto-Tune uses this analytical path only; it can converge to a
+<strong>local</strong> minimum and is not guaranteed to recover literature-quality
+geometry on every source. The CNN-seeded hybrid optimiser
+(<code class="docutils literal notranslate"><span class="pre">auto_tune_geometry_hybrid</span></code>) is used exclusively by the CLI pipeline.</p>
 </section>
 <hr class="docutils" />
 <section id="analysis-dashboard-analysis-panel">

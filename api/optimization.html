@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>disco.core.optimization &mdash; DISCO v1.2.4</title>
+  <title>disco.core.optimization &mdash; DISCO v1.2.5</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/custom_disco.css?v=499842b1" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../_static/disco_icon.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=928db92d"></script>
+      <script src="../_static/documentation_options.js?v=36f53d34"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
@@ -225,9 +225,16 @@
 <p class="caption" role="heading"><span class="caption-text">Supplementary</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../training.html">DiscoNet Training Pipeline</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../training.html#step-1-catalogue-generation-training-generate-catalogue-py">Step 1: Catalogue Generation (<code class="docutils literal notranslate"><span class="pre">training/generate_catalogue.py</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../training.html#step-2-fits-simulation-training-simulate-catalogue-py">Step 2: FITS Simulation (<code class="docutils literal notranslate"><span class="pre">training/simulate_catalogue.py</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../training.html#step-3-model-training-training-train-model-py">Step 3: Model Training (<code class="docutils literal notranslate"><span class="pre">training/train_model.py</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../training.html#shipped-model-v1-2-5">Shipped model (v1.2.5)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../training.html#optional-casa-path-not-used-for-the-v1-2-5-release-weights">Optional CASA path (not used for the v1.2.5 release weights)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../training.html#step-1-generate-catalogue-py">Step 1 — <code class="docutils literal notranslate"><span class="pre">generate_catalogue.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../training.html#step-2-simulate-catalogue-py">Step 2 — <code class="docutils literal notranslate"><span class="pre">simulate_catalogue.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../training.html#step-3-train-model-py-mixed">Step 3 — <code class="docutils literal notranslate"><span class="pre">train_model.py</span></code> (mixed)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../training.html#network-and-loss">Network and loss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../training.html#checkpoint-schema">Checkpoint schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../training.html#validation-note">Validation note</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../file_io.html">File Input and Output</a><ul>
@@ -244,11 +251,18 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-2-4-current">Version 1.2.4 (current)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-2-5-current">Version 1.2.5 (current)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog.html#cnn-training">CNN / training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog.html#cli-geometry">CLI / geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../changelog.html#gui">GUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog.html#docs-packaging">Docs / packaging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-2-4">Version 1.2.4</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog.html#id2">GUI</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../changelog.html#backend">Backend</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../changelog.html#cli">CLI</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog.html#docs-packaging">Docs / packaging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog.html#id3">Docs / packaging</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-2-3">Version 1.2.3</a></li>
@@ -334,24 +348,24 @@ function returns the sentinel value <span class="math notranslate nohighlight">\
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>params</strong> (<em>list</em>) – <code class="docutils literal notranslate"><span class="pre">[incl,</span> <span class="pre">pa,</span> <span class="pre">dcx,</span> <span class="pre">dcy]</span></code> — inclination (deg),
+<li><p><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – <code class="docutils literal notranslate"><span class="pre">[incl,</span> <span class="pre">pa,</span> <span class="pre">dcx,</span> <span class="pre">dcy]</span></code> — inclination (deg),
 position angle (deg), x centre offset (pix),
 y centre offset (pix).</p></li>
-<li><p><strong>image</strong> (<em>numpy.ndarray</em>) – 2D cropped image array.</p></li>
-<li><p><strong>base_cx</strong> (<em>float</em>) – Reference centre x in the cropped array.</p></li>
-<li><p><strong>base_cy</strong> (<em>float</em>) – Reference centre y in the cropped array.</p></li>
-<li><p><strong>crop_rad</strong> (<em>float</em>) – Half-width of the cropped array in pixels.</p></li>
-<li><p><strong>rmin_pix</strong> (<em>float</em>) – Inner radius of the fitting annulus in pixels.</p></li>
-<li><p><strong>rmax_pix</strong> (<em>float</em>) – Outer radius of the fitting annulus in pixels.</p></li>
-<li><p><strong>dim</strong> (<em>int</em>) – Size of the evaluation grid. Default: 150.</p></li>
-<li><p><strong>order</strong> (<em>int</em>) – Interpolation order for <code class="docutils literal notranslate"><span class="pre">map_coordinates</span></code>. Default: 1.</p></li>
+<li><p><strong>image</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – 2D cropped image array.</p></li>
+<li><p><strong>base_cx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Reference centre x in the cropped array.</p></li>
+<li><p><strong>base_cy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Reference centre y in the cropped array.</p></li>
+<li><p><strong>crop_rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Half-width of the cropped array in pixels.</p></li>
+<li><p><strong>rmin_pix</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Inner radius of the fitting annulus in pixels.</p></li>
+<li><p><strong>rmax_pix</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Outer radius of the fitting annulus in pixels.</p></li>
+<li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Size of the evaluation grid. Default: 150.</p></li>
+<li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Interpolation order for <code class="docutils literal notranslate"><span class="pre">map_coordinates</span></code>. Default: 1.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Scalar loss value.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -386,13 +400,14 @@ else <span class="math notranslate nohighlight">\(30°\)</span>.</p></li>
 </ul>
 <p>Parameters: <code class="docutils literal notranslate"><span class="pre">maxiter=50</span></code>, <code class="docutils literal notranslate"><span class="pre">tol=0.02</span></code>, <code class="docutils literal notranslate"><span class="pre">mutation=(0.5,</span> <span class="pre">1.0)</span></code>,
 <code class="docutils literal notranslate"><span class="pre">recombination=0.7</span></code>, <code class="docutils literal notranslate"><span class="pre">seed=42</span></code>.</p>
-<p><strong>Stage 3 — Nelder-Mead refinement (fine):</strong></p>
+<p><strong>Stage 3 — L-BFGS-B refinement (fine):</strong></p>
 <p>Starting from the differential-evolution result, <code class="docutils literal notranslate"><span class="pre">scipy.optimize.minimize</span></code>
-(Nelder-Mead) refines on the full-resolution image <code class="docutils literal notranslate"><span class="pre">dc</span></code> with a
-<span class="math notranslate nohighlight">\(400 \times 400\)</span> grid (<code class="docutils literal notranslate"><span class="pre">order=3</span></code>).</p>
+(<strong>L-BFGS-B</strong>) refines on the full-resolution image <code class="docutils literal notranslate"><span class="pre">dc</span></code> with a
+<span class="math notranslate nohighlight">\(400 \times 400\)</span> grid (<code class="docutils literal notranslate"><span class="pre">order=3</span></code>). Bounds on inclination and
+centre offsets are respected.</p>
 <p><strong>Stage 4 — Secondary refinement (if near boundary):</strong></p>
 <p>If the optimised centre offset is within 80% of the bound (<code class="docutils literal notranslate"><span class="pre">near_edge</span></code>),
-a second differential-evolution + Nelder-Mead cycle is run with the
+a second differential-evolution + L-BFGS-B cycle is run with the
 accumulated offset applied to the reference centre, and tighter bounds
 (<span class="math notranslate nohighlight">\(|\Delta x|, |\Delta y| \le 0.6\)</span> pixels). The final offset is the
 sum of both stages.</p>
@@ -403,14 +418,14 @@ angle, and the centre offset is zeroed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>numpy.ndarray</em>) – 2D FITS image array.</p></li>
-<li><p><strong>header</strong> (<em>dict</em>) – FITS header.</p></li>
-<li><p><strong>pixel_scale</strong> (<em>float</em>) – Arcsec per pixel.</p></li>
-<li><p><strong>cx</strong> (<em>float</em>) – Initial centroid x in pixels.</p></li>
-<li><p><strong>cy</strong> (<em>float</em>) – Initial centroid y in pixels.</p></li>
+<li><p><strong>data</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – 2D FITS image array.</p></li>
+<li><p><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – FITS header.</p></li>
+<li><p><strong>pixel_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Arcsec per pixel.</p></li>
+<li><p><strong>cx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Initial centroid x in pixels.</p></li>
+<li><p><strong>cy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Initial centroid y in pixels.</p></li>
 <li><p><strong>model</strong> (<a class="reference internal" href="cnn_inference.html#disco.core.cnn_inference.DiscoNet" title="disco.core.cnn_inference.DiscoNet"><em>DiscoNet</em></a>) – Pre-loaded DiscoNet model.</p></li>
-<li><p><strong>search_rad</strong> (<em>float</em>) – Search radius in arcseconds.</p></li>
-<li><p><strong>rmin</strong> (<em>float</em>) – Inner radius in arcseconds.</p></li>
+<li><p><strong>search_rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Search radius in arcseconds.</p></li>
+<li><p><strong>rmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Inner radius in arcseconds.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -419,7 +434,7 @@ angle, and the centre offset is zeroed.</p>
 (deg), x centre correction (pix), y centre correction (pix).</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple[float, float, float, float, float, float]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -432,36 +447,39 @@ angle, and the centre offset is zeroed.</p>
 <dt class="sig sig-object py" id="disco.core.optimization.estimate_geometry_errors">
 <span class="sig-prename descclassname"><span class="pre">disco.core.optimization.</span></span><span class="sig-name descname"><span class="pre">estimate_geometry_errors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pa</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/core/optimization.html#estimate_geometry_errors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.core.optimization.estimate_geometry_errors" title="Link to this definition"></a></dt>
 <dd><p>Estimate 1-sigma uncertainties on the inclination and position angle via
-a parabolic approximation of the geometric loss landscape.</p>
-<p>The function first performs a local Nelder-Mead optimisation to confirm
-the minimum, evaluates the loss <span class="math notranslate nohighlight">\(L_{\rm min}\)</span>, and then scans
-the loss along each angular axis independently at offsets
-<span class="math notranslate nohighlight">\(\delta \in [-11.75°, +11.75°]\)</span> (step 0.25°). A degree-2 polynomial
-is fitted to the valid loss values (<span class="math notranslate nohighlight">\(L &lt; 2.5\,L_{\rm min}\)</span>). The
-estimated 1-sigma uncertainty is:</p>
+a bounded L-BFGS-B refine plus a parabolic scan of the geometric loss
+landscape (curvature estimate, <strong>not</strong> CNN epistemic confidence). See
+the pipeline docs for the meaning of the <span class="math notranslate nohighlight">\(5\times10^{-3}\)</span> factor.</p>
+<p>The function first performs a local L-BFGS-B optimisation to confirm
+the minimum (center fixed), evaluates the loss <span class="math notranslate nohighlight">\(L_{\rm min}\)</span>, and
+then scans the loss along each angular axis independently at continuous
+offsets <span class="math notranslate nohighlight">\(\delta \in [-12°, +12°]\)</span> (step 0.25°; PA wrap applied only
+when evaluating the loss). A degree-2 polynomial is fitted to the valid
+loss values (<span class="math notranslate nohighlight">\(L &lt; 2.5\,L_{\rm min}\)</span>). The estimated 1-sigma
+uncertainty is:</p>
 <div class="math notranslate nohighlight">
 \[\sigma = \text{clip}\!\left(\sqrt{\frac{L_{\rm min} \times 5 \times 10^{-3}}{a}},\ 0.3°,\ 10°\right)\]</div>
 <p>where <span class="math notranslate nohighlight">\(a\)</span> is the parabola’s leading coefficient. Returns <code class="docutils literal notranslate"><span class="pre">(2.0,</span> <span class="pre">2.0)</span></code>
-if the minimum loss is non-finite or exceeds <span class="math notranslate nohighlight">\(10^{11}\)</span>, or if fewer
-than 5 valid loss samples are available.</p>
+if the minimum loss is non-finite or exceeds <span class="math notranslate nohighlight">\(10^{11}\)</span>; returns
+<code class="docutils literal notranslate"><span class="pre">5.0</span></code> for an axis whose parabola fit fails.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>numpy.ndarray</em>) – 2D image array.</p></li>
-<li><p><strong>pixel_scale</strong> (<em>float</em>) – Arcsec per pixel.</p></li>
-<li><p><strong>cx</strong> (<em>float</em>) – Centroid x in pixels.</p></li>
-<li><p><strong>cy</strong> (<em>float</em>) – Centroid y in pixels.</p></li>
-<li><p><strong>incl</strong> (<em>float</em>) – Best-fit inclination in degrees.</p></li>
-<li><p><strong>pa</strong> (<em>float</em>) – Best-fit position angle in degrees.</p></li>
-<li><p><strong>rmin</strong> (<em>float</em>) – Inner fitting radius in arcseconds.</p></li>
-<li><p><strong>rmax</strong> (<em>float</em>) – Outer fitting radius in arcseconds.</p></li>
+<li><p><strong>data</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – 2D image array.</p></li>
+<li><p><strong>pixel_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Arcsec per pixel.</p></li>
+<li><p><strong>cx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centroid x in pixels.</p></li>
+<li><p><strong>cy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centroid y in pixels.</p></li>
+<li><p><strong>incl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Best-fit inclination in degrees.</p></li>
+<li><p><strong>pa</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Best-fit position angle in degrees.</p></li>
+<li><p><strong>rmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Inner fitting radius in arcseconds.</p></li>
+<li><p><strong>rmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Outer fitting radius in arcseconds.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(err_incl,</span> <span class="pre">err_pa)</span></code> — 1-sigma uncertainties in degrees.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple[float, float]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -475,29 +493,29 @@ than 5 valid loss samples are available.</p>
 <span class="sig-prename descclassname"><span class="pre">disco.core.optimization.</span></span><span class="sig-name descname"><span class="pre">refine_center_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pa</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/core/optimization.html#refine_center_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.core.optimization.refine_center_geometry" title="Link to this definition"></a></dt>
 <dd><p>Refine the disk centroid by optimising centre offsets while holding
 inclination and position angle fixed.</p>
-<p>A Nelder-Mead optimisation is performed with the centre offset constrained
+<p>An <strong>L-BFGS-B</strong> optimisation is performed with the centre offset constrained
 to <span class="math notranslate nohighlight">\(\le 2\,b_{\rm maj}\)</span> pixels. If the optimised offset does not
 improve the loss, or if the offset exceeds the bound, the original centre
 is returned unchanged.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>numpy.ndarray</em>) – 2D image array.</p></li>
-<li><p><strong>header</strong> (<em>dict</em>) – FITS header.</p></li>
-<li><p><strong>pixel_scale</strong> (<em>float</em>) – Arcsec per pixel.</p></li>
-<li><p><strong>cx</strong> (<em>float</em>) – Initial centroid x in pixels.</p></li>
-<li><p><strong>cy</strong> (<em>float</em>) – Initial centroid y in pixels.</p></li>
-<li><p><strong>incl</strong> (<em>float</em>) – Fixed inclination in degrees.</p></li>
-<li><p><strong>pa</strong> (<em>float</em>) – Fixed position angle in degrees.</p></li>
-<li><p><strong>rmin</strong> (<em>float</em>) – Inner fitting radius in arcseconds.</p></li>
-<li><p><strong>rmax</strong> (<em>float</em>) – Outer fitting radius in arcseconds.</p></li>
+<li><p><strong>data</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – 2D image array.</p></li>
+<li><p><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – FITS header.</p></li>
+<li><p><strong>pixel_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Arcsec per pixel.</p></li>
+<li><p><strong>cx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Initial centroid x in pixels.</p></li>
+<li><p><strong>cy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Initial centroid y in pixels.</p></li>
+<li><p><strong>incl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Fixed inclination in degrees.</p></li>
+<li><p><strong>pa</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Fixed position angle in degrees.</p></li>
+<li><p><strong>rmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Inner fitting radius in arcseconds.</p></li>
+<li><p><strong>rmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Outer fitting radius in arcseconds.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(cx_refined,</span> <span class="pre">cy_refined)</span></code> in pixels.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple[float, float]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>]</p>
 </dd>
 </dl>
 </dd></dl>

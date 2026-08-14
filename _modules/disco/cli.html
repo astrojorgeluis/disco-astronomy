@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>disco.cli &mdash; DISCO v1.2.4</title>
+  <title>disco.cli &mdash; DISCO v1.2.5</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/custom_disco.css?v=499842b1" />
@@ -14,7 +14,7 @@
     <link rel="shortcut icon" href="../../_static/disco_icon.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=928db92d"></script>
+      <script src="../../_static/documentation_options.js?v=36f53d34"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -221,9 +221,16 @@
 <p class="caption" role="heading"><span class="caption-text">Supplementary</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../training.html">DiscoNet Training Pipeline</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../training.html#step-1-catalogue-generation-training-generate-catalogue-py">Step 1: Catalogue Generation (<code class="docutils literal notranslate"><span class="pre">training/generate_catalogue.py</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../training.html#step-2-fits-simulation-training-simulate-catalogue-py">Step 2: FITS Simulation (<code class="docutils literal notranslate"><span class="pre">training/simulate_catalogue.py</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../training.html#step-3-model-training-training-train-model-py">Step 3: Model Training (<code class="docutils literal notranslate"><span class="pre">training/train_model.py</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../training.html#shipped-model-v1-2-5">Shipped model (v1.2.5)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../training.html#optional-casa-path-not-used-for-the-v1-2-5-release-weights">Optional CASA path (not used for the v1.2.5 release weights)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../training.html#step-1-generate-catalogue-py">Step 1 — <code class="docutils literal notranslate"><span class="pre">generate_catalogue.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../training.html#step-2-simulate-catalogue-py">Step 2 — <code class="docutils literal notranslate"><span class="pre">simulate_catalogue.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../training.html#step-3-train-model-py-mixed">Step 3 — <code class="docutils literal notranslate"><span class="pre">train_model.py</span></code> (mixed)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../training.html#network-and-loss">Network and loss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../training.html#checkpoint-schema">Checkpoint schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../training.html#validation-note">Validation note</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../file_io.html">File Input and Output</a><ul>
@@ -240,11 +247,18 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../changelog.html#version-1-2-4-current">Version 1.2.4 (current)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../changelog.html#version-1-2-5-current">Version 1.2.5 (current)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../changelog.html#cnn-training">CNN / training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../changelog.html#cli-geometry">CLI / geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../changelog.html#gui">GUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../changelog.html#docs-packaging">Docs / packaging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../changelog.html#version-1-2-4">Version 1.2.4</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../changelog.html#id2">GUI</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../changelog.html#backend">Backend</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../changelog.html#cli">CLI</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../changelog.html#docs-packaging">Docs / packaging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../changelog.html#id3">Docs / packaging</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../changelog.html#version-1-2-3">Version 1.2.3</a></li>
@@ -305,6 +319,7 @@
     <span class="n">save_debug_deproj_center</span><span class="p">,</span> <span class="n">measure_rout_deproj</span><span class="p">,</span> <span class="n">refine_center_local</span><span class="p">,</span>
     <span class="n">deg_to_sex</span><span class="p">,</span> <span class="n">pixel_to_icrs</span><span class="p">,</span> <span class="n">icrs_to_pixel</span><span class="p">,</span> <span class="n">get_obs_epoch</span><span class="p">,</span>
     <span class="n">query_gaia_proper_motion</span><span class="p">,</span> <span class="n">apply_proper_motion_correction</span><span class="p">,</span>
+    <span class="n">normalize_flux_units</span><span class="p">,</span> <span class="n">resolve_restfrq</span><span class="p">,</span>
     <span class="n">_ASTROQUERY_AVAILABLE</span>
 <span class="p">)</span>
 <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">FITSFixedWarning</span><span class="p">)</span>
@@ -383,20 +398,18 @@
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No 2D image HDU found&quot;</span><span class="p">)</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
 
-                <span class="n">bunit</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;BUNIT&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">bunit</span> <span class="o">==</span> <span class="s1">&#39;JY/BEAM&#39;</span><span class="p">:</span>
-                    <span class="n">data</span> <span class="o">*=</span> <span class="mi">1000</span>
-                    <span class="n">header</span><span class="p">[</span><span class="s1">&#39;BUNIT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;mJy/beam&#39;</span>
-                <span class="k">elif</span> <span class="n">bunit</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">5.0</span><span class="p">:</span>
-                    <span class="n">tqdm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[WARN] </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">: empty BUNIT and max&lt;5 — applying ×1000 heuristic (verify units).&quot;</span><span class="p">)</span>
-                    <span class="n">data</span> <span class="o">*=</span> <span class="mi">1000</span>
-                <span class="k">elif</span> <span class="n">bunit</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
-                    <span class="n">tqdm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[WARN] </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">: BUNIT missing; flux units may be incorrect.&quot;</span><span class="p">)</span>
+                <span class="n">data</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">unit_warns</span> <span class="o">=</span> <span class="n">normalize_flux_units</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">header</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">unit_warns</span><span class="p">:</span>
+                    <span class="n">tqdm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[WARN] </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
                 <span class="k">if</span> <span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CDELT2&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CDELT2&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">tqdm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[WARN] </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">: CDELT2 missing/zero — using 0.03 deg/pix fallback (likely wrong).&quot;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;RESTFRQ&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CRVAL3&#39;</span><span class="p">):</span>
-                    <span class="n">tqdm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[WARN] </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">: RESTFRQ missing — Tb conversion may use 230 GHz default.&quot;</span><span class="p">)</span>
+                <span class="n">_rf</span><span class="p">,</span> <span class="n">rf_fallback</span><span class="p">,</span> <span class="n">rf_src</span> <span class="o">=</span> <span class="n">resolve_restfrq</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">rf_fallback</span><span class="p">:</span>
+                    <span class="n">tqdm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;[WARN] </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">: RESTFRQ/FREQ axis missing — &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;Tb conversion uses 230 GHz default (source=</span><span class="si">{</span><span class="n">rf_src</span><span class="si">}</span><span class="s2">).&quot;</span>
+                    <span class="p">)</span>
 
                 <span class="n">pixel_scale</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CDELT2&#39;</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">))</span> <span class="o">*</span> <span class="mi">3600</span>
                 <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span>      <span class="o">=</span> <span class="n">find_center_robust</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pixel_scale</span><span class="p">,</span> <span class="n">header</span><span class="p">)</span>
@@ -483,7 +496,6 @@
                             <span class="n">ref_ra</span><span class="p">,</span> <span class="n">ref_dec</span><span class="p">,</span> <span class="n">pmra_gaia</span><span class="p">,</span> <span class="n">pmdec_gaia</span><span class="p">,</span> <span class="n">dt_yr</span>
                         <span class="p">)</span>
                 <span class="n">px</span><span class="p">,</span> <span class="n">py</span> <span class="o">=</span> <span class="n">icrs_to_pixel</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;header&quot;</span><span class="p">],</span> <span class="n">apply_ra</span><span class="p">,</span> <span class="n">apply_dec</span><span class="p">)</span>
-                <span class="c1">#px, py = refine_center_local(item[&quot;data&quot;], item[&quot;header&quot;], item[&quot;pixel_scale&quot;], px, py)</span>
                 <span class="n">item</span><span class="p">[</span><span class="s2">&quot;cx&quot;</span><span class="p">],</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;cy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">px</span><span class="p">,</span> <span class="n">py</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="k">pass</span>
@@ -544,6 +556,12 @@
             <span class="n">crop_rad</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">geom_rout</span> <span class="o">/</span> <span class="n">best_item</span><span class="p">[</span><span class="s2">&quot;pixel_scale&quot;</span><span class="p">])</span> <span class="o">*</span> <span class="mf">1.5</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span>
             <span class="n">dc</span> <span class="o">=</span> <span class="n">d_pad</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">best_item</span><span class="p">[</span><span class="s2">&quot;cy&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="n">pad</span> <span class="o">-</span> <span class="n">crop_rad</span> <span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">best_item</span><span class="p">[</span><span class="s2">&quot;cy&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="n">pad</span> <span class="o">+</span> <span class="n">crop_rad</span><span class="p">,</span>
                        <span class="nb">int</span><span class="p">(</span><span class="n">best_item</span><span class="p">[</span><span class="s2">&quot;cx&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="n">pad</span> <span class="o">-</span> <span class="n">crop_rad</span> <span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">best_item</span><span class="p">[</span><span class="s2">&quot;cx&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="n">pad</span> <span class="o">+</span> <span class="n">crop_rad</span><span class="p">]</span>
+            <span class="n">bounds</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">85.0</span><span class="p">),</span>
+                <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">180.0</span><span class="p">),</span>
+                <span class="p">(</span><span class="o">-</span><span class="mf">15.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">),</span>
+                <span class="p">(</span><span class="o">-</span><span class="mf">15.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">),</span>
+            <span class="p">]</span>
             <span class="n">res</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span>
                 <span class="n">geometric_loss</span><span class="p">,</span>
                 <span class="n">x0</span><span class="o">=</span><span class="p">[</span><span class="mf">30.0</span><span class="p">,</span> <span class="mf">45.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
@@ -551,10 +569,11 @@
                     <span class="n">final_rmin</span> <span class="o">/</span> <span class="n">best_item</span><span class="p">[</span><span class="s2">&quot;pixel_scale&quot;</span><span class="p">],</span>
                     <span class="n">geom_rout</span> <span class="o">/</span> <span class="n">best_item</span><span class="p">[</span><span class="s2">&quot;pixel_scale&quot;</span><span class="p">],</span>
                     <span class="mi">150</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;Nelder-Mead&#39;</span><span class="p">,</span>
-                <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;xatol&#39;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="s1">&#39;fatol&#39;</span><span class="p">:</span> <span class="mf">1e-5</span><span class="p">}</span>
+                <span class="n">method</span><span class="o">=</span><span class="s2">&quot;L-BFGS-B&quot;</span><span class="p">,</span>
+                <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+                <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;maxiter&quot;</span><span class="p">:</span> <span class="mi">400</span><span class="p">,</span> <span class="s2">&quot;ftol&quot;</span><span class="p">:</span> <span class="mf">1e-8</span><span class="p">},</span>
             <span class="p">)</span>
-            <span class="n">incl</span><span class="p">,</span> <span class="n">pa</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">res</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span> <span class="mi">180</span>
+            <span class="n">incl</span><span class="p">,</span> <span class="n">pa</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">85.0</span><span class="p">)),</span> <span class="nb">float</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span> <span class="mi">180</span><span class="p">)</span>
 
         <span class="n">master_incl</span><span class="p">,</span> <span class="n">master_pa</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">incl</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">pa</span><span class="p">)</span>
     <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -710,12 +729,6 @@
         <span class="n">max_val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">y_plot</span><span class="p">)</span>
         <span class="n">y_norm</span>  <span class="o">=</span> <span class="n">y_plot</span> <span class="o">/</span> <span class="n">max_val</span> <span class="k">if</span> <span class="n">max_val</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">y_plot</span>
         <span class="n">e_norm</span>  <span class="o">=</span> <span class="n">err_plot</span> <span class="o">/</span> <span class="n">max_val</span> <span class="k">if</span> <span class="n">max_val</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">err_plot</span>
-
-        <span class="n">mx2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">y_norm</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">mx2</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">y_norm</span> <span class="o">=</span> <span class="n">y_norm</span> <span class="o">/</span> <span class="n">mx2</span>
-            <span class="n">e_norm</span> <span class="o">=</span> <span class="n">e_norm</span> <span class="o">/</span> <span class="n">mx2</span>
-
         <span class="n">y_norm_clip</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">y_norm</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">1.05</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">r_plot</span><span class="p">,</span> <span class="n">y_norm_clip</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">lbl</span><span class="p">)</span>
 

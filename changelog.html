@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Changelog &mdash; DISCO v1.2.4</title>
+  <title>Changelog &mdash; DISCO v1.2.5</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom_disco.css?v=499842b1" />
@@ -15,9 +15,10 @@
     <link rel="shortcut icon" href="_static/disco_icon.png"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=928db92d"></script>
+      <script src="_static/documentation_options.js?v=36f53d34"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -223,9 +224,16 @@
 <p class="caption" role="heading"><span class="caption-text">Supplementary</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="training.html">DiscoNet Training Pipeline</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="training.html#step-1-catalogue-generation-training-generate-catalogue-py">Step 1: Catalogue Generation (<code class="docutils literal notranslate"><span class="pre">training/generate_catalogue.py</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="training.html#step-2-fits-simulation-training-simulate-catalogue-py">Step 2: FITS Simulation (<code class="docutils literal notranslate"><span class="pre">training/simulate_catalogue.py</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="training.html#step-3-model-training-training-train-model-py">Step 3: Model Training (<code class="docutils literal notranslate"><span class="pre">training/train_model.py</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training.html#shipped-model-v1-2-5">Shipped model (v1.2.5)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training.html#optional-casa-path-not-used-for-the-v1-2-5-release-weights">Optional CASA path (not used for the v1.2.5 release weights)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="training.html#step-1-generate-catalogue-py">Step 1 — <code class="docutils literal notranslate"><span class="pre">generate_catalogue.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="training.html#step-2-simulate-catalogue-py">Step 2 — <code class="docutils literal notranslate"><span class="pre">simulate_catalogue.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="training.html#step-3-train-model-py-mixed">Step 3 — <code class="docutils literal notranslate"><span class="pre">train_model.py</span></code> (mixed)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="training.html#network-and-loss">Network and loss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training.html#checkpoint-schema">Checkpoint schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training.html#validation-note">Validation note</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="file_io.html">File Input and Output</a><ul>
@@ -242,11 +250,18 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#version-1-2-4-current">Version 1.2.4 (current)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#version-1-2-5-current">Version 1.2.5 (current)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cnn-training">CNN / training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cli-geometry">CLI / geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#gui">GUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#docs-packaging">Docs / packaging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#version-1-2-4">Version 1.2.4</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">GUI</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#backend">Backend</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#cli">CLI</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#docs-packaging">Docs / packaging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Docs / packaging</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#version-1-2-3">Version 1.2.3</a></li>
@@ -280,11 +295,74 @@
              
   <section id="changelog">
 <span id="id1"></span><h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading"></a></h1>
-<section id="version-1-2-4-current">
-<h2>Version 1.2.4 (current)<a class="headerlink" href="#version-1-2-4-current" title="Link to this heading"></a></h2>
-<p>GUI, CLI, backend robustness, and documentation sync.</p>
+<section id="version-1-2-5-current">
+<h2>Version 1.2.5 (current)<a class="headerlink" href="#version-1-2-5-current" title="Link to this heading"></a></h2>
+<p>DiscoNet synthetic training release, hybrid geometry polish, GUI refresh,
+and docs sync.</p>
+<section id="cnn-training">
+<h3>CNN / training<a class="headerlink" href="#cnn-training" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Shared preprocess module <code class="docutils literal notranslate"><span class="pre">disco.core.cnn_preprocess</span></code> (percentiles,
+elliptical beam map, scale map, label encode/decode) used by train and
+inference.</p></li>
+<li><p>Packaged weights retrained <strong>synthetic-only</strong> (20k crops, elliptical
+beams, early-stop best ≈ epoch 64). Mixed CASA+synth did not improve
+literature metrics; synth weights are shipped.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">train_model.py</span></code>: object-ID split, mixup without blending PA sin/cos,
+AMP, early stopping, FOV-normalised center labels.</p></li>
+</ul>
+</section>
+<section id="cli-geometry">
+<h3>CLI / geometry<a class="headerlink" href="#cli-geometry" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Hybrid refinement uses <strong>L-BFGS-B</strong> (bounds respected).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">estimate_geometry_errors</span></code>: parabolic loss-curvature <span class="math notranslate nohighlight">\(\pm\)</span>
+documented as fit-quality indicator (not literature <span class="math notranslate nohighlight">\(1\sigma\)</span>).</p></li>
+<li><p>Beam / FITS robustness: elliptical beam channel, RESTFRQ helpers,
+spacing tests.</p></li>
+<li><p>CLI debug deprojection PNG uses the same sky-aligned sampling as the GUI
+(North up; no empty-corner post-rotation).</p></li>
+</ul>
+</section>
 <section id="gui">
 <h3>GUI<a class="headerlink" href="#gui" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>FOV slider (arcsec) wired into <code class="docutils literal notranslate"><span class="pre">/run_pipeline</span></code>; Radius Out capped by
+FOV/2 with a stable slider track (FOV changes no longer nudge Rout).</p></li>
+<li><p>Default stretch <strong>linear</strong>; default FOV ≈ half map side with nice rounding.</p></li>
+<li><p>Sky-aligned deprojected / model / residual maps (North up) without
+corner cropping.</p></li>
+<li><p>Layout: File Header | Image Viewer + Render Configuration | Scientific
+Analysis; JetBrains Mono; slate/violet palette; brand accent <code class="docutils literal notranslate"><span class="pre">#a44aff</span></code>.</p></li>
+<li><p>Ellipse-handle tip no longer flips during PA drag; Image Viewer zoom
+preserved across mosaic resize after user adjustment.</p></li>
+<li><p>Faster Image Viewer preview: block-downsample large FITS before PNG
+(exports / Matplotlib / FITS download remain full quality).</p></li>
+<li><p>Status pill shows <strong>Loading…</strong> while opening heavy FITS; Auto-Tune still
+re-runs the pipeline with the refined geometry.</p></li>
+<li><p>Matplotlib widget: FOV crop control; beam PA corrected for RA-left plots.</p></li>
+<li><p>Analysis Settings: contour percentiles or N levels (same options as
+Matplotlib). GUI Auto-Tune documented as approximate (not the CLI hybrid).</p></li>
+</ul>
+</section>
+<section id="docs-packaging">
+<h3>Docs / packaging<a class="headerlink" href="#docs-packaging" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Training docs describe the v1.2.5 synthetic recipe and optional CASA path.</p></li>
+<li><p>Pipeline / API docs aligned with L-BFGS-B hybrid path.</p></li>
+<li><p>Citation: Zenodo all-versions DOI <code class="docutils literal notranslate"><span class="pre">10.5281/zenodo.19999239</span></code> (resolves to
+the latest release). After the GitHub Release, replace BibTeX in README/docs
+with the official export from the Zenodo record (version DOI + <code class="docutils literal notranslate"><span class="pre">swhid</span></code>).</p></li>
+<li><p>GUI: <code class="docutils literal notranslate"><span class="pre">npm</span> <span class="pre">run</span> <span class="pre">build</span></code> writes to <code class="docutils literal notranslate"><span class="pre">disco/static</span></code> (Vite <code class="docutils literal notranslate"><span class="pre">outDir</span></code>).</p></li>
+<li><p>Version bump to 1.2.5.</p></li>
+</ul>
+</section>
+</section>
+<section id="version-1-2-4">
+<h2>Version 1.2.4<a class="headerlink" href="#version-1-2-4" title="Link to this heading"></a></h2>
+<p>GUI, CLI, backend robustness, and documentation sync.</p>
+<section id="id2">
+<h3>GUI<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Replace the bare <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">pipeline...</span></code> placeholder with a Blueprint
 <code class="docutils literal notranslate"><span class="pre">NonIdealState</span></code> and clearer empty-state messaging.</p></li>
@@ -324,8 +402,8 @@ matching is case-insensitive.</p></li>
 <code class="docutils literal notranslate"><span class="pre">BMAJ</span></code> is missing; fix empty-crop return arity.</p></li>
 </ul>
 </section>
-<section id="docs-packaging">
-<h3>Docs / packaging<a class="headerlink" href="#docs-packaging" title="Link to this heading"></a></h3>
+<section id="id3">
+<h3>Docs / packaging<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Correct Auto-Tune (incl/PA/center), dynamic port, CORS, SIMBAD, overlays,
 and <code class="docutils literal notranslate"><span class="pre">npm</span> <span class="pre">run</span> <span class="pre">build</span></code> (not <code class="docutils literal notranslate"><span class="pre">build:disco</span></code> on v1).</p></li>

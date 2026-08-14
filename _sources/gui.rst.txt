@@ -37,11 +37,13 @@ automatically in the CATALOG panel.
 
 **2. Adjust the disk geometry**
 
-In the **CONTROLS** panel on the left, use the sliders to set the initial
+In the **Render Configuration** panel, use the sliders to set the initial
 geometric parameters:
 
 - **Inclination** — disk inclination in degrees (0° = face-on, 90° = edge-on).
 - **Position Angle** — orientation of the disk major axis in degrees.
+- **FOV** — full width of the deprojected square view in arcseconds
+  (defaults to about half the map side; Radius Out cannot exceed FOV/2).
 - **Radius Out** — estimated outer disk radius in arcseconds.
 - **Center X / Y** — pixel coordinates of the disk centre (auto-initialised
   to the image midpoint on load).
@@ -58,18 +60,22 @@ fit for the current parameters.
 
 **4. Auto-tune the geometry (optional)**
 
-Click **Auto-Tune Geometry** in the ANALYSIS panel to run the optimiser
-automatically. It performs a grid-search seeded Nelder-Mead minimisation of
-the geometric loss and applies the best-fit inclination and position angle
-(centre is not updated) — no manual tuning of those angles required. See
-:ref:`api-optimization` for the full algorithm description.
+Click **Auto-Tune Geometry** in the ANALYSIS panel to refine inclination,
+position angle, and centre from the current sliders. The GUI path runs a
+coarse grid search plus a local **L-BFGS-B** fit of the geometric loss
+(with only a small allowed centre shift). Treat the output as an
+**approximate suggestion**, not a guaranteed global optimum: low-inclination
+disks, weak rings, or a poor seed can leave a local minimum. Always check
+the ellipse by eye. The stronger CNN + differential-evolution hybrid is used
+by the **CLI**, not by this button. See :ref:`api-optimization`.
 
 **5. Explore the results**
 
-Switch between **Deproj**, **Model**, **Residuals**, and **Polar** view tabs
-to inspect different representations of the disk. Activate the **Inspector**
-tool and hover over the image to probe the radial profile in real time. Drag
-on the profile chart to define a fitting range for Gaussian ring analysis.
+Switch between **Deprojection**, **Model**, **Residuals**, and **Polar**
+view tabs to inspect different representations of the disk. Deprojected
+maps are sky-aligned (North up). Activate the **Inspector** tool and hover
+over the image to probe the radial profile in real time. Drag on the profile
+chart to define a fitting range for Gaussian ring analysis.
 
 **6. Export**
 
@@ -224,9 +230,10 @@ returned optimised inclination, position angle, and centre:
 
 The optimisation is a grid-search seeded L-BFGS-B minimisation of
 :func:`disco.core.optimization.geometric_loss` (see :ref:`api-optimization`).
-Note that the GUI's Auto-Tune uses the analytical grid-search path;
-the CNN-seeded hybrid optimiser (``auto_tune_geometry_hybrid``) is used
-exclusively by the CLI pipeline.
+The GUI Auto-Tune uses this analytical path only; it can converge to a
+**local** minimum and is not guaranteed to recover literature-quality
+geometry on every source. The CNN-seeded hybrid optimiser
+(``auto_tune_geometry_hybrid``) is used exclusively by the CLI pipeline.
 
 ----
 

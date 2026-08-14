@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pipeline Description &mdash; DISCO v1.2.4</title>
+  <title>Pipeline Description &mdash; DISCO v1.2.5</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom_disco.css?v=499842b1" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/disco_icon.png"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=928db92d"></script>
+      <script src="_static/documentation_options.js?v=36f53d34"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
@@ -225,9 +225,16 @@
 <p class="caption" role="heading"><span class="caption-text">Supplementary</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="training.html">DiscoNet Training Pipeline</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="training.html#step-1-catalogue-generation-training-generate-catalogue-py">Step 1: Catalogue Generation (<code class="docutils literal notranslate"><span class="pre">training/generate_catalogue.py</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="training.html#step-2-fits-simulation-training-simulate-catalogue-py">Step 2: FITS Simulation (<code class="docutils literal notranslate"><span class="pre">training/simulate_catalogue.py</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="training.html#step-3-model-training-training-train-model-py">Step 3: Model Training (<code class="docutils literal notranslate"><span class="pre">training/train_model.py</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training.html#shipped-model-v1-2-5">Shipped model (v1.2.5)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training.html#optional-casa-path-not-used-for-the-v1-2-5-release-weights">Optional CASA path (not used for the v1.2.5 release weights)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="training.html#step-1-generate-catalogue-py">Step 1 — <code class="docutils literal notranslate"><span class="pre">generate_catalogue.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="training.html#step-2-simulate-catalogue-py">Step 2 — <code class="docutils literal notranslate"><span class="pre">simulate_catalogue.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="training.html#step-3-train-model-py-mixed">Step 3 — <code class="docutils literal notranslate"><span class="pre">train_model.py</span></code> (mixed)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="training.html#network-and-loss">Network and loss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training.html#checkpoint-schema">Checkpoint schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training.html#validation-note">Validation note</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="file_io.html">File Input and Output</a><ul>
@@ -244,11 +251,18 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-4-current">Version 1.2.4 (current)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-5-current">Version 1.2.5 (current)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#cnn-training">CNN / training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#cli-geometry">CLI / geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="changelog.html#gui">GUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#docs-packaging">Docs / packaging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-4">Version 1.2.4</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#id2">GUI</a></li>
 <li class="toctree-l3"><a class="reference internal" href="changelog.html#backend">Backend</a></li>
 <li class="toctree-l3"><a class="reference internal" href="changelog.html#cli">CLI</a></li>
-<li class="toctree-l3"><a class="reference internal" href="changelog.html#docs-packaging">Docs / packaging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#id3">Docs / packaging</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-3">Version 1.2.3</a></li>
@@ -352,8 +366,8 @@ to produce a coarse image <code class="docutils literal notranslate"><span class
 <li><p>Runs <code class="docutils literal notranslate"><span class="pre">scipy.optimize.differential_evolution</span></code> within CNN-constrained
 parameter bounds to find a global minimum of
 <a class="reference internal" href="api/optimization.html#disco.core.optimization.geometric_loss" title="disco.core.optimization.geometric_loss"><code class="xref py py-func docutils literal notranslate"><span class="pre">disco.core.optimization.geometric_loss()</span></code></a> on the smoothed image.</p></li>
-<li><p>Refines this solution with <code class="docutils literal notranslate"><span class="pre">scipy.optimize.minimize</span></code> (Nelder-Mead) on
-the full-resolution image.</p></li>
+<li><p>Refines this solution with <code class="docutils literal notranslate"><span class="pre">scipy.optimize.minimize</span></code> (<strong>L-BFGS-B</strong>,
+bounds respected) on the full-resolution image.</p></li>
 <li><p>If the optimised centre offset is near the search boundary, a second
 optimisation stage is initiated with the accumulated offset as a new
 origin.</p></li>
@@ -361,7 +375,7 @@ origin.</p></li>
 the CNN prior by more than 20°, the CNN prior is restored.</p></li>
 </ol>
 <p id="cli-geometry-fallback"><strong>Without CNN model (fallback):</strong></p>
-<p>A direct <code class="docutils literal notranslate"><span class="pre">scipy.optimize.minimize</span></code> call (Nelder-Mead) minimises
+<p>A direct <code class="docutils literal notranslate"><span class="pre">scipy.optimize.minimize</span></code> call (<strong>L-BFGS-B</strong>) minimises
 <a class="reference internal" href="api/optimization.html#disco.core.optimization.geometric_loss" title="disco.core.optimization.geometric_loss"><code class="xref py py-func docutils literal notranslate"><span class="pre">disco.core.optimization.geometric_loss()</span></code></a> starting from the fixed
 initial point <span class="math notranslate nohighlight">\((i_0, \phi_0, \Delta x_0, \Delta y_0) = (30°, 45°, 0, 0)\)</span>.</p>
 </section>
@@ -369,20 +383,31 @@ initial point <span class="math notranslate nohighlight">\((i_0, \phi_0, \Delta 
 <h2>Phase 3 — Uncertainty Estimation<a class="headerlink" href="#phase-3-uncertainty-estimation" title="Link to this heading"></a></h2>
 <p>Geometric uncertainties are computed by
 <a class="reference internal" href="api/optimization.html#disco.core.optimization.estimate_geometry_errors" title="disco.core.optimization.estimate_geometry_errors"><code class="xref py py-func docutils literal notranslate"><span class="pre">disco.core.optimization.estimate_geometry_errors()</span></code></a> using a parabolic
-approximation of the loss landscape:</p>
+approximation of the loss landscape. The reported <span class="math notranslate nohighlight">\(\pm\)</span> is a
+<strong>geometric-loss curvature</strong> estimate around the hybrid solution (after the
+center has already been updated). It is <strong>not</strong> a CNN epistemic uncertainty
+and is <strong>not</strong> a literature <span class="math notranslate nohighlight">\(1\sigma\)</span>; large CNN↔hybrid disagreement
+is handled separately by the hybrid veto.</p>
 <ol class="arabic">
-<li><p>The optimised geometry is refined locally with Nelder-Mead.</p></li>
-<li><p>The loss at the minimum, <span class="math notranslate nohighlight">\(L_{\rm min}\)</span>, is evaluated.</p></li>
+<li><p>The geometry is refined locally with <strong>L-BFGS-B</strong>.</p></li>
+<li><p>The loss at the minimum, <span class="math notranslate nohighlight">\(L_{\rm min}\)</span>, is evaluated with the center
+held fixed (<code class="docutils literal notranslate"><span class="pre">dx=dy=0</span></code> in the already-centered crop).</p></li>
 <li><p>A one-dimensional scan in each angular parameter is performed over a
-grid of offsets <span class="math notranslate nohighlight">\(\delta \in [-12°, +12°]\)</span> at 0.25° intervals.</p></li>
+grid of offsets <span class="math notranslate nohighlight">\(\delta \in [-12°, +12°]\)</span> at 0.25° intervals.
+PA is scanned in continuous offset space (wrap applied only when
+evaluating the loss).</p></li>
 <li><p>A degree-2 polynomial is fitted to the valid loss values. The estimated
-1-sigma uncertainty is:</p>
+uncertainty is:</p>
 <div class="math notranslate nohighlight">
 \[\sigma_\theta = \sqrt{\frac{L_{\rm min} \times 5 \times 10^{-3}}{a}}\]</div>
 <p>where <span class="math notranslate nohighlight">\(a\)</span> is the leading coefficient of the parabola, clipped to
-<span class="math notranslate nohighlight">\([0.3°, 10°]\)</span>.</p>
+<span class="math notranslate nohighlight">\([0.3°, 10°]\)</span>. The factor <span class="math notranslate nohighlight">\(5\times10^{-3}\)</span> corresponds to a
+relative loss rise <span class="math notranslate nohighlight">\(\Delta L / L_{\rm min} \approx 0.5\%\)</span>. Fallbacks:
+<code class="docutils literal notranslate"><span class="pre">2°</span></code> if the minimum is invalid, <code class="docutils literal notranslate"><span class="pre">5°</span></code> if the parabola fit fails.</p>
 </li>
 </ol>
+<p>Empirical accuracy of the <strong>hybrid</strong> pipeline is validated against
+published disk geometries (e.g. DSHARP); see <a class="reference internal" href="training.html#training"><span class="std std-ref">DiscoNet Training Pipeline</span></a>.</p>
 <p>The outer radius is then estimated by a weighted fusion of two independent
 estimates:</p>
 <ul class="simple">

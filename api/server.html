@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>disco.server — HTTP API Reference &mdash; DISCO v1.2.4</title>
+  <title>disco.server — HTTP API Reference &mdash; DISCO v1.2.5</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/custom_disco.css?v=499842b1" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../_static/disco_icon.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=928db92d"></script>
+      <script src="../_static/documentation_options.js?v=36f53d34"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
@@ -225,9 +225,16 @@
 <p class="caption" role="heading"><span class="caption-text">Supplementary</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../training.html">DiscoNet Training Pipeline</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../training.html#step-1-catalogue-generation-training-generate-catalogue-py">Step 1: Catalogue Generation (<code class="docutils literal notranslate"><span class="pre">training/generate_catalogue.py</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../training.html#step-2-fits-simulation-training-simulate-catalogue-py">Step 2: FITS Simulation (<code class="docutils literal notranslate"><span class="pre">training/simulate_catalogue.py</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../training.html#step-3-model-training-training-train-model-py">Step 3: Model Training (<code class="docutils literal notranslate"><span class="pre">training/train_model.py</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../training.html#shipped-model-v1-2-5">Shipped model (v1.2.5)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../training.html#optional-casa-path-not-used-for-the-v1-2-5-release-weights">Optional CASA path (not used for the v1.2.5 release weights)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../training.html#step-1-generate-catalogue-py">Step 1 — <code class="docutils literal notranslate"><span class="pre">generate_catalogue.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../training.html#step-2-simulate-catalogue-py">Step 2 — <code class="docutils literal notranslate"><span class="pre">simulate_catalogue.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../training.html#step-3-train-model-py-mixed">Step 3 — <code class="docutils literal notranslate"><span class="pre">train_model.py</span></code> (mixed)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../training.html#network-and-loss">Network and loss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../training.html#checkpoint-schema">Checkpoint schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../training.html#validation-note">Validation note</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../file_io.html">File Input and Output</a><ul>
@@ -244,11 +251,18 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-2-4-current">Version 1.2.4 (current)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-2-5-current">Version 1.2.5 (current)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog.html#cnn-training">CNN / training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog.html#cli-geometry">CLI / geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../changelog.html#gui">GUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog.html#docs-packaging">Docs / packaging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-2-4">Version 1.2.4</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog.html#id2">GUI</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../changelog.html#backend">Backend</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../changelog.html#cli">CLI</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog.html#docs-packaging">Docs / packaging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog.html#id3">Docs / packaging</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-2-3">Version 1.2.3</a></li>
@@ -340,24 +354,24 @@ image type, used for correct axis labelling.</p></td>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>type</strong> (<em>str</em>) – Image type to render. One of:
+<li><p><strong>type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Image type to render. One of:
 <code class="docutils literal notranslate"><span class="pre">&quot;data&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;deproj&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;model&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;residuals&quot;</span></code>,
 <code class="docutils literal notranslate"><span class="pre">&quot;polar&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;profile&quot;</span></code>.</p></li>
-<li><p><strong>cmap</strong> (<em>str</em>) – Matplotlib colormap name. Default: <code class="docutils literal notranslate"><span class="pre">&quot;magma&quot;</span></code>.</p></li>
-<li><p><strong>stretch</strong> (<em>str</em>) – Intensity stretch. One of: <code class="docutils literal notranslate"><span class="pre">&quot;asinh&quot;</span></code> (default),
+<li><p><strong>cmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Matplotlib colormap name. Default: <code class="docutils literal notranslate"><span class="pre">&quot;magma&quot;</span></code>.</p></li>
+<li><p><strong>stretch</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Intensity stretch. One of: <code class="docutils literal notranslate"><span class="pre">&quot;asinh&quot;</span></code> (default),
 <code class="docutils literal notranslate"><span class="pre">&quot;log&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;linear&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;sqrt&quot;</span></code>.</p></li>
-<li><p><strong>vmax_percentile</strong> (<em>float</em><em> | </em><em>None</em>) – If set, the vmax is computed as
+<li><p><strong>vmax_percentile</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> | </em><em>None</em>) – If set, the vmax is computed as
 this percentile of the image data.</p></li>
-<li><p><strong>vmin</strong> (<em>float</em><em> | </em><em>None</em>) – Manual lower intensity limit.</p></li>
-<li><p><strong>vmax</strong> (<em>float</em><em> | </em><em>None</em>) – Manual upper intensity limit.</p></li>
-<li><p><strong>contours</strong> (<em>bool</em>) – Overlay contours. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>contour_levels</strong> (<em>int</em>) – Number of contour levels. Default: 5.</p></li>
-<li><p><strong>show_beam</strong> (<em>bool</em>) – Overlay beam ellipse. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>show_grid</strong> (<em>bool</em>) – Overlay grid lines. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>show_axes</strong> (<em>bool</em>) – Show axes and labels. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>show_colorbar</strong> (<em>bool</em>) – Show colorbar. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>title</strong> (<em>str</em><em> | </em><em>None</em>) – Optional plot title.</p></li>
-<li><p><strong>dpi</strong> (<em>int</em>) – Figure DPI. Default: 150.</p></li>
+<li><p><strong>vmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> | </em><em>None</em>) – Manual lower intensity limit.</p></li>
+<li><p><strong>vmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> | </em><em>None</em>) – Manual upper intensity limit.</p></li>
+<li><p><strong>contours</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Overlay contours. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>contour_levels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of contour levels. Default: 5.</p></li>
+<li><p><strong>show_beam</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Overlay beam ellipse. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>show_grid</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Overlay grid lines. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>show_axes</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Show axes and labels. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>show_colorbar</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Show colorbar. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> | </em><em>None</em>) – Optional plot title.</p></li>
+<li><p><strong>dpi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Figure DPI. Default: 150.</p></li>
 </ul>
 </dd>
 </dl>
@@ -370,14 +384,14 @@ this percentile of the image data.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>cx</strong> (<em>float</em>) – Disk centre x-coordinate in pixels.</p></li>
-<li><p><strong>cy</strong> (<em>float</em>) – Disk centre y-coordinate in pixels (GUI convention:
+<li><p><strong>cx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Disk centre x-coordinate in pixels.</p></li>
+<li><p><strong>cy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Disk centre y-coordinate in pixels (GUI convention:
 measured from the top of the image).</p></li>
-<li><p><strong>pa</strong> (<em>float</em>) – Position angle in degrees.</p></li>
-<li><p><strong>incl</strong> (<em>float</em>) – Inclination in degrees.</p></li>
-<li><p><strong>rout</strong> (<em>float</em>) – Outer disk radius in arcseconds.</p></li>
-<li><p><strong>fit_rmin</strong> (<em>float</em>) – Inner radius for Gaussian ring fitting. Default: 0.0.</p></li>
-<li><p><strong>fit_rmax</strong> (<em>float</em>) – Outer radius for Gaussian ring fitting. Default: 0.0.</p></li>
+<li><p><strong>pa</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Position angle in degrees.</p></li>
+<li><p><strong>incl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Inclination in degrees.</p></li>
+<li><p><strong>rout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Outer disk radius in arcseconds.</p></li>
+<li><p><strong>fit_rmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Inner radius for Gaussian ring fitting. Default: 0.0.</p></li>
+<li><p><strong>fit_rmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Outer radius for Gaussian ring fitting. Default: 0.0.</p></li>
 </ul>
 </dd>
 </dl>
@@ -390,13 +404,13 @@ measured from the top of the image).</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>cx</strong> (<em>float</em>) – Centre x in pixels.</p></li>
-<li><p><strong>cy</strong> (<em>float</em>) – Centre y in pixels.</p></li>
-<li><p><strong>pa</strong> (<em>float</em>) – Current position angle in degrees.</p></li>
-<li><p><strong>incl</strong> (<em>float</em>) – Current inclination in degrees.</p></li>
-<li><p><strong>rout</strong> (<em>float</em>) – Outer radius in arcseconds.</p></li>
-<li><p><strong>fit_rmin</strong> (<em>float</em>) – Inner fitting radius in arcseconds. Default: 0.0.</p></li>
-<li><p><strong>fit_rmax</strong> (<em>float</em>) – Outer fitting radius in arcseconds. Default: 0.0.</p></li>
+<li><p><strong>cx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centre x in pixels.</p></li>
+<li><p><strong>cy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centre y in pixels.</p></li>
+<li><p><strong>pa</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current position angle in degrees.</p></li>
+<li><p><strong>incl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current inclination in degrees.</p></li>
+<li><p><strong>rout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Outer radius in arcseconds.</p></li>
+<li><p><strong>fit_rmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Inner fitting radius in arcseconds. Default: 0.0.</p></li>
+<li><p><strong>fit_rmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Outer fitting radius in arcseconds. Default: 0.0.</p></li>
 </ul>
 </dd>
 </dl>
@@ -408,7 +422,7 @@ measured from the top of the image).</p></li>
 <dd><p>Request body for <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/load_local</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – Base filename (not a full path) to load from
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Base filename (not a full path) to load from
 the upload directory <code class="docutils literal notranslate"><span class="pre">.disco_uploads/</span></code>.</p>
 </dd>
 </dl>
@@ -583,18 +597,16 @@ using <code class="docutils literal notranslate"><span class="pre">scipy.optimiz
 <dl class="http post">
 <dt class="sig sig-object http" id="post--optimize_geometry">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/optimize_geometry</span></span><a class="headerlink" href="#post--optimize_geometry" title="Link to this definition"></a></dt>
-<dd><p>Run a grid-seeded Nelder-Mead optimisation of
-<a class="reference internal" href="optimization.html#disco.core.optimization.geometric_loss" title="disco.core.optimization.geometric_loss"><code class="xref py py-func docutils literal notranslate"><span class="pre">disco.core.optimization.geometric_loss()</span></code></a> to refine inclination and
-position angle.</p>
+<dd><p>Run a grid-seeded <strong>L-BFGS-B</strong> optimisation of
+<a class="reference internal" href="optimization.html#disco.core.optimization.geometric_loss" title="disco.core.optimization.geometric_loss"><code class="xref py py-func docutils literal notranslate"><span class="pre">disco.core.optimization.geometric_loss()</span></code></a> to refine inclination,
+position angle, and centre.</p>
 <p><strong>Procedure:</strong></p>
 <ol class="arabic simple">
 <li><p>Convert GUI coordinates to image-space.</p></li>
-<li><p>Apply zero-padding (1000 pixels) and crop around the centre.</p></li>
-<li><p>Evaluate the loss at a grid of <span class="math notranslate nohighlight">\((i, \phi)\)</span> candidates:
-<code class="docutils literal notranslate"><span class="pre">test_incls</span> <span class="pre">=</span> <span class="pre">[10,</span> <span class="pre">30,</span> <span class="pre">50,</span> <span class="pre">70]</span></code> degrees,
-<code class="docutils literal notranslate"><span class="pre">test_pas</span>&#160;&#160; <span class="pre">=</span> <span class="pre">range(0,</span> <span class="pre">180,</span> <span class="pre">30)</span></code> degrees.</p></li>
-<li><p>Run Nelder-Mead (bounds <code class="docutils literal notranslate"><span class="pre">[0,85]</span> <span class="pre">×</span> <span class="pre">[0,180]</span> <span class="pre">×</span> <span class="pre">[-10,10]²</span></code>, <code class="docutils literal notranslate"><span class="pre">dim=400</span></code>,
-<code class="docutils literal notranslate"><span class="pre">order=3</span></code>) starting from the best grid point.</p></li>
+<li><p>Apply zero-padding and crop around the centre.</p></li>
+<li><p>Evaluate the loss on a coarse <span class="math notranslate nohighlight">\((i, \phi)\)</span> grid (smoothed image).</p></li>
+<li><p>Run L-BFGS-B on the full-resolution crop with bounds on
+inclination, PA, and centre offsets.</p></li>
 </ol>
 <p><strong>Request body:</strong> <a class="reference internal" href="#disco.server.OptimizeParams" title="disco.server.OptimizeParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeParams</span></code></a></p>
 <dl class="field-list simple">

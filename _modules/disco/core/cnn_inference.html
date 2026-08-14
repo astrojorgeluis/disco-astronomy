@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>disco.core.cnn_inference &mdash; DISCO v1.2.4</title>
+  <title>disco.core.cnn_inference &mdash; DISCO v1.2.5</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom_disco.css?v=499842b1" />
@@ -14,7 +14,7 @@
     <link rel="shortcut icon" href="../../../_static/disco_icon.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=928db92d"></script>
+      <script src="../../../_static/documentation_options.js?v=36f53d34"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -221,9 +221,16 @@
 <p class="caption" role="heading"><span class="caption-text">Supplementary</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../training.html">DiscoNet Training Pipeline</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../training.html#step-1-catalogue-generation-training-generate-catalogue-py">Step 1: Catalogue Generation (<code class="docutils literal notranslate"><span class="pre">training/generate_catalogue.py</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../training.html#step-2-fits-simulation-training-simulate-catalogue-py">Step 2: FITS Simulation (<code class="docutils literal notranslate"><span class="pre">training/simulate_catalogue.py</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../training.html#step-3-model-training-training-train-model-py">Step 3: Model Training (<code class="docutils literal notranslate"><span class="pre">training/train_model.py</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../training.html#shipped-model-v1-2-5">Shipped model (v1.2.5)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../training.html#optional-casa-path-not-used-for-the-v1-2-5-release-weights">Optional CASA path (not used for the v1.2.5 release weights)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../training.html#step-1-generate-catalogue-py">Step 1 — <code class="docutils literal notranslate"><span class="pre">generate_catalogue.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../training.html#step-2-simulate-catalogue-py">Step 2 — <code class="docutils literal notranslate"><span class="pre">simulate_catalogue.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../training.html#step-3-train-model-py-mixed">Step 3 — <code class="docutils literal notranslate"><span class="pre">train_model.py</span></code> (mixed)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../training.html#network-and-loss">Network and loss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../training.html#checkpoint-schema">Checkpoint schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../training.html#validation-note">Validation note</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../file_io.html">File Input and Output</a><ul>
@@ -240,11 +247,18 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../changelog.html#version-1-2-4-current">Version 1.2.4 (current)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../changelog.html#version-1-2-5-current">Version 1.2.5 (current)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../changelog.html#cnn-training">CNN / training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../changelog.html#cli-geometry">CLI / geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../changelog.html#gui">GUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../changelog.html#docs-packaging">Docs / packaging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../changelog.html#version-1-2-4">Version 1.2.4</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../changelog.html#id2">GUI</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../changelog.html#backend">Backend</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../changelog.html#cli">CLI</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../changelog.html#docs-packaging">Docs / packaging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../changelog.html#id3">Docs / packaging</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../changelog.html#version-1-2-3">Version 1.2.3</a></li>
@@ -281,7 +295,18 @@
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.ndimage</span><span class="w"> </span><span class="kn">import</span> <span class="n">zoom</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">disco.core.cnn_preprocess</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">IMG_SIZE</span><span class="p">,</span>
+    <span class="n">NUM_OUTPUTS</span><span class="p">,</span>
+    <span class="n">decode_labels</span><span class="p">,</span>
+    <span class="n">elliptical_beam_map</span><span class="p">,</span>
+    <span class="n">normalize_percentile</span><span class="p">,</span>
+    <span class="n">resize_to_square</span><span class="p">,</span>
+    <span class="n">scale_map</span><span class="p">,</span>
+    <span class="n">stack_cnn_channels</span><span class="p">,</span>
+<span class="p">)</span>
+
 
 <div class="viewcode-block" id="ResBlock">
 <a class="viewcode-back" href="../../../api/cnn_inference.html#disco.core.cnn_inference.ResBlock">[docs]</a>
@@ -301,10 +326,11 @@
 </div>
 
 
+
 <div class="viewcode-block" id="DiscoNet">
 <a class="viewcode-back" href="../../../api/cnn_inference.html#disco.core.cnn_inference.DiscoNet">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DiscoNet</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_out</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_out</span><span class="o">=</span><span class="n">NUM_OUTPUTS</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stem</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
             <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
@@ -331,78 +357,95 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pool</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
 </div>
 
-    
 
-<div class="viewcode-block" id="predict_with_cnn">
-<a class="viewcode-back" href="../../../api/cnn_inference.html#disco.core.cnn_inference.predict_with_cnn">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">predict_with_cnn</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">pixel_scale</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">search_rad</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
-    <span class="n">IMG_SIZE</span> <span class="o">=</span> <span class="mi">128</span>
 
+<span class="k">def</span><span class="w"> </span><span class="nf">prepare_cnn_inputs</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">pixel_scale</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">search_rad</span><span class="p">,</span> <span class="n">img_size</span><span class="o">=</span><span class="n">IMG_SIZE</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Crop / resize / normalize + beam/scale channels for DiscoNet.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tensor_chw : (3, H, W) float32 ndarray or None if crop is empty</span>
+<span class="sd">    crop_half_pix : float</span>
+<span class="sd">        Half-width of the native crop in pixels (for FOV→pixel conversion).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">search_rad_pix</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">search_rad</span> <span class="o">/</span> <span class="n">pixel_scale</span><span class="p">)</span>
-    <span class="n">crop_rad</span>       <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">search_rad_pix</span> <span class="o">*</span> <span class="mf">1.5</span><span class="p">)</span>
+    <span class="n">crop_rad</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">search_rad_pix</span> <span class="o">*</span> <span class="mf">1.5</span><span class="p">)</span>
 
     <span class="n">y_min</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">cy</span> <span class="o">-</span> <span class="n">crop_rad</span><span class="p">))</span>
     <span class="n">y_max</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span><span class="p">(</span><span class="n">cy</span> <span class="o">+</span> <span class="n">crop_rad</span><span class="p">))</span>
     <span class="n">x_min</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">cx</span> <span class="o">-</span> <span class="n">crop_rad</span><span class="p">))</span>
     <span class="n">x_max</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">int</span><span class="p">(</span><span class="n">cx</span> <span class="o">+</span> <span class="n">crop_rad</span><span class="p">))</span>
-    <span class="n">crop</span>  <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">y_min</span><span class="p">:</span><span class="n">y_max</span><span class="p">,</span> <span class="n">x_min</span><span class="p">:</span><span class="n">x_max</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">crop</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">y_min</span><span class="p">:</span><span class="n">y_max</span><span class="p">,</span> <span class="n">x_min</span><span class="p">:</span><span class="n">x_max</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">crop</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">crop</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">crop_rad</span><span class="p">)</span>
 
     <span class="n">target_size</span> <span class="o">=</span> <span class="n">crop_rad</span> <span class="o">*</span> <span class="mi">2</span>
+    <span class="k">if</span> <span class="n">target_size</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">crop_rad</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">crop</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">target_size</span> <span class="ow">or</span> <span class="n">crop</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">target_size</span><span class="p">:</span>
         <span class="n">pad_y</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">target_size</span> <span class="o">-</span> <span class="n">crop</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">pad_x</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">target_size</span> <span class="o">-</span> <span class="n">crop</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">crop</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">crop</span><span class="p">,</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">pad_y</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">pad_x</span><span class="p">)),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">)</span>
+        <span class="n">crop</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">crop</span><span class="p">,</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">pad_y</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">pad_x</span><span class="p">)),</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;constant&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">crop</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">crop</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">crop_rad</span><span class="p">)</span>
 
-    <span class="n">zoom_y</span> <span class="o">=</span> <span class="n">IMG_SIZE</span> <span class="o">/</span> <span class="n">crop</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">zoom_x</span> <span class="o">=</span> <span class="n">IMG_SIZE</span> <span class="o">/</span> <span class="n">crop</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">img_r</span>  <span class="o">=</span> <span class="n">zoom</span><span class="p">(</span><span class="n">crop</span><span class="p">,</span> <span class="p">(</span><span class="n">zoom_y</span><span class="p">,</span> <span class="n">zoom_x</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">p1</span><span class="p">,</span> <span class="n">p999</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">img_r</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">img_r</span><span class="p">,</span> <span class="mf">99.9</span><span class="p">)</span>
-    <span class="n">img_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">((</span><span class="n">img_r</span> <span class="o">-</span> <span class="n">p1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">p999</span> <span class="o">-</span> <span class="n">p1</span> <span class="o">+</span> <span class="mf">1e-8</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">img_r</span> <span class="o">=</span> <span class="n">resize_to_square</span><span class="p">(</span><span class="n">crop</span><span class="p">,</span> <span class="n">img_size</span><span class="p">)</span>
+    <span class="n">img_norm</span> <span class="o">=</span> <span class="n">normalize_percentile</span><span class="p">(</span><span class="n">img_r</span><span class="p">)</span>
 
-    <span class="n">bmaj_arcsec</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;BMAJ&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3600</span>
-    <span class="n">bmin_arcsec</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;BMIN&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3600</span>
-    <span class="n">bpa_deg</span>     <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;BPA&#39;</span><span class="p">,</span>  <span class="mi">0</span><span class="p">)</span>
+    <span class="n">bmaj_arcsec</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;BMAJ&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mf">3600.0</span>
+    <span class="n">bmin_arcsec</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;BMIN&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mf">3600.0</span>
+    <span class="n">bpa_deg</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;BPA&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
 
-    <span class="n">field_as</span>   <span class="o">=</span> <span class="n">crop_rad</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pixel_scale</span>
-    <span class="n">cell_eff</span>   <span class="o">=</span> <span class="n">field_as</span> <span class="o">/</span> <span class="n">IMG_SIZE</span>
-
-    <span class="n">beam_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">IMG_SIZE</span><span class="p">,</span> <span class="n">IMG_SIZE</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">bmaj_arcsec</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">bmin_arcsec</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">sigma_maj</span> <span class="o">=</span> <span class="p">(</span><span class="n">bmaj_arcsec</span> <span class="o">/</span> <span class="n">cell_eff</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.355</span>
-        <span class="n">sigma_min</span> <span class="o">=</span> <span class="p">(</span><span class="n">bmin_arcsec</span> <span class="o">/</span> <span class="n">cell_eff</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.355</span>
-        <span class="n">bpa_rad</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">bpa_deg</span><span class="p">)</span>
-        <span class="n">c</span> <span class="o">=</span> <span class="n">IMG_SIZE</span> <span class="o">//</span> <span class="mi">2</span>
-        <span class="n">y_g</span><span class="p">,</span> <span class="n">x_g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ogrid</span><span class="p">[:</span><span class="n">IMG_SIZE</span><span class="p">,</span> <span class="p">:</span><span class="n">IMG_SIZE</span><span class="p">]</span>
-        <span class="n">Xr</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_g</span> <span class="o">-</span> <span class="n">c</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">bpa_rad</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">y_g</span> <span class="o">-</span> <span class="n">c</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">bpa_rad</span><span class="p">)</span>
-        <span class="n">Yr</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">x_g</span> <span class="o">-</span> <span class="n">c</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">bpa_rad</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">y_g</span> <span class="o">-</span> <span class="n">c</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">bpa_rad</span><span class="p">)</span>
-        <span class="n">g</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">Xr</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma_maj</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">1e-8</span><span class="p">)</span> <span class="o">+</span>
-                      <span class="n">Yr</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma_min</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">1e-8</span><span class="p">)))</span>
-        <span class="n">mx</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">mx</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">beam_map</span> <span class="o">=</span> <span class="p">(</span><span class="n">g</span> <span class="o">/</span> <span class="n">mx</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">field_as</span> <span class="o">=</span> <span class="n">crop_rad</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pixel_scale</span>
+    <span class="n">cell_eff</span> <span class="o">=</span> <span class="n">field_as</span> <span class="o">/</span> <span class="n">img_size</span>
 
     <span class="k">if</span> <span class="n">bmaj_arcsec</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The FITS file does not contain valid beam information (BMAJ). CNN inference requires known resolution.&quot;</span><span class="p">)</span>
-    <span class="n">beam_fwhm_as</span> <span class="o">=</span> <span class="n">bmaj_arcsec</span>
-    <span class="n">scale_val</span>    <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">beam_fwhm_as</span> <span class="o">/</span> <span class="p">(</span><span class="n">field_as</span> <span class="o">+</span> <span class="mf">1e-6</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-    <span class="n">scale_map</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">IMG_SIZE</span><span class="p">,</span> <span class="n">IMG_SIZE</span><span class="p">),</span> <span class="n">scale_val</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;The FITS file does not contain valid beam information (BMAJ). &quot;</span>
+            <span class="s2">&quot;CNN inference requires known resolution.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">bmin_arcsec</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">bmin_arcsec</span> <span class="o">=</span> <span class="n">bmaj_arcsec</span>
 
-    <span class="n">tensor_in</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">img_norm</span><span class="p">,</span> <span class="n">beam_map</span><span class="p">,</span> <span class="n">scale_map</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span>
-        <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span>
-    <span class="p">)</span>
+    <span class="n">beam</span> <span class="o">=</span> <span class="n">elliptical_beam_map</span><span class="p">(</span><span class="n">bmaj_arcsec</span><span class="p">,</span> <span class="n">bmin_arcsec</span><span class="p">,</span> <span class="n">bpa_deg</span><span class="p">,</span> <span class="n">cell_eff</span><span class="p">,</span> <span class="n">img_size</span><span class="p">)</span>
+    <span class="n">scale</span> <span class="o">=</span> <span class="n">scale_map</span><span class="p">(</span><span class="n">bmaj_arcsec</span><span class="p">,</span> <span class="n">field_as</span><span class="p">,</span> <span class="n">img_size</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">stack_cnn_channels</span><span class="p">(</span><span class="n">img_norm</span><span class="p">,</span> <span class="n">beam</span><span class="p">,</span> <span class="n">scale</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">crop_rad</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="predict_with_cnn">
+<a class="viewcode-back" href="../../../api/cnn_inference.html#disco.core.cnn_inference.predict_with_cnn">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">predict_with_cnn</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">pixel_scale</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">search_rad</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;CNN geometry prior.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    cnn_incl, cnn_pa, dx_pix, dy_pix</span>
+<span class="sd">        Offsets are in native image pixels relative to ``(cx, cy)``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">chw</span><span class="p">,</span> <span class="n">crop_half_pix</span> <span class="o">=</span> <span class="n">prepare_cnn_inputs</span><span class="p">(</span>
+            <span class="n">data</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">pixel_scale</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">search_rad</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">raise</span>
+
+    <span class="k">if</span> <span class="n">chw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span>
+
+    <span class="n">tensor_in</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">chw</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
     <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
     <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">tensor_in</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
 
-    <span class="n">cnn_incl</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mf">90.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">85.0</span><span class="p">))</span>
-    <span class="n">cnn_pa</span>   <span class="o">=</span> <span class="nb">float</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">out</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">%</span> <span class="mf">180.0</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">cnn_incl</span><span class="p">,</span> <span class="n">cnn_pa</span></div>
+    <span class="n">decoded</span> <span class="o">=</span> <span class="n">decode_labels</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">crop_half_pix</span><span class="o">=</span><span class="n">crop_half_pix</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">decoded</span><span class="p">[</span><span class="s2">&quot;inclination&quot;</span><span class="p">],</span>
+        <span class="n">decoded</span><span class="p">[</span><span class="s2">&quot;pa&quot;</span><span class="p">],</span>
+        <span class="n">decoded</span><span class="p">[</span><span class="s2">&quot;dx_pix&quot;</span><span class="p">],</span>
+        <span class="n">decoded</span><span class="p">[</span><span class="s2">&quot;dy_pix&quot;</span><span class="p">],</span>
+    <span class="p">)</span></div>
 
 </pre></div>
 

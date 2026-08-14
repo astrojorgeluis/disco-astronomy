@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DiscoNet Training Pipeline &mdash; DISCO v1.2.4</title>
+  <title>DiscoNet Training Pipeline &mdash; DISCO v1.2.5</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom_disco.css?v=499842b1" />
@@ -15,9 +15,10 @@
     <link rel="shortcut icon" href="_static/disco_icon.png"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=928db92d"></script>
+      <script src="_static/documentation_options.js?v=36f53d34"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -224,9 +225,16 @@
 <p class="caption" role="heading"><span class="caption-text">Supplementary</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">DiscoNet Training Pipeline</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#step-1-catalogue-generation-training-generate-catalogue-py">Step 1: Catalogue Generation (<code class="docutils literal notranslate"><span class="pre">training/generate_catalogue.py</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#step-2-fits-simulation-training-simulate-catalogue-py">Step 2: FITS Simulation (<code class="docutils literal notranslate"><span class="pre">training/simulate_catalogue.py</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#step-3-model-training-training-train-model-py">Step 3: Model Training (<code class="docutils literal notranslate"><span class="pre">training/train_model.py</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#shipped-model-v1-2-5">Shipped model (v1.2.5)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optional-casa-path-not-used-for-the-v1-2-5-release-weights">Optional CASA path (not used for the v1.2.5 release weights)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#step-1-generate-catalogue-py">Step 1 — <code class="docutils literal notranslate"><span class="pre">generate_catalogue.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-2-simulate-catalogue-py">Step 2 — <code class="docutils literal notranslate"><span class="pre">simulate_catalogue.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-3-train-model-py-mixed">Step 3 — <code class="docutils literal notranslate"><span class="pre">train_model.py</span></code> (mixed)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#network-and-loss">Network and loss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#checkpoint-schema">Checkpoint schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#validation-note">Validation note</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="file_io.html">File Input and Output</a><ul>
@@ -243,11 +251,18 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-4-current">Version 1.2.4 (current)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-5-current">Version 1.2.5 (current)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#cnn-training">CNN / training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#cli-geometry">CLI / geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="changelog.html#gui">GUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#docs-packaging">Docs / packaging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-4">Version 1.2.4</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#id2">GUI</a></li>
 <li class="toctree-l3"><a class="reference internal" href="changelog.html#backend">Backend</a></li>
 <li class="toctree-l3"><a class="reference internal" href="changelog.html#cli">CLI</a></li>
-<li class="toctree-l3"><a class="reference internal" href="changelog.html#docs-packaging">Docs / packaging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#id3">Docs / packaging</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-3">Version 1.2.3</a></li>
@@ -283,194 +298,119 @@
 <span id="training"></span><h1>DiscoNet Training Pipeline<a class="headerlink" href="#disconet-training-pipeline" title="Link to this heading"></a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The training scripts (located in <code class="docutils literal notranslate"><span class="pre">training/</span></code>) are not installed as part
-of the <code class="docutils literal notranslate"><span class="pre">disco-astronomy</span></code> package and are not required for end-user
-operation. They are provided for reproducibility and documentation purposes.
-CASA (Common Astronomy Software Applications) is required for
-<code class="docutils literal notranslate"><span class="pre">simulate_catalogue.py</span></code>.</p>
+<p>The training scripts in <code class="docutils literal notranslate"><span class="pre">training/</span></code> are <strong>not</strong> installed with the
+<code class="docutils literal notranslate"><span class="pre">disco-astronomy</span></code> package. End users only need the bundled weights
+<code class="docutils literal notranslate"><span class="pre">disco/models/disco_model_stable.pth</span></code>. CASA is required only if you
+regenerate FITS simulations with <code class="docutils literal notranslate"><span class="pre">simulate_catalogue.py</span></code>.</p>
 </div>
-<p>The DiscoNet model is trained on a hybrid dataset combining simulated ALMA
-observations (generated via CASA) and on-the-fly synthetic disk images. The
-training pipeline consists of three independent scripts.</p>
-<hr class="docutils" />
-<section id="step-1-catalogue-generation-training-generate-catalogue-py">
-<h2>Step 1: Catalogue Generation (<code class="docutils literal notranslate"><span class="pre">training/generate_catalogue.py</span></code>)<a class="headerlink" href="#step-1-catalogue-generation-training-generate-catalogue-py" title="Link to this heading"></a></h2>
-<p>Generates a CSV catalogue of 100 synthetic disk parameters with randomised
-physical properties drawn from the following distributions:</p>
+<section id="shipped-model-v1-2-5">
+<h2>Shipped model (v1.2.5)<a class="headerlink" href="#shipped-model-v1-2-5" title="Link to this heading"></a></h2>
+<p>The packaged DiscoNet checkpoint was trained in <strong>synthetic-only</strong> mode
+(<code class="docutils literal notranslate"><span class="pre">train_model.py</span> <span class="pre">--synthetic-only</span></code>):</p>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 25.0%" />
-<col style="width: 75.0%" />
+<col style="width: 35.0%" />
+<col style="width: 65.0%" />
 </colgroup>
 <thead>
-<tr class="row-odd"><th class="head"><p>Parameter</p></th>
-<th class="head"><p>Sampling distribution</p></th>
+<tr class="row-odd"><th class="head"><p>Item</p></th>
+<th class="head"><p>Value</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">incl_deg</span></code></p></td>
-<td><p>40% in [0°, 30°] (low inclination), 60% in [30°, 80°] (high).</p></td>
+<tr class="row-even"><td><p>Dataset</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SyntheticDataset</span></code>: 20 000 on-the-fly 128×128 crops (no CASA FITS)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pa_deg</span></code></p></td>
-<td><p>Uniform in [0°, 180°].</p></td>
+<tr class="row-odd"><td><p>Morphology mix</p></td>
+<td><p>25% smooth, 40% simple (1–2 gaps), 35% complex (3–5 gaps)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">rout_arcsec</span></code></p></td>
-<td><p>35% “compact” in [0.10″, 0.50″]; 35% “large” in [0.60″, 1.80″];
-30% “intermediate” in [0.35″, 0.90″].</p></td>
+<tr class="row-even"><td><p>Inclination / PA</p></td>
+<td><p>Uniform <span class="math notranslate nohighlight">\(i \in [0°, 83°]\)</span>, <span class="math notranslate nohighlight">\(\mathrm{PA} \in [0°, 180°]\)</span></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">rmin_arcsec</span></code></p></td>
-<td><p>Set to a non-zero value (drawn uniformly from [0.05″, 0.55 rout])
-with probability 30%; otherwise 0.</p></td>
+<tr class="row-odd"><td><p>Size / SNR / beam</p></td>
+<td><p>Rout from ~0.05″ upward; SNR 5–200; elliptical beams with random BPA</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">band</span></code></p></td>
-<td><p>ALMA Band 6 (70% probability) or Band 8 (30%).</p></td>
+<tr class="row-even"><td><p>Channels</p></td>
+<td><dl class="simple">
+<dt>Normalised intensity, elliptical beam map, beam-scale map</dt><dd><p>(same preprocess as inference: <code class="docutils literal notranslate"><span class="pre">disco.core.cnn_preprocess</span></code>)</p>
+</dd>
+</dl>
+</td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">flux_jy</span></code></p></td>
-<td><p>Log-uniform: Band 6 in [5, 80] mJy; Band 8 in [5, 40] mJy.</p></td>
+<tr class="row-odd"><td><p>Epochs / early stop</p></td>
+<td><p>Up to 80 epochs, patience 15; best checkpoint ≈ epoch 64</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">array_cfg</span></code></p></td>
-<td><p>Band 6: <code class="docutils literal notranslate"><span class="pre">cycle9.6/7/8.cfg</span></code> with probabilities [0.20, 0.35, 0.45];
-Band 8: <code class="docutils literal notranslate"><span class="pre">cycle9.5/6/7.cfg</span></code> with [0.20, 0.35, 0.45].</p></td>
+<tr class="row-even"><td><p>Val MAE (synthetic hold-out)</p></td>
+<td><p>Inclination ≈ 4.6°; PA ≈ 9.6° (180° wrap)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pwv</span></code></p></td>
-<td><p>Band 6: uniform in [0.8, 2.5] mm; Band 8: uniform in [0.4, 1.2] mm.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">time_s</span></code></p></td>
-<td><p>One of: 1200, 1800, 2400, 3600 seconds (uniform random choice).</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">niter</span></code></p></td>
-<td><p>Uniform integer in [300, 1500].</p></td>
+<tr class="row-odd"><td><p>Seed / batch / AMP</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">--seed</span> <span class="pre">42</span></code>, batch 32, CUDA AMP enabled</p></td>
 </tr>
 </tbody>
 </table>
-<p>Output: <code class="docutils literal notranslate"><span class="pre">catalogo_piloto.csv</span></code> with columns <code class="docutils literal notranslate"><span class="pre">ID</span></code>, <code class="docutils literal notranslate"><span class="pre">incl_deg</span></code>,
-<code class="docutils literal notranslate"><span class="pre">pa_deg</span></code>, <code class="docutils literal notranslate"><span class="pre">rout_arcsec</span></code>, <code class="docutils literal notranslate"><span class="pre">rmin_arcsec</span></code>, <code class="docutils literal notranslate"><span class="pre">flux_jy</span></code>, <code class="docutils literal notranslate"><span class="pre">time_s</span></code>,
-<code class="docutils literal notranslate"><span class="pre">array_cfg</span></code>, <code class="docutils literal notranslate"><span class="pre">pwv</span></code>, <code class="docutils literal notranslate"><span class="pre">niter</span></code>, <code class="docutils literal notranslate"><span class="pre">band</span></code>, <code class="docutils literal notranslate"><span class="pre">array_lo</span></code>.</p>
+<p>Reproduce the shipped recipe:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>DISCO_Source_Git/training
+python<span class="w"> </span>train_model.py<span class="w"> </span>--synthetic-only<span class="w"> </span>--synthetic-samples<span class="w"> </span><span class="m">20000</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--epochs<span class="w"> </span><span class="m">80</span><span class="w"> </span>--batch-size<span class="w"> </span><span class="m">32</span><span class="w"> </span>--amp<span class="w"> </span>--patience<span class="w"> </span><span class="m">15</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">42</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--save<span class="w"> </span>disco_model_stable.pth
+</pre></div>
+</div>
 </section>
-<hr class="docutils" />
-<section id="step-2-fits-simulation-training-simulate-catalogue-py">
-<h2>Step 2: FITS Simulation (<code class="docutils literal notranslate"><span class="pre">training/simulate_catalogue.py</span></code>)<a class="headerlink" href="#step-2-fits-simulation-training-simulate-catalogue-py" title="Link to this heading"></a></h2>
-<p>For each row in the catalogue, this script:</p>
-<ol class="arabic simple">
-<li><p>Generates a synthetic sky model FITS file (<code class="docutils literal notranslate"><span class="pre">create_fits_model</span></code>) on a
-1024 × 1024 pixel grid using a physically-motivated brightness
-temperature model including:</p>
-<ul class="simple">
-<li><p>A power-law + exponential radial profile</p></li>
-<li><p>Optional inner cavity with wall brightening</p></li>
-<li><p>Randomised gap-ring substructure (0–5 gaps per disk)</p></li>
-<li><p>Optional crescent asymmetry (20% probability)</p></li>
-<li><p>Optional central unresolved component (80% probability)</p></li>
-<li><p>Multiplicative texture noise (Gaussian-filtered)</p></li>
-<li><p>Outer exponential taper</p></li>
-</ul>
-</li>
-<li><p>Calls CASA <code class="docutils literal notranslate"><span class="pre">simobserve</span></code> with the sky model to produce a simulated
-measurement set.</p></li>
-<li><p>Calls CASA <code class="docutils literal notranslate"><span class="pre">tclean</span></code> with multi-scale CLEAN to produce a FITS image.</p></li>
-</ol>
-<p>Array configurations and Band parameters used:</p>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 33.3%" />
-<col style="width: 26.7%" />
-<col style="width: 20.0%" />
-<col style="width: 20.0%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Configuration</p></th>
-<th class="head"><p>Beam (mas)</p></th>
-<th class="head"><p>Cell (mas)</p></th>
-<th class="head"><p>Comment</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">alma.cycle9.5.cfg</span></code></p></td>
-<td><p>130</p></td>
-<td><p>22</p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">alma.cycle9.6.cfg</span></code></p></td>
-<td><p>80</p></td>
-<td><p>13</p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">alma.cycle9.7.cfg</span></code></p></td>
-<td><p>50</p></td>
-<td><p>8</p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">alma.cycle9.8.cfg</span></code></p></td>
-<td><p>28</p></td>
-<td><p>5</p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
+<section id="optional-casa-path-not-used-for-the-v1-2-5-release-weights">
+<h2>Optional CASA path (not used for the v1.2.5 release weights)<a class="headerlink" href="#optional-casa-path-not-used-for-the-v1-2-5-release-weights" title="Link to this heading"></a></h2>
+<p>A hybrid train (CASA FITS + synthetic) is supported but did <strong>not</strong> beat
+synthetic-only on the literature test set used for v1.2.5. The three
+scripts remain for reproducibility:</p>
+<section id="step-1-generate-catalogue-py">
+<h3>Step 1 — <code class="docutils literal notranslate"><span class="pre">generate_catalogue.py</span></code><a class="headerlink" href="#step-1-generate-catalogue-py" title="Link to this heading"></a></h3>
+<p>Writes a CSV of randomised disk + ALMA observing parameters
+(<code class="docutils literal notranslate"><span class="pre">incl_deg</span></code>, <code class="docutils literal notranslate"><span class="pre">pa_deg</span></code>, <code class="docutils literal notranslate"><span class="pre">rout_arcsec</span></code>, <code class="docutils literal notranslate"><span class="pre">rmin_arcsec</span></code>, band, array,
+PWV, time, flux, center offsets <code class="docutils literal notranslate"><span class="pre">dx_arcsec</span></code> / <code class="docutils literal notranslate"><span class="pre">dy_arcsec</span></code>, …).</p>
 </section>
-<hr class="docutils" />
-<section id="step-3-model-training-training-train-model-py">
-<h2>Step 3: Model Training (<code class="docutils literal notranslate"><span class="pre">training/train_model.py</span></code>)<a class="headerlink" href="#step-3-model-training-training-train-model-py" title="Link to this heading"></a></h2>
-<p>The training script combines two datasets:</p>
+<section id="step-2-simulate-catalogue-py">
+<h3>Step 2 — <code class="docutils literal notranslate"><span class="pre">simulate_catalogue.py</span></code><a class="headerlink" href="#step-2-simulate-catalogue-py" title="Link to this heading"></a></h3>
+<p>For each catalogue row: build a Jy/pixel sky model, run CASA
+<code class="docutils literal notranslate"><span class="pre">simobserve</span></code> + <code class="docutils literal notranslate"><span class="pre">tclean</span></code>, export FITS, stamp training keywords
+(<code class="docutils literal notranslate"><span class="pre">INCL</span></code>, <code class="docutils literal notranslate"><span class="pre">PA</span></code>, <code class="docutils literal notranslate"><span class="pre">DX_AS</span></code>, …), optional post-export domain noise.</p>
+</section>
+<section id="step-3-train-model-py-mixed">
+<h3>Step 3 — <code class="docutils literal notranslate"><span class="pre">train_model.py</span></code> (mixed)<a class="headerlink" href="#step-3-train-model-py-mixed" title="Link to this heading"></a></h3>
+<p>Without <code class="docutils literal notranslate"><span class="pre">--synthetic-only</span></code>, combines <code class="docutils literal notranslate"><span class="pre">FITSDataset</span></code> (simulated FITS +
+augment) with <code class="docutils literal notranslate"><span class="pre">SyntheticDataset</span></code>. Split is by object ID (no crop leak
+into validation). Mixup does not blend PA sin/cos targets.</p>
+</section>
+</section>
+<section id="network-and-loss">
+<h2>Network and loss<a class="headerlink" href="#network-and-loss" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p><strong>FITSDataset</strong> — real FITS simulations from <code class="docutils literal notranslate"><span class="pre">training/simulations/</span></code>,
-with online augmentation.</p></li>
-<li><p><strong>SyntheticDataset</strong> — purely synthetic disk images generated on-the-fly
-by randomly sampling disk parameters without CASA simulation.</p></li>
+<li><p>Architecture: <a class="reference internal" href="api/cnn_inference.html#disco.core.cnn_inference.DiscoNet" title="disco.core.cnn_inference.DiscoNet"><code class="xref py py-class docutils literal notranslate"><span class="pre">disco.core.cnn_inference.DiscoNet</span></code></a> (<code class="docutils literal notranslate"><span class="pre">n_out=5</span></code>).</p></li>
+<li><p>Labels: <code class="docutils literal notranslate"><span class="pre">[incl/90,</span> <span class="pre">sin(2·PA),</span> <span class="pre">cos(2·PA),</span> <span class="pre">dx/CENTER_SCALE,</span> <span class="pre">dy/CENTER_SCALE]</span></code>
+with <code class="docutils literal notranslate"><span class="pre">CENTER_SCALE</span> <span class="pre">=</span> <span class="pre">0.14</span></code> (FOV-normalised center).</p></li>
+<li><p>Loss: weighted L1 on inclination, PA (via sin/cos), and center.</p></li>
+<li><p>Optimiser: AdamW + linear warmup (5 epochs) + cosine decay; grad clip 2.0.</p></li>
 </ul>
-<p>The combined dataset is split 90/10 into training and validation subsets.
-The model trained is <code class="docutils literal notranslate"><span class="pre">DiskNet</span></code> (equivalent in architecture to
-<a class="reference internal" href="api/cnn_inference.html#disco.core.cnn_inference.DiscoNet" title="disco.core.cnn_inference.DiscoNet"><code class="xref py py-class docutils literal notranslate"><span class="pre">disco.core.cnn_inference.DiscoNet</span></code></a>).</p>
-<p><strong>Training configuration:</strong></p>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 30.0%" />
-<col style="width: 70.0%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Hyperparameter</p></th>
-<th class="head"><p>Value / Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>Input size</p></td>
-<td><p>3 × IMG_SIZE × IMG_SIZE (3-channel: normalised intensity, beam map,
-beam scale map)</p></td>
-</tr>
-<tr class="row-odd"><td><p>Outputs</p></td>
-<td><p>5: <code class="docutils literal notranslate"><span class="pre">[incl/90,</span> <span class="pre">sin2PA,</span> <span class="pre">cos2PA,</span> <span class="pre">dx/0.14,</span> <span class="pre">dy/0.14]</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p>Optimiser</p></td>
-<td><p>AdamW, <code class="docutils literal notranslate"><span class="pre">lr=LEARNING_RATE</span></code>, <code class="docutils literal notranslate"><span class="pre">weight_decay=1e-3</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p>LR schedule</p></td>
-<td><p>Linear warmup (5 epochs) + cosine decay to 10% of initial LR</p></td>
-</tr>
-<tr class="row-even"><td><p>Gradient clipping</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">max_norm=2.0</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p>Mixup augmentation</p></td>
-<td><p>Applied with probability 0.5 per batch</p></td>
-</tr>
-<tr class="row-even"><td><p>Batch dropout</p></td>
-<td><p>0.45 (first head layer), 0.30 (second head layer)</p></td>
-</tr>
-</tbody>
-</table>
-<p>The best checkpoint (lowest validation loss) is saved to
-<code class="docutils literal notranslate"><span class="pre">MODEL_SAVE_PATH</span></code> (configured in the script) with the following
-checkpoint schema:</p>
+</section>
+<section id="checkpoint-schema">
+<h2>Checkpoint schema<a class="headerlink" href="#checkpoint-schema" title="Link to this heading"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;epoch&quot;</span><span class="p">:</span>       <span class="nb">int</span><span class="p">,</span>
     <span class="s2">&quot;model_state&quot;</span><span class="p">:</span> <span class="n">OrderedDict</span><span class="p">,</span>
     <span class="s2">&quot;val_loss&quot;</span><span class="p">:</span>    <span class="nb">float</span><span class="p">,</span>
-    <span class="s2">&quot;img_size&quot;</span><span class="p">:</span>    <span class="nb">int</span><span class="p">,</span>
-    <span class="s2">&quot;n_out&quot;</span><span class="p">:</span>       <span class="nb">int</span><span class="p">,</span>
+    <span class="s2">&quot;img_size&quot;</span><span class="p">:</span>    <span class="nb">int</span><span class="p">,</span>   <span class="c1"># 128</span>
+    <span class="s2">&quot;n_out&quot;</span><span class="p">:</span>       <span class="nb">int</span><span class="p">,</span>   <span class="c1"># 5</span>
     <span class="s2">&quot;outputs&quot;</span><span class="p">:</span>     <span class="p">[</span><span class="s2">&quot;incl/90&quot;</span><span class="p">,</span> <span class="s2">&quot;sin2PA&quot;</span><span class="p">,</span> <span class="s2">&quot;cos2PA&quot;</span><span class="p">,</span> <span class="s2">&quot;dx/0.14&quot;</span><span class="p">,</span> <span class="s2">&quot;dy/0.14&quot;</span><span class="p">],</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>This checkpoint is the file distributed as <code class="docutils literal notranslate"><span class="pre">disco/models/disco_model_stable.pth</span></code>.</p>
+</section>
+<section id="validation-note">
+<h2>Validation note<a class="headerlink" href="#validation-note" title="Link to this heading"></a></h2>
+<p>Geometric accuracy on real ALMA disks is assessed with the CLI hybrid
+pipeline against literature values (e.g. DSHARP). Typical hybrid MAE on
+inclination is ~1.7° (DSHARP) / ~3° (DSHARP+ODISEA). Face-on disks
+(<span class="math notranslate nohighlight">\(i \lesssim 25°\)</span>) have poorly constrained continuum PA; the
+plot <span class="math notranslate nohighlight">\(\pm\)</span> from <code class="docutils literal notranslate"><span class="pre">estimate_geometry_errors</span></code> is a <strong>loss-curvature</strong>
+indicator, not a literature <span class="math notranslate nohighlight">\(1\sigma\)</span>.</p>
 </section>
 </section>
 
