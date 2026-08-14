@@ -187,12 +187,13 @@ A typical session follows these steps:
 Click the **folder icon** in the toolbar and select your `.fits` file. The image will appear in the viewer and the FITS header will populate automatically in the metadata panel.
 
 **2. Adjust the disk geometry**
-In the **CONTROLS** panel on the left, use the sliders to set the initial geometric parameters:
+In the **Render Configuration** panel, use the sliders to set the initial geometric parameters:
 
 - **Inclination** — disk inclination in degrees (0° = face-on, 90° = edge-on).
 - **Position Angle** — orientation of the disk major axis in degrees.
+- **FOV** — full width of the deprojected square view in arcseconds (Radius Out cannot exceed FOV/2).
 - **Radius Out** — estimated outer disk radius in arcseconds.
-- **Center X / Y** — pixel coordinates of the disk center (auto-initialized to the image midpoint).
+- **Center X / Y** — pixel coordinates of the disk centre (auto-initialised to the image midpoint).
 
 Activate the **Ellipse Tool** in the toolbar to display the geometry overlay on the image. As you move the sliders, the ellipse updates live so you can visually align it with the disk before running the pipeline.
 
