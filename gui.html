@@ -302,6 +302,13 @@ launched with:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>disco-start<span class="w"> </span>gui
 </pre></div>
 </div>
+<figure class="align-center" id="id1">
+<img alt="DISCO GUI mosaic: File Header, Image Viewer, Render Configuration, Scientific Analysis" src="_images/gui_screenshot.png" />
+<figcaption>
+<p><span class="caption-text">Mosaic layout of the GUI (v1.2.5): File Header, Image Viewer with
+ellipse overlay, Render Configuration, and Scientific Analysis.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
 <p>The server binds to the first free TCP port starting at 8000 and opens a
 browser tab automatically after a 1.5-second delay via a background thread.
 Check the terminal for the URL (for example <code class="docutils literal notranslate"><span class="pre">http://localhost:8000</span></code>, or
@@ -377,9 +384,9 @@ identified by internal window identifiers:</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CONTROLS</span></code></p></td>
-<td><p>Geometry parameter controls (inclination, position angle, outer
-radius, centre pixel coordinates), active filename display, and the
-<strong>RUN PIPELINE</strong> button.</p></td>
+<td><p>Geometry parameter controls (inclination, position angle, FOV,
+outer radius, centre pixel coordinates), active filename display,
+and the <strong>RUN PIPELINE</strong> button.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">VIEWER</span></code></p></td>
 <td><p>Interactive canvas viewer (<code class="docutils literal notranslate"><span class="pre">InteractiveViewer.jsx</span></code> wrapping
@@ -416,6 +423,13 @@ parameters are restored and the referenced FITS filename is reloaded via
 <hr class="docutils" />
 <section id="toolbar-reference">
 <h2>Toolbar Reference<a class="headerlink" href="#toolbar-reference" title="Link to this heading"></a></h2>
+<figure class="align-center" id="id2">
+<img alt="DISCO GUI toolbar" src="_images/gui_screenshot_tools.png" />
+<figcaption>
+<p><span class="caption-text">Toolbar (v1.2.5): open, save session, fullscreen, close, ellipse, pan,
+and inspector. The active tool is highlighted in purple.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
 <p>The toolbar provides file management and viewer interaction controls. The
 active mode is highlighted with a purple background.</p>
 <table class="docutils align-default">
@@ -489,15 +503,19 @@ transmitted to <code class="docutils literal notranslate"><span class="pre">POST
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pa</span></code></p></td>
 <td><p>Position angle in degrees (slider + numeric input, range 0–180°).</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">rout</span></code></p></td>
-<td><p>Outer disk radius in arcseconds (slider + numeric input, range
-0.1–10 arcsec).</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fov</span></code></p></td>
+<td><p>Full width of the deprojected square view in arcseconds. Radius Out
+cannot exceed FOV/2.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cx</span></code>, <code class="docutils literal notranslate"><span class="pre">cy</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">rout</span></code></p></td>
+<td><p>Outer disk radius in arcseconds (slider + numeric input; capped by
+FOV/2).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cx</span></code>, <code class="docutils literal notranslate"><span class="pre">cy</span></code></p></td>
 <td><p>Pixel coordinates of the disk centre (numeric inputs; initialised
 to the image midpoint on load).</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fit_rmin</span></code>, <code class="docutils literal notranslate"><span class="pre">fit_rmax</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fit_rmin</span></code>, <code class="docutils literal notranslate"><span class="pre">fit_rmax</span></code></p></td>
 <td><p>Radial range boundaries for Gaussian ring fitting (set by
 drag-selection on the profile chart or image canvas).</p></td>
 </tr>

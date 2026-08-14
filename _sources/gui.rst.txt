@@ -11,6 +11,13 @@ launched with:
 
    disco-start gui
 
+.. figure:: _static/gui_screenshot.png
+   :alt: DISCO GUI mosaic: File Header, Image Viewer, Render Configuration, Scientific Analysis
+   :align: center
+
+   Mosaic layout of the GUI (v1.2.5): File Header, Image Viewer with
+   ellipse overlay, Render Configuration, and Scientific Analysis.
+
 The server binds to the first free TCP port starting at 8000 and opens a
 browser tab automatically after a 1.5-second delay via a background thread.
 Check the terminal for the URL (for example ``http://localhost:8000``, or
@@ -99,9 +106,9 @@ identified by internal window identifiers:
    * - Panel ID
      - Content
    * - ``CONTROLS``
-     - Geometry parameter controls (inclination, position angle, outer
-       radius, centre pixel coordinates), active filename display, and the
-       **RUN PIPELINE** button.
+     - Geometry parameter controls (inclination, position angle, FOV,
+       outer radius, centre pixel coordinates), active filename display,
+       and the **RUN PIPELINE** button.
    * - ``VIEWER``
      - Interactive canvas viewer (``InteractiveViewer.jsx`` wrapping
        ``SimpleImageViewer.jsx``) showing the currently-loaded FITS image
@@ -135,6 +142,13 @@ Files are loaded via two mechanisms:
 
 Toolbar Reference
 -----------------
+
+.. figure:: _static/gui_screenshot_tools.png
+   :alt: DISCO GUI toolbar
+   :align: center
+
+   Toolbar (v1.2.5): open, save session, fullscreen, close, ellipse, pan,
+   and inspector. The active tool is highlighted in purple.
 
 The toolbar provides file management and viewer interaction controls. The
 active mode is highlighted with a purple background.
@@ -191,9 +205,12 @@ transmitted to ``POST /run_pipeline`` on each pipeline execution:
      - Disk inclination in degrees (slider + numeric input, range 0–90°).
    * - ``pa``
      - Position angle in degrees (slider + numeric input, range 0–180°).
+   * - ``fov``
+     - Full width of the deprojected square view in arcseconds. Radius Out
+       cannot exceed FOV/2.
    * - ``rout``
-     - Outer disk radius in arcseconds (slider + numeric input, range
-       0.1–10 arcsec).
+     - Outer disk radius in arcseconds (slider + numeric input; capped by
+       FOV/2).
    * - ``cx``, ``cy``
      - Pixel coordinates of the disk centre (numeric inputs; initialised
        to the image midpoint on load).
