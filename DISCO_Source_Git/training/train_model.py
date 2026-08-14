@@ -8,8 +8,6 @@ as inference). Saves ``disco_model_stable.pth`` compatible with the package.
 from __future__ import annotations
 
 import argparse
-import csv
-import glob
 import os
 import sys
 from datetime import datetime
@@ -19,7 +17,6 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from astropy.io import fits
 from scipy.ndimage import gaussian_filter
 from scipy.signal import convolve2d
 from torch.utils.data import DataLoader, Dataset, Subset
@@ -37,175 +34,11 @@ from disco.core.cnn_preprocess import (  # noqa: E402
     elliptical_beam_map,
     encode_labels,
     normalize_percentile,
-    resize_to_square,
     scale_map,
     stack_cnn_channels,
-    transform_beam_map,
-    transform_center_fov,
-    rotate_pa_deg,
 )
 
 DEFAULT_SAVE = "disco_model_stable.pth"
-BEAM_MAS = {
-    "alma.cycle9.5.cfg": 130,
-    "alma.cycle9.6.cfg": 80,
-    "alma.cycle9.7.cfg": 50,
-    "alma.cycle9.8.cfg": 28,
-    "alma.cycle9.9.cfg": 18,
-}
-
-
-class FITSDataset(Dataset):
-    """One sample per FITS; augmentation applied in ``__getitem__``."""
-
-    def __init__(
-        self,
-        simulations_dir="simulations",
-        catalog="catalogo_piloto.csv",
-        img_size=IMG_SIZE,
-        seed=0,
-        augment=True,
-    ):
-        self.img_size = img_size
-        self.augment = augment
-        self.rng = np.random.RandomState(seed)
-
-        catalog_dict = {}
-        if os.path.isfile(catalog):
-            with open(catalog, newline="") as f:
-                catalog_dict = {row["ID"]: row for row in csv.DictReader(f)}
-
-        fits_files = sorted(
-            glob.glob(os.path.join(simulations_dir, "**", "*_simulated.fits"), recursive=True)
-        )
-        print(f"  [FITSDataset] Found {len(fits_files)} FITS files")
-
-        self.samples = []
-        success = error = 0
-
-        for file_path in fits_files:
-            file_name = os.path.basename(file_path)
-            object_id = file_name.split("_B")[0]
-            row = catalog_dict.get(object_id, {})
-
-            try:
-                with fits.open(file_path) as hdul:
-                    image_data = hdul[0].data.squeeze().astype(np.float32)
-                    header = hdul[0].header
-            except Exception as e:
-                print(f"  [WARN] {object_id}: {e}")
-                error += 1
-                continue
-
-            bmaj_deg = float(header.get("BMAJ", 0) or 0)
-            bmin_deg = float(header.get("BMIN", 0) or 0)
-            bpa_deg = float(header.get("BPA", 0) or 0)
-            bmaj_as = bmaj_deg * 3600.0
-            bmin_as = bmin_deg * 3600.0 if bmin_deg > 0 else bmaj_as
-
-            cdelt2 = abs(float(header.get("CDELT2", 0) or 0))
-            cell_as = cdelt2 * 3600.0 if cdelt2 > 0 else 0.0
-
-            if bmaj_as <= 0:
-                array_cfg = row.get("array_cfg", "alma.cycle9.7.cfg")
-                bmaj_as = BEAM_MAS.get(array_cfg, 50) / 1000.0
-                bmin_as = bmaj_as
-                bpa_deg = 0.0
-
-            original_size = max(image_data.shape[0], 1)
-            if cell_as <= 0:
-                cell_as = (bmaj_as / 6.0) * (original_size / self.img_size)
-
-            eff_cell = cell_as * (original_size / self.img_size)
-            fov_as = eff_cell * self.img_size
-
-            img_norm = normalize_percentile(resize_to_square(image_data, self.img_size))
-            beam = elliptical_beam_map(bmaj_as, bmin_as, bpa_deg, eff_cell, self.img_size)
-            scale = scale_map(bmaj_as, fov_as, self.img_size)
-
-            incl = float(row.get("incl_deg", header.get("INCL", 0)) or 0)
-            pa = float(row.get("pa_deg", header.get("PA", 0)) or 0)
-
-            dx_as = float(header.get("DX_AS", row.get("dx_arcsec", 0) or 0) or 0)
-            dy_as = float(header.get("DY_AS", row.get("dy_arcsec", 0) or 0) or 0)
-            half_fov = fov_as / 2.0
-            dx_fov = dx_as / half_fov if half_fov > 0 else 0.0
-            dy_fov = dy_as / half_fov if half_fov > 0 else 0.0
-
-            self.samples.append(
-                dict(
-                    id=object_id,
-                    img=img_norm,
-                    beam=beam,
-                    scale=scale,
-                    incl=incl,
-                    pa=pa,
-                    dx_fov=dx_fov,
-                    dy_fov=dy_fov,
-                )
-            )
-            success += 1
-
-        print(f"  [FITSDataset] Loaded: {success}  Errors: {error}")
-        self.object_ids = [s["id"] for s in self.samples]
-
-    @classmethod
-    def share_samples(cls, other: "FITSDataset", *, augment: bool, seed: int = 0):
-        """Reuse another dataset's in-memory samples (avoid double FITS I/O/RAM)."""
-        ds = cls.__new__(cls)
-        ds.img_size = other.img_size
-        ds.augment = bool(augment)
-        ds.rng = np.random.RandomState(seed)
-        ds.samples = other.samples
-        ds.object_ids = other.object_ids
-        return ds
-
-    def __len__(self):
-        return len(self.samples)
-
-    def __getitem__(self, idx):
-        s = self.samples[idx]
-        img = s["img"].copy()
-        beam = s["beam"].copy()
-        scale = s["scale"].copy()
-        incl = s["incl"]
-        pa = s["pa"]
-        dx_fov = s["dx_fov"]
-        dy_fov = s["dy_fov"]
-
-        flip_lr = flip_ud = False
-        rot_k = 0
-        if self.augment:
-            flip_lr = self.rng.rand() < 0.5
-            flip_ud = self.rng.rand() < 0.5
-            rot_k = 1 if self.rng.rand() < 0.5 else 0
-
-            if flip_lr:
-                img = np.fliplr(img).copy()
-            if flip_ud:
-                img = np.flipud(img).copy()
-            if rot_k:
-                img = np.rot90(img, k=rot_k).copy()
-
-            beam = transform_beam_map(beam, flip_lr=flip_lr, flip_ud=flip_ud, rot90_k=rot_k)
-            pa = rotate_pa_deg(pa, flip_lr=flip_lr, flip_ud=flip_ud, rot90_k=rot_k)
-            dx_fov, dy_fov = transform_center_fov(
-                dx_fov, dy_fov, flip_lr=flip_lr, flip_ud=flip_ud, rot90_k=rot_k
-            )
-
-            cy = cx = self.img_size // 2
-            y_g, x_g = np.ogrid[: self.img_size, : self.img_size]
-            radii = np.sqrt((y_g - cy) ** 2 + (x_g - cx) ** 2)
-            border = radii > 0.80 * min(cy, cx)
-            rms = float(np.std(img[border])) if np.any(border) else 0.01
-            img = img + self.rng.normal(0, self.rng.uniform(0.05, 0.15) * rms, img.shape).astype(
-                np.float32
-            )
-            img = np.clip(img, 0, 1)
-
-        labels = encode_labels(incl, pa, dx_fov=dx_fov, dy_fov=dy_fov)
-        tensor = stack_cnn_channels(img, beam, scale)
-        return torch.tensor(tensor), torch.tensor(labels)
 
 
 class SyntheticDataset(Dataset):
@@ -384,20 +217,6 @@ class SyntheticDataset(Dataset):
         return self.images[idx], self.labels[idx]
 
 
-class AugmentedView(Dataset):
-    """Repeat base indices ``factor`` times (augmentation inside base dataset)."""
-
-    def __init__(self, base: Dataset, factor: int):
-        self.base = base
-        self.factor = max(int(factor), 1)
-
-    def __len__(self):
-        return len(self.base) * self.factor
-
-    def __getitem__(self, idx):
-        return self.base[idx % len(self.base)]
-
-
 def custom_loss(predictions, targets):
     loss_inclination = nn.functional.l1_loss(predictions[:, 0], targets[:, 0])
     loss_pa = nn.functional.l1_loss(predictions[:, 1:3], targets[:, 1:3])
@@ -419,24 +238,9 @@ def mixup_batch(inputs, targets, alpha=0.25):
     return mixed_inputs, mixed_targets
 
 
-def split_fits_by_id(fits_ds: FITSDataset, val_fraction=0.2, seed=42):
-    ids = sorted(set(fits_ds.object_ids))
-    rng = np.random.RandomState(seed)
-    rng.shuffle(ids)
-    n_val = max(1, int(len(ids) * val_fraction)) if ids else 0
-    val_ids = set(ids[:n_val])
-    train_idx = [i for i, oid in enumerate(fits_ds.object_ids) if oid not in val_ids]
-    val_idx = [i for i, oid in enumerate(fits_ds.object_ids) if oid in val_ids]
-    return train_idx, val_idx
-
-
 def parse_args():
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--fits-dir", default="simulations")
-    p.add_argument("--catalog", default="catalogo_piloto.csv")
-    p.add_argument("--synthetic-only", action="store_true")
     p.add_argument("--synthetic-samples", type=int, default=20000)
-    p.add_argument("--aug-factor", type=int, default=40)
     p.add_argument("--epochs", type=int, default=80)
     p.add_argument("--batch-size", type=int, default=32)
     p.add_argument("--lr", type=float, default=3e-4)
@@ -457,29 +261,6 @@ def main():
     print(f"[INFO] Device: {device}")
     print(f"[INFO] IMG_SIZE={IMG_SIZE}  Epochs={args.epochs}  Batch={args.batch_size}")
 
-    train_parts = []
-    val_parts = []
-
-    if not args.synthetic_only:
-        print("\n[INFO] Loading FITS dataset ...")
-        fits_all = FITSDataset(
-            simulations_dir=args.fits_dir,
-            catalog=args.catalog,
-            img_size=IMG_SIZE,
-            seed=args.seed,
-            augment=True,
-        )
-        fits_val_base = FITSDataset.share_samples(
-            fits_all, augment=False, seed=args.seed + 1
-        )
-        if len(fits_all) == 0:
-            print("[WARN] No FITS found — continuing with synthetic only.")
-        else:
-            tr_idx, va_idx = split_fits_by_id(fits_all, val_fraction=0.2, seed=args.seed)
-            print(f"  [SPLIT] FITS train IDs: {len(tr_idx)}  val IDs: {len(va_idx)}")
-            train_parts.append(AugmentedView(Subset(fits_all, tr_idx), args.aug_factor))
-            val_parts.append(Subset(fits_val_base, va_idx))
-
     print("\n[INFO] Generating synthetic dataset ...")
     synth = SyntheticDataset(num_samples=args.synthetic_samples, img_size=IMG_SIZE, seed=args.seed)
     n_synth_val = max(int(len(synth) * 0.10), 1)
@@ -488,13 +269,8 @@ def main():
     rng.shuffle(synth_idx)
     val_s = synth_idx[:n_synth_val].tolist()
     tr_s = synth_idx[n_synth_val:].tolist()
-    train_parts.append(Subset(synth, tr_s))
-    val_parts.append(Subset(synth, val_s))
-
-    from torch.utils.data import ConcatDataset
-
-    train_ds = ConcatDataset(train_parts)
-    val_ds = ConcatDataset(val_parts)
+    train_ds = Subset(synth, tr_s)
+    val_ds = Subset(synth, val_s)
     print(f"\n[INFO] Train: {len(train_ds)}  |  Val: {len(val_ds)}")
 
     train_loader = DataLoader(

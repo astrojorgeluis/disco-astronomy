@@ -22,6 +22,8 @@ README wording was corrected. Cite the software as v1.2.6.
   file. ``--incl`` + ``--pa`` still override fitted angles.
 * Docs / README explain grouping and ``--ref``; confirmation prompt still
   prints the grouping mode.
+* Training docs and ``training/`` are synthetic-only. CASA simulation
+  scripts are not part of DISCO.
 
 
 Version 1.2.5
@@ -76,7 +78,7 @@ GUI
 Docs / packaging
 ~~~~~~~~~~~~~~~~
 
-* Training docs describe the v1.2.5 synthetic recipe and optional CASA path.
+* Training docs describe the v1.2.5 synthetic recipe.
 * Pipeline / API docs aligned with L-BFGS-B hybrid path.
 * Citation uses the Zenodo all-versions DOI ``10.5281/zenodo.19999239``
   (resolves to the latest release; no Software Heritage id yet).
