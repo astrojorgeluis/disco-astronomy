@@ -299,14 +299,19 @@ Click **Settings** in the analysis panel toolbar to access visualization control
 
 ## CLI Pipeline
 
-The CLI pipeline is designed for automated, reproducible processing without any browser interaction. It discovers FITS files in the working directory, groups them by source name and spectral band, and processes each group through five sequential phases: FITS reading → geometry optimization → beam homogenization → deprojection & profile extraction → output writing.
+The CLI pipeline is designed for automated, reproducible processing without any browser interaction. It discovers FITS files under the **current working directory** (or under paths you pass explicitly), groups them by source name and spectral band, and processes each group through five sequential phases: FITS reading → geometry optimization → beam homogenization → deprojection & profile extraction → output writing.
+
+**Important:** run the CLI from the directory that holds your science FITS (or pass `path/to/group/` / `path/to/disk.fits`). Do **not** launch `disco-start` from your home folder or another broad tree — with no identifier it can discover and process many unrelated FITS.
 
 DiscoNet weights are loaded once at startup and reused across all groups. If the model file is absent, the pipeline falls back to analytical geometry optimization.
 
 ### Usage Examples
 
 ```bash
-# Process ALL FITS files found in the current working directory
+# Prefer: cd into the folder with your FITS first
+cd /path/to/your/fits/
+
+# Process ALL FITS files found under the current working directory
 disco-start
 
 # Process a single object by name prefix
@@ -331,7 +336,7 @@ disco-start AS209 --rout 1.2 --homobeam off
 disco-start AS209 Elias29 --homobeam on --beam 0.15
 ```
 
-> If no `identifier` is provided, DISCO discovers and processes **all** FITS files found in the current directory tree.
+> If no `identifier` is provided, DISCO discovers and processes **all** FITS files found in the current directory tree — so start from a folder that only (or mainly) contains the data you intend to process.
 
 Before scanning, the CLI prints a warning with the current working directory and asks `Are you sure you want to continue? [y/N]`. Confirm with `y` / `yes` to proceed (this is intentional — avoid skipping it in normal use).
 
