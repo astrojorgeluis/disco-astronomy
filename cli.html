@@ -397,9 +397,8 @@ centre and outer radius overlay.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-y</span></code>, <code class="docutils literal notranslate"><span class="pre">--yes</span></code></p></td>
 <td><p>off</p></td>
-<td><p>Skip the interactive confirmation prompt before FITS scanning.
-Required in non-interactive sessions (no TTY); otherwise the CLI
-exits with an error asking you to pass <code class="docutils literal notranslate"><span class="pre">--yes</span></code>.</p></td>
+<td><p>Escape hatch to skip the confirmation prompt. Prefer answering
+<code class="docutils literal notranslate"><span class="pre">y</span></code> at the prompt in normal interactive use.</p></td>
 </tr>
 </tbody>
 </table>
@@ -411,8 +410,8 @@ working directory and asks:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Are you sure you want to continue? [y/N]:
 </pre></div>
 </div>
-<p>Answer <code class="docutils literal notranslate"><span class="pre">y</span></code> or <code class="docutils literal notranslate"><span class="pre">yes</span></code> to proceed, or anything else to cancel. Use
-<code class="docutils literal notranslate"><span class="pre">-y</span></code> / <code class="docutils literal notranslate"><span class="pre">--yes</span></code> to bypass this prompt (for scripts and CI).</p>
+<p>Answer <code class="docutils literal notranslate"><span class="pre">y</span></code> or <code class="docutils literal notranslate"><span class="pre">yes</span></code> to proceed, or anything else to cancel. The prompt
+is intentional so users confirm before FITS scanning begins.</p>
 </section>
 <section id="usage-examples">
 <h2>Usage Examples<a class="headerlink" href="#usage-examples" title="Link to this heading"></a></h2>
@@ -439,10 +438,6 @@ disco-start<span class="w"> </span>AS209<span class="w"> </span>--rout<span clas
 
 <span class="c1"># Specify a custom homogenisation beam size</span>
 disco-start<span class="w"> </span>AS209<span class="w"> </span>Elias29<span class="w"> </span>--homobeam<span class="w"> </span>on<span class="w"> </span>--beam<span class="w"> </span><span class="m">0</span>.15
-
-<span class="c1"># Skip confirmation (scripts / non-interactive)</span>
-disco-start<span class="w"> </span>AS209<span class="w"> </span>--yes
-disco-start<span class="w"> </span>path/to/disk.fits<span class="w"> </span>-y
 </pre></div>
 </div>
 </section>

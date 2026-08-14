@@ -365,9 +365,6 @@ disco-start<span class="w"> </span>AS209<span class="w"> </span>--rout<span clas
 
 <span class="c1"># Specify a custom homogenisation beam size and enable debug output</span>
 disco-start<span class="w"> </span>AS209<span class="w"> </span>Elias29<span class="w"> </span>--homobeam<span class="w"> </span>on<span class="w"> </span>--beam<span class="w"> </span><span class="m">0</span>.15<span class="w"> </span>--debug<span class="w"> </span>on
-
-<span class="c1"># Skip the interactive confirmation prompt (required in non-interactive sessions)</span>
-disco-start<span class="w"> </span>AS209<span class="w"> </span>--yes
 </pre></div>
 </div>
 <p>The pipeline discovers FITS files, groups them by common prefix
@@ -378,8 +375,8 @@ estimation, radial profile extraction, and result serialisation. See
 for the full argument reference.</p>
 <p>Before scanning, the CLI prints a warning with the current working directory
 and asks for confirmation (<code class="docutils literal notranslate"><span class="pre">Are</span> <span class="pre">you</span> <span class="pre">sure</span> <span class="pre">you</span> <span class="pre">want</span> <span class="pre">to</span> <span class="pre">continue?</span> <span class="pre">[y/N]</span></code>).
-Pass <code class="docutils literal notranslate"><span class="pre">-y</span></code> / <code class="docutils literal notranslate"><span class="pre">--yes</span></code> to skip the prompt, or use it in non-interactive
-sessions where confirmation cannot be entered.</p>
+Answer <code class="docutils literal notranslate"><span class="pre">y</span></code> / <code class="docutils literal notranslate"><span class="pre">yes</span></code> to proceed. This prompt is intentional — do not skip
+it in normal interactive use.</p>
 </section>
 </section>
 

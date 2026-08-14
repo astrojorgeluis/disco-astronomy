@@ -91,9 +91,6 @@ directory:
    # Specify a custom homogenisation beam size and enable debug output
    disco-start AS209 Elias29 --homobeam on --beam 0.15 --debug on
 
-   # Skip the interactive confirmation prompt (required in non-interactive sessions)
-   disco-start AS209 --yes
-
 The pipeline discovers FITS files, groups them by common prefix
 (distinguishing multi-band observations), and processes each group through a
 five-phase sequence: FITS ingestion, geometry optimisation, uncertainty
@@ -103,5 +100,5 @@ for the full argument reference.
 
 Before scanning, the CLI prints a warning with the current working directory
 and asks for confirmation (``Are you sure you want to continue? [y/N]``).
-Pass ``-y`` / ``--yes`` to skip the prompt, or use it in non-interactive
-sessions where confirmation cannot be entered.
+Answer ``y`` / ``yes`` to proceed. This prompt is intentional — do not skip
+it in normal interactive use.

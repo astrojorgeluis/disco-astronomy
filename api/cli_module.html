@@ -312,7 +312,7 @@ the parent directory name to disambiguate sources at different directory
 levels.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>base_dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Root directory to search.</p>
+<dd class="field-odd"><p><strong>base_dir</strong> (<em>str</em>) – Root directory to search.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>List of group dictionaries, each with keys:
@@ -320,7 +320,7 @@ levels.</p>
 <code class="docutils literal notranslate"><span class="pre">&quot;output_dir&quot;</span></code> (str).</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a>]</p>
+<dd class="field-odd"><p>list[dict]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -332,11 +332,11 @@ levels.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>files_to_process</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – Ordered list of FITS file paths.</p></li>
-<li><p><strong>group_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Human-readable group identifier (used in output
+<li><p><strong>files_to_process</strong> (<em>list</em>) – Ordered list of FITS file paths.</p></li>
+<li><p><strong>group_name</strong> (<em>str</em>) – Human-readable group identifier (used in output
 filenames).</p></li>
-<li><p><strong>output_dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Directory where output files are written.</p></li>
-<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.Namespace" title="(in Python v3.14)"><em>argparse.Namespace</em></a>) – Parsed command-line arguments. Relevant
+<li><p><strong>output_dir</strong> (<em>str</em>) – Directory where output files are written.</p></li>
+<li><p><strong>args</strong> (<em>argparse.Namespace</em>) – Parsed command-line arguments. Relevant
 attributes: <code class="docutils literal notranslate"><span class="pre">rout</span></code>, <code class="docutils literal notranslate"><span class="pre">rmin</span></code>, <code class="docutils literal notranslate"><span class="pre">incl</span></code>,
 <code class="docutils literal notranslate"><span class="pre">pa</span></code>, <code class="docutils literal notranslate"><span class="pre">beam</span></code>, <code class="docutils literal notranslate"><span class="pre">homobeam</span></code>, <code class="docutils literal notranslate"><span class="pre">csv</span></code>,
 <code class="docutils literal notranslate"><span class="pre">debug</span></code>, <code class="docutils literal notranslate"><span class="pre">yes</span></code>.</p></li>
@@ -360,9 +360,8 @@ to use analytical-only geometry.</p></li>
 <span class="sig-prename descclassname"><span class="pre">disco.cli.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/cli.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.cli.main" title="Link to this definition"></a></dt>
 <dd><p>Parse command-line arguments and orchestrate the full pipeline execution
 across all matched groups. Before scanning, prints a confirmation prompt
-(<code class="docutils literal notranslate"><span class="pre">Are</span> <span class="pre">you</span> <span class="pre">sure</span> <span class="pre">you</span> <span class="pre">want</span> <span class="pre">to</span> <span class="pre">continue?</span> <span class="pre">[y/N]</span></code>) unless <code class="docutils literal notranslate"><span class="pre">-y</span></code> / <code class="docutils literal notranslate"><span class="pre">--yes</span></code>
-is set; non-interactive sessions without <code class="docutils literal notranslate"><span class="pre">--yes</span></code> exit with an error.
-Identifiers may be object name prefixes, directory paths, or direct
+(<code class="docutils literal notranslate"><span class="pre">Are</span> <span class="pre">you</span> <span class="pre">sure</span> <span class="pre">you</span> <span class="pre">want</span> <span class="pre">to</span> <span class="pre">continue?</span> <span class="pre">[y/N]</span></code>); answer <code class="docutils literal notranslate"><span class="pre">y</span></code> / <code class="docutils literal notranslate"><span class="pre">yes</span></code> to
+proceed. The prompt is intentional for interactive use. Identifiers may be object name prefixes, directory paths, or direct
 <code class="docutils literal notranslate"><span class="pre">.fits</span></code> paths. Loads the DiscoNet model once before iterating over
 groups. Groups are processed sequentially with a <code class="docutils literal notranslate"><span class="pre">tqdm</span></code> outer progress
 bar. Processing failures for individual groups are logged but do not
