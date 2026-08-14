@@ -39,34 +39,95 @@ from tqdm import tqdm
 
 
 
-def discover_groups(base_dir):
+def discover_groups(base_dir, mode="file"):
+    """Discover FITS groups under ``base_dir``.
+
+    Parameters
+    ----------
+    mode : {"file", "dir", "name"}
+        ``file`` — each FITS file is its own group (default; safest).
+        ``dir`` — all FITS sitting directly in the same folder are one group
+        (nested folders remain separate groups).
+        ``name`` — legacy split on ``BandN`` / ``_Band6`` in the filename.
+    """
+    if mode not in ("file", "dir", "name"):
+        raise ValueError(f"Unknown grouping mode: {mode!r}")
+
     groups = []
+    base_dir = os.path.abspath(os.path.expanduser(base_dir))
 
     for root, _, files in os.walk(base_dir):
-        fits_files = [os.path.join(root, f) for f in files if f.lower().endswith('.fits')]
-
+        fits_files = sorted(
+            os.path.join(root, f)
+            for f in files
+            if f.lower().endswith((".fits", ".fit"))
+        )
         if not fits_files:
             continue
 
         parent_name = os.path.basename(os.path.dirname(root))
+        dir_label = os.path.basename(root.rstrip(os.sep)) or "group"
 
-        grouped = {}
-        for fpath in fits_files:
-            stem = os.path.splitext(os.path.basename(fpath))[0]
-            parts = re.split(r'_?[Bb]and_?\d+', stem, maxsplit=1)
-            prefix = parts[0].rstrip('_') if parts[0] else stem
-            grouped.setdefault(prefix, []).append(fpath)
-
-        for prefix, group_files in grouped.items():
-            group_name = f"{parent_name}_{prefix}" if parent_name else prefix
-            output_dir = os.path.join(root, prefix)
+        if mode == "file":
+            for fpath in fits_files:
+                stem = os.path.splitext(os.path.basename(fpath))[0]
+                groups.append({
+                    "name": stem,
+                    "files": [fpath],
+                    "output_dir": os.path.join(os.path.dirname(fpath), stem),
+                })
+        elif mode == "dir":
             groups.append({
-                "name": group_name,
-                "files": sorted(group_files),
-                "output_dir": output_dir,
+                "name": dir_label,
+                "files": fits_files,
+                "output_dir": os.path.join(root, dir_label),
             })
+        else:
+            grouped = {}
+            for fpath in fits_files:
+                stem = os.path.splitext(os.path.basename(fpath))[0]
+                parts = re.split(r'_?[Bb]and_?\d+', stem, maxsplit=1)
+                prefix = parts[0].rstrip('_') if parts[0] else stem
+                grouped.setdefault(prefix, []).append(fpath)
+            for prefix, group_files in grouped.items():
+                group_name = f"{parent_name}_{prefix}" if parent_name else prefix
+                groups.append({
+                    "name": group_name,
+                    "files": sorted(group_files),
+                    "output_dir": os.path.join(root, prefix),
+                })
 
     return groups
+
+
+def resolve_geometry_ref(temp_data, ref):
+    """Return the unique index in ``temp_data`` matching ``--ref``.
+
+    ``ref`` may be a full path, a basename, or a unique substring of the
+    filename. Raises ``ValueError`` if zero or more than one file matches.
+    """
+    ref_n = os.path.expanduser(str(ref)).strip()
+    if not ref_n:
+        raise ValueError("--ref is empty")
+    ref_abs = os.path.abspath(ref_n)
+    ref_base = os.path.basename(ref_n)
+    exact, subst = [], []
+    for i, item in enumerate(temp_data):
+        fp = os.path.abspath(item.get("filepath") or item["filename"])
+        fn = item["filename"]
+        if fp == ref_abs or fn == ref_base:
+            exact.append(i)
+        elif ref_n.lower() in fn.lower() or ref_n.lower() in fp.lower():
+            subst.append(i)
+    hits = exact if exact else subst
+    if len(hits) != 1:
+        names = [t["filename"] for t in temp_data]
+        raise ValueError(
+            f"--ref {ref!r} matched {len(hits)} file(s) in this group "
+            f"(need exactly 1). Files: {names}"
+        )
+    return hits[0]
+
 
 def run_pipeline(files_to_process, group_name, output_dir, args, cnn_model):
     tqdm.write(f"\n{'='*60}")
@@ -120,7 +181,8 @@ def run_pipeline(files_to_process, group_name, output_dir, args, cnn_model):
                 max_auto_rout = max(max_auto_rout, auto_rout)
 
                 temp_data.append({
-                    "filename": filename, "data": data, "header": header,
+                    "filename": filename, "filepath": filepath,
+                    "data": data, "header": header,
                     "pixel_scale": pixel_scale, "cx": cx, "cy": cy,
                     "auto_rmin": auto_rmin, "auto_rout": auto_rout,
                     "bmaj": bmaj, "bmin": bmin,
@@ -153,6 +215,17 @@ def run_pipeline(files_to_process, group_name, output_dir, args, cnn_model):
         if score > best_score:
             best_score   = score
             best_img_idx = i
+
+    if getattr(args, "ref", None):
+        try:
+            best_img_idx = resolve_geometry_ref(temp_data, args.ref)
+            tqdm.write(
+                f"[INFO] Geometry reference: {temp_data[best_img_idx]['filename']}"
+            )
+        except ValueError as e:
+            tqdm.write(f"[ERROR] {e}")
+            pbar.close()
+            return
 
     best_item    = temp_data[best_img_idx]
     geom_rout    = max_auto_rout
@@ -541,6 +614,26 @@ def run_pipeline(files_to_process, group_name, output_dir, args, cnn_model):
 def main():
     parser = argparse.ArgumentParser(description="DISCO Automated Pipeline")
     parser.add_argument("identifier", nargs="*", help="Object prefix(es), directory path(s), or FITS file path(s)")
+    parser.add_argument(
+        "--group",
+        choices=["file", "dir", "name"],
+        default="file",
+        help=(
+            "How to group FITS files: 'file' = each FITS is its own group "
+            "(default, safest); 'dir' = all FITS in the same folder are one "
+            "group (multi-band / multi-method); 'name' = legacy split on "
+            "BandN in the filename"
+        ),
+    )
+    parser.add_argument(
+        "--ref",
+        default=None,
+        help=(
+            "FITS used for CNN + hybrid geometry (filename, unique substring, "
+            "or path). Must match exactly one file in each group. "
+            "Ignored for angles if both --incl and --pa are set."
+        ),
+    )
     parser.add_argument("--rout",      type=float, default=None,  help="Force Rout (arcsec)")
     parser.add_argument("--rmin",      type=float, default=0.0,   help="Force Rmin (arcsec)")
     parser.add_argument("--incl",      type=float, default=None,  help="Force inclination (deg)")
@@ -556,6 +649,7 @@ def main():
     print("\n" + "-"*60)
     print("WARNING: DISCO will now scan for and process FITS files.")
     print(f"Current directory: {os.getcwd()}")
+    print(f"Grouping mode (--group): {args.group}")
     print("-"*60)
 
     if not args.yes:
@@ -602,7 +696,7 @@ def main():
                     "output_dir": out_dir,
                 })
             elif os.path.isdir(abs_ident):
-                found = discover_groups(abs_ident)
+                found = discover_groups(abs_ident, mode=args.group)
                 if found:
                     direct_groups.extend(found)
                 else:
@@ -614,7 +708,7 @@ def main():
         groups = direct_groups
     else:
         base_dir = os.getcwd()
-        all_groups = discover_groups(base_dir)
+        all_groups = discover_groups(base_dir, mode=args.group)
         if not all_groups and not direct_groups:
             print("[ERROR] No FITS files found in the current directory tree.")
             sys.exit(1)

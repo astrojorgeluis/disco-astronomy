@@ -13,22 +13,25 @@ argument.
 
 ----
 
-.. function:: discover_groups(base_dir)
+.. function:: discover_groups(base_dir, mode="file")
 
-   Traverse the directory tree rooted at ``base_dir`` and group discovered
-   FITS files by their common source prefix.
+   Traverse the directory tree rooted at ``base_dir`` and group FITS files.
 
-   For each directory containing FITS files, filenames are split on the
-   pattern ``_?[Bb]and_?\d+`` to extract a source prefix. Files sharing the
-   same prefix are aggregated into a group. The group name is prefixed with
-   the parent directory name to disambiguate sources at different directory
-   levels.
+   ``mode`` is ``file`` (one group per FITS, default), ``dir`` (all FITS
+   directly in the same folder), or ``name`` (legacy ``BandN`` prefix split).
 
    :param str base_dir: Root directory to search.
+   :param str mode: Grouping mode (``file``, ``dir``, or ``name``).
    :returns: List of group dictionaries, each with keys:
              ``"name"`` (str), ``"files"`` (list of str),
              ``"output_dir"`` (str).
    :rtype: list[dict]
+
+.. function:: resolve_geometry_ref(temp_data, ref)
+
+   Return the unique index in ``temp_data`` matching ``--ref`` (path,
+   basename, or unique substring). Raises ``ValueError`` if the match
+   count is not exactly one.
 
 .. function:: run_pipeline(files_to_process, group_name, output_dir, args, cnn_model)
 
@@ -41,7 +44,7 @@ argument.
    :param argparse.Namespace args: Parsed command-line arguments. Relevant
                                     attributes: ``rout``, ``rmin``, ``incl``,
                                     ``pa``, ``beam``, ``homobeam``, ``csv``,
-                                    ``debug``, ``yes``.
+                                    ``debug``, ``yes``, ``group``, ``ref``.
    :param DiscoNet | None cnn_model: Pre-loaded DiscoNet model, or ``None``
                                       to use analytical-only geometry.
 

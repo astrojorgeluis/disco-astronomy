@@ -3,8 +3,26 @@
 Changelog
 =========
 
-Version 1.2.5 (current)
+Version 1.2.6 (current)
 -----------------------
+
+CLI grouping is explicit: ``--group file|dir|name`` and ``--ref`` for the
+geometry map. Default ``--group file`` no longer mixes unrelated FITS via
+the old ``BandN`` filename heuristic.
+
+* ``--group file`` (default): one group per FITS file.
+* ``--group dir``: all FITS directly in the same folder are one group
+  (nested directories remain separate).
+* ``--group name``: legacy split on ``BandN`` / ``_Band6`` in the stem.
+* ``--ref`` selects the CNN + hybrid (and Rout / centre) image inside a
+  group by filename, unique substring, or path; must match exactly one
+  file. ``--incl`` + ``--pa`` still override fitted angles.
+* Docs / README explain grouping and ``--ref``; confirmation prompt still
+  prints the grouping mode.
+
+
+Version 1.2.5
+-------------
 
 DiscoNet synthetic training release, hybrid geometry polish, GUI refresh,
 and docs sync.

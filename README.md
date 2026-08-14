@@ -37,6 +37,8 @@
   - [Display Configuration](#display-configuration)
   - [Export & Session Management](#export--session-management)
 - [CLI Pipeline](#cli-pipeline)
+  - [How grouping works (`--group`)](#how-grouping-works---group)
+  - [Geometry reference (`--ref`)](#geometry-reference---ref)
   - [Usage Examples](#usage-examples)
   - [CLI Reference](#cli-reference)
 - [Tech Stack](#tech-stack)
@@ -59,7 +61,7 @@ DISCO bridges scientific Python libraries with a modern web interface, offering 
 
 If you use DISCO in your research, please cite the associated Zenodo record:
 
-Guzmán-Lazo, J. L. (2026). DISCO: Deprojection Image Software for Circumstellar Objects (Version v1.2.5) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.19999239
+Guzmán-Lazo, J. L. (2026). DISCO: Deprojection Image Software for Circumstellar Objects (Version v1.2.6) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.19999239
 
 ### BibTeX
 ```bibtex
@@ -69,7 +71,7 @@ Guzmán-Lazo, J. L. (2026). DISCO: Deprojection Image Software for Circumstellar
   month        = aug,
   year         = 2026,
   publisher    = {Zenodo},
-  version      = {v1.2.5},
+  version      = {v1.2.6},
   doi          = {10.5281/zenodo.19999239},
   url          = {https://doi.org/10.5281/zenodo.19999239},
 }
@@ -87,7 +89,7 @@ DISCO was developed by **Jorge Luis Guzmán-Lazo** within the [YEMS Millennium N
 - **Hybrid Optimization** — CNN prior seeds a differential-evolution + **L-BFGS-B** refinement of a geometric loss on the real FITS image (CLI).
 - **Radial Profiles** — Deprojection and azimuthally averaged profiles, with optional beam homogenization for multi-band groups.
 - **Dual Visualization** — GUI with Cartesian / polar views and interactive ellipse overlay.
-- **Batch CLI** — `disco-start` processes one or many targets (with a confirmation prompt before scanning FITS).
+- **Batch CLI** — `disco-start` processes one or many targets. Grouping is explicit (`--group file|dir|name`; default `file`). `--ref` pins the geometry map inside a multi-file group. Confirmation prompt before scanning FITS.
 - **SIMBAD / Gaia** — GUI SIMBAD metadata; CLI Gaia DR3 proper-motion registration across epochs.
 - **CSV Export** — Geometry and radial profiles (`--csv on`).
 
@@ -298,51 +300,101 @@ Click **Settings** in the analysis panel toolbar to access visualization control
 
 ## CLI Pipeline
 
-The CLI pipeline is designed for automated, reproducible processing without any browser interaction. It discovers FITS files under the **current working directory** (or under paths you pass explicitly), groups them by source name and spectral band, and processes each group through five sequential phases: FITS reading → geometry optimization → beam homogenization → deprojection & profile extraction → output writing.
+The CLI pipeline is designed for automated, reproducible processing without any browser interaction. It discovers FITS files under the **current working directory** (or under paths you pass explicitly), **groups** them according to `--group`, and processes each group through five sequential phases: FITS reading → geometry optimization → beam homogenization → deprojection & profile extraction → output writing.
 
-**Important:** run the CLI from the directory that holds your science FITS (or pass `path/to/group/` / `path/to/disk.fits`). Do **not** launch `disco-start` from your home folder or another broad tree — with no identifier it can discover and process many unrelated FITS.
+**Important:** run the CLI from the directory that holds your science FITS (or pass `path/to/folder/` / `path/to/disk.fits`). Do **not** launch `disco-start` from your home folder or another broad tree — with no identifier it can discover and process many unrelated FITS.
 
 DiscoNet weights are loaded once at startup and reused across all groups. If the model file is absent, the pipeline falls back to analytical geometry optimization.
+
+### How grouping works (`--group`)
+
+DISCO does **not** guess your folder layout. You choose how FITS files become a *group* (a group shares geometry and, if enabled, beam homogenization):
+
+| `--group` | Meaning | When to use |
+|---|---|---|
+| **`file`** (default) | Each `.fits` file is its own group. | Safest. A flat folder of many unrelated sources, or you do not want mixed maps homogenized together. |
+| **`dir`** | All FITS **directly inside the same folder** are one group. Nested folders stay separate (`AS209/*.fits` vs `HD163296/*.fits`). | One object per folder, with several bands or methods (`robust0`, PRIISM, Band 6/7, …). |
+| **`name`** | Legacy: inside each folder, split filenames on `BandN` / `_Band6` / `band7`. Tokens like `B6_` or `priism_b6` are **not** split. | Old `Object_Band6.fits` naming only. |
+
+v1.2.5 always used the `name` heuristic. From **v1.2.6** the default is `file` so unrelated cubes in one directory are not treated as one source.
+
+```bash
+# Default: one pipeline run per FITS (no mixing)
+disco-start /path/to/folder/ --group file
+
+# One source, several reductions/bands in the same folder
+disco-start /path/to/AS209/ --group dir
+
+# Parent with one subdirectory per object
+disco-start /path/to/sample/ --group dir
+#  → group AS209 from sample/AS209/*.fits
+#  → group HD163296 from sample/HD163296/*.fits
+
+# Legacy BandN prefixes (v1.2.5 behaviour)
+disco-start /path/to/folder/ --group name
+```
+
+Name filters still apply on top: `disco-start AS209 --group dir` keeps groups whose paths or filenames contain `AS209`.
+
+### Geometry reference (`--ref`)
+
+In a **multi-file group**, DISCO picks one map for DiscoNet + hybrid (and for Rout / centre). By default that is the highest `SNR / beam_area^1.5`. Cropped restorations (PRIISM, super-resolution) can win that score even when they are a poor CNN prior.
+
+`--ref` forces which file in **that group** is the geometry image:
+
+```bash
+# Basename
+disco-start /path/to/AS209/ --group dir --ref robust0.fits
+
+# Unique substring (must match exactly one file in the group)
+disco-start /path/to/AS209/ --group dir --ref Band6
+
+# Path
+disco-start /path/to/AS209/ --group dir --ref /path/to/AS209/robust0.fits
+```
+
+- Other files in the group still get homogenization (if `--homobeam on`) and profiles **using that geometry**.
+- If both `--incl` and `--pa` are set, those angles win (CNN/hybrid is skipped); `--ref` still selects the map used for centre / Rout.
+- `--ref` must match **exactly one** file in each group; 0 or 2+ matches is an error for that group.
+- The log line `[INFO] Geometry reference: …` shows which map was used.
 
 ### Usage Examples
 
 ```bash
-# Prefer: cd into the folder with your FITS first
+# Prefer: cd into the folder with your FITS first, or pass the path
 cd /path/to/your/fits/
 
-# Process ALL FITS files found under the current working directory
-disco-start
+# Each FITS separately (default)
+disco-start --group file
 
-# Process a single object by name prefix
-disco-start AS209
+# Process a single object by name filter
+disco-start AS209 --group file
 
-# Process multiple objects in one run
-disco-start AS209 Elias29 DoAr25
-
-# Process a directory group
-disco-start path/to/group/
+# Multi-band / multi-method folder as one group, geometry from the robust map
+disco-start path/to/AS209/ --group dir --ref robust0.fits
 
 # Process a FITS file directly
 disco-start path/to/disk.fits
 
 # Force inclination and PA, export CSV and debug image
-disco-start AS209 --incl 35.0 --pa 120.0 --csv on --debug on
+disco-start AS209 --incl 35.0 --pa 120.0 --csv on --debug on --group dir
 
 # Set outer radius and disable beam homogenization
-disco-start AS209 --rout 1.2 --homobeam off
+disco-start AS209 --rout 1.2 --homobeam off --group dir
 
 # Specify a custom homogenization beam size
-disco-start AS209 Elias29 --homobeam on --beam 0.15
+disco-start path/to/AS209/ --group dir --homobeam on --beam 0.15
 ```
 
-> If no `identifier` is provided, DISCO discovers and processes **all** FITS files found in the current directory tree — so start from a folder that only (or mainly) contains the data you intend to process.
+> If no `identifier` is provided, DISCO discovers FITS in the current directory tree and groups them with `--group` (default `file`).
 
-Before scanning, the CLI prints a warning with the current working directory and asks `Are you sure you want to continue? [y/N]`. Confirm with `y` / `yes` to proceed (this is intentional — avoid skipping it in normal use).
+Before scanning, the CLI prints a warning with the current working directory and the grouping mode, then asks `Are you sure you want to continue? [y/N]`. Confirm with `y` / `yes` to proceed (this is intentional — avoid skipping it in normal use).
 
 ### CLI Reference
 
 ```
-usage: disco-start [-h] [--rout ROUT] [--rmin RMIN] [--incl INCL] [--pa PA]
+usage: disco-start [-h] [--group {file,dir,name}] [--ref REF]
+                   [--rout ROUT] [--rmin RMIN] [--incl INCL] [--pa PA]
                    [--beam BEAM] [--homobeam {on,off}] [--csv {on,off}]
                    [--debug {on,off}] [-y] [identifier ...]
 ```
@@ -350,12 +402,14 @@ usage: disco-start [-h] [--rout ROUT] [--rmin RMIN] [--incl INCL] [--pa PA]
 | Argument | Default | Description |
 |---|---|---|
 | `identifier` | *(all FITS in CWD)* | Object name prefix(es), directory path(s), or direct `.fits` file path(s). |
+| `--group {file,dir,name}` | `file` | How to group FITS: one file / one folder / legacy `BandN` name split. |
+| `--ref REF` | auto (SNR/beam score) | Geometry reference inside each group: filename, unique substring, or path. |
 | `--rout ROUT` | auto | Force outer radius in arcsec. Bypasses automatic estimation. |
 | `--rmin RMIN` | `0.0` (auto) | Force inner radius / cavity in arcsec. When `0.0`, auto-detected from beam size. |
 | `--incl INCL` | auto | Force disk inclination in degrees. Must be paired with `--pa` to skip the optimization phase entirely. |
 | `--pa PA` | auto | Force position angle in degrees. Must be paired with `--incl` to skip the optimization phase entirely. |
 | `--beam BEAM` | auto | Target beam size in arcsec for homogenization. Defaults to the largest beam in the group × 1.01. |
-| `--homobeam {on,off}` | `on` | Enable / disable beam homogenization. **Enabled by default.** |
+| `--homobeam {on,off}` | `on` | Enable / disable beam homogenization **inside a group**. **Enabled by default.** |
 | `--csv {on,off}` | `off` | Write CSV outputs: global parameters, per-band metadata, and tabulated radial profiles. |
 | `--debug {on,off}` | `off` | Save a diagnostic PNG overlaying the optimized center and outer radius on the deprojected image. |
 | `-y`, `--yes` | off | Escape hatch to skip the confirmation prompt. Prefer answering `y` at the prompt in normal use. |

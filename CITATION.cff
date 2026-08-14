@@ -7,9 +7,9 @@ authors:
     affiliation: "Universidad de Santiago de Chile (USACH) / YEMS Millennium Nucleus"
     orcid: "https://orcid.org/0009-0006-0883-7659"
 title: "DISCO: Deprojection Image Software for Circumstellar Objects"
-version: 1.2.5
+version: 1.2.6
 doi: "10.5281/zenodo.19999239"
-date-released: 2026-08-13
+date-released: 2026-08-14
 url: "https://github.com/astrojorgeluis/disco-astronomy"
 repository-code: "https://github.com/astrojorgeluis/disco-astronomy"
 keywords:
@@ -25,7 +25,7 @@ preferred-citation:
     - family-names: "Guzmán-Lazo"
       given-names: "Jorge Luis"
   title: "DISCO: Deprojection Image Software for Circumstellar Objects"
-  version: "v1.2.5"
+  version: "v1.2.6"
   year: 2026
   month: 8
   publisher: "Zenodo"
