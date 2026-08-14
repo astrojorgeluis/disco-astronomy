@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>disco.core.fits_utils &mdash; DISCO v1.2.5</title>
+  <title>disco.core.fits_utils &mdash; DISCO v1.2.6</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/custom_disco.css?v=499842b1" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../_static/disco_icon.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=36f53d34"></script>
+      <script src="../_static/documentation_options.js?v=010db75e"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
@@ -88,6 +88,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../cli.html#positional-arguments">Positional Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cli.html#optional-arguments">Optional Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cli.html#confirmation-prompt">Confirmation Prompt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html#grouping-group">Grouping (<code class="docutils literal notranslate"><span class="pre">--group</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html#geometry-reference-ref">Geometry reference (<code class="docutils literal notranslate"><span class="pre">--ref</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cli.html#usage-examples">Usage Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cli.html#cnn-model-loading">CNN Model Loading</a></li>
 </ul>
@@ -213,6 +215,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="cli_module.html"><code class="docutils literal notranslate"><span class="pre">disco.cli</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="cli_module.html#disco.cli.discover_groups"><code class="docutils literal notranslate"><span class="pre">discover_groups()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_module.html#disco.cli.resolve_geometry_ref"><code class="docutils literal notranslate"><span class="pre">resolve_geometry_ref()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli_module.html#disco.cli.run_pipeline"><code class="docutils literal notranslate"><span class="pre">run_pipeline()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli_module.html#disco.cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>
@@ -251,7 +254,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-2-5-current">Version 1.2.5 (current)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-2-6-current">Version 1.2.6 (current)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-2-5">Version 1.2.5</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../changelog.html#cnn-training">CNN / training</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../changelog.html#cli-geometry">CLI / geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../changelog.html#gui">GUI</a></li>
@@ -315,10 +319,10 @@ absent, the Gaia-related functions are no-ops returning <code class="docutils li
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>sigma_maj</strong> (<em>float</em>) – Major-axis Gaussian sigma in pixels.</p></li>
-<li><p><strong>sigma_min</strong> (<em>float</em>) – Minor-axis Gaussian sigma in pixels.</p></li>
-<li><p><strong>bpa_rad</strong> (<em>float</em>) – Beam position angle in radians.</p></li>
-<li><p><strong>size</strong> (<em>int</em>) – Half-width of the kernel (kernel shape is
+<li><p><strong>sigma_maj</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Major-axis Gaussian sigma in pixels.</p></li>
+<li><p><strong>sigma_min</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Minor-axis Gaussian sigma in pixels.</p></li>
+<li><p><strong>bpa_rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Beam position angle in radians.</p></li>
+<li><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Half-width of the kernel (kernel shape is
 <code class="docutils literal notranslate"><span class="pre">(2*size+1,</span> <span class="pre">2*size+1)</span></code>). Default: 15.</p></li>
 </ul>
 </dd>
@@ -326,7 +330,7 @@ absent, the Gaia-related functions are no-ops returning <code class="docutils li
 <dd class="field-even"><p>Normalised 2D kernel array.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>numpy.ndarray</p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -343,12 +347,12 @@ eigendecomposition to recover the convolution kernel axes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>bmaj_t</strong> (<em>float</em>) – Target beam major axis in arcseconds.</p></li>
-<li><p><strong>bmin_t</strong> (<em>float</em>) – Target beam minor axis in arcseconds.</p></li>
-<li><p><strong>pa_t</strong> (<em>float</em>) – Target beam position angle in degrees.</p></li>
-<li><p><strong>bmaj_i</strong> (<em>float</em>) – Input beam major axis in arcseconds.</p></li>
-<li><p><strong>bmin_i</strong> (<em>float</em>) – Input beam minor axis in arcseconds.</p></li>
-<li><p><strong>pa_i</strong> (<em>float</em>) – Input beam position angle in degrees.</p></li>
+<li><p><strong>bmaj_t</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Target beam major axis in arcseconds.</p></li>
+<li><p><strong>bmin_t</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Target beam minor axis in arcseconds.</p></li>
+<li><p><strong>pa_t</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Target beam position angle in degrees.</p></li>
+<li><p><strong>bmaj_i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Input beam major axis in arcseconds.</p></li>
+<li><p><strong>bmin_i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Input beam minor axis in arcseconds.</p></li>
+<li><p><strong>pa_i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Input beam position angle in degrees.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -358,7 +362,7 @@ Returns <code class="docutils literal notranslate"><span class="pre">(None,</spa
 a negative eigenvalue (target beam smaller than input beam).</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple[float, float, float] or tuple[None, None, None]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>] or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[None, None, None]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -373,17 +377,17 @@ beam parameters in arcseconds.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>bmaj_c</strong> (<em>float</em>) – Kernel major axis FWHM in arcseconds.</p></li>
-<li><p><strong>bmin_c</strong> (<em>float</em>) – Kernel minor axis FWHM in arcseconds.</p></li>
-<li><p><strong>pa_c</strong> (<em>float</em>) – Kernel position angle in degrees.</p></li>
-<li><p><strong>pixel_scale</strong> (<em>float</em>) – Pixel scale in arcseconds per pixel.</p></li>
+<li><p><strong>bmaj_c</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Kernel major axis FWHM in arcseconds.</p></li>
+<li><p><strong>bmin_c</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Kernel minor axis FWHM in arcseconds.</p></li>
+<li><p><strong>pa_c</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Kernel position angle in degrees.</p></li>
+<li><p><strong>pixel_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Pixel scale in arcseconds per pixel.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Normalised 2D kernel array.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>numpy.ndarray</p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -404,16 +408,16 @@ bounding-box midpoint is used instead.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>numpy.ndarray</em>) – 2D image array.</p></li>
-<li><p><strong>pixel_scale</strong> (<em>float</em>) – Pixel scale in arcseconds per pixel.</p></li>
-<li><p><strong>header</strong> (<em>dict</em>) – FITS header dictionary (used to read <code class="docutils literal notranslate"><span class="pre">BMAJ</span></code>).</p></li>
+<li><p><strong>data</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – 2D image array.</p></li>
+<li><p><strong>pixel_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Pixel scale in arcseconds per pixel.</p></li>
+<li><p><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – FITS header dictionary (used to read <code class="docutils literal notranslate"><span class="pre">BMAJ</span></code>).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(cx,</span> <span class="pre">cy)</span></code> — pixel coordinates of the estimated centroid.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple[float, float]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -429,18 +433,18 @@ axis from the image data and FITS header.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>numpy.ndarray</em>) – 2D image array.</p></li>
-<li><p><strong>header</strong> (<em>dict</em>) – FITS header.</p></li>
-<li><p><strong>pixel_scale</strong> (<em>float</em>) – Arcsec per pixel.</p></li>
-<li><p><strong>cx</strong> (<em>float</em>) – Centroid x-coordinate in pixels.</p></li>
-<li><p><strong>cy</strong> (<em>float</em>) – Centroid y-coordinate in pixels.</p></li>
+<li><p><strong>data</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – 2D image array.</p></li>
+<li><p><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – FITS header.</p></li>
+<li><p><strong>pixel_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Arcsec per pixel.</p></li>
+<li><p><strong>cx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centroid x-coordinate in pixels.</p></li>
+<li><p><strong>cy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centroid y-coordinate in pixels.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(rmin,</span> <span class="pre">rout,</span> <span class="pre">bmaj)</span></code> in arcseconds.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple[float, float, float]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -456,18 +460,18 @@ search radius, the initial estimate is returned unchanged.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>numpy.ndarray</em>) – 2D image array.</p></li>
-<li><p><strong>header</strong> (<em>dict</em>) – FITS header.</p></li>
-<li><p><strong>pixel_scale</strong> (<em>float</em>) – Arcsec per pixel.</p></li>
-<li><p><strong>cx_init</strong> (<em>float</em>) – Initial centroid x in pixels.</p></li>
-<li><p><strong>cy_init</strong> (<em>float</em>) – Initial centroid y in pixels.</p></li>
+<li><p><strong>data</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – 2D image array.</p></li>
+<li><p><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – FITS header.</p></li>
+<li><p><strong>pixel_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Arcsec per pixel.</p></li>
+<li><p><strong>cx_init</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Initial centroid x in pixels.</p></li>
+<li><p><strong>cy_init</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Initial centroid y in pixels.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(cx,</span> <span class="pre">cy)</span></code> refined centroid in pixels.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple[float, float]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -497,14 +501,14 @@ is converted to brightness temperature <span class="math notranslate nohighlight
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>numpy.ndarray</em>) – 2D image array (in mJy/beam or equivalent).</p></li>
-<li><p><strong>header</strong> (<em>dict</em>) – FITS header (used for <code class="docutils literal notranslate"><span class="pre">BMAJ</span></code>, <code class="docutils literal notranslate"><span class="pre">BMIN</span></code>, <code class="docutils literal notranslate"><span class="pre">RESTFRQ</span></code>).</p></li>
-<li><p><strong>incl</strong> (<em>float</em>) – Inclination in degrees.</p></li>
-<li><p><strong>pa</strong> (<em>float</em>) – Position angle in degrees.</p></li>
-<li><p><strong>pixel_scale</strong> (<em>float</em>) – Arcsec per pixel.</p></li>
-<li><p><strong>cx</strong> (<em>float</em>) – Centroid x in pixels.</p></li>
-<li><p><strong>cy</strong> (<em>float</em>) – Centroid y in pixels.</p></li>
-<li><p><strong>limit_arcsec</strong> (<em>float</em>) – Maximum radius for the returned profile.</p></li>
+<li><p><strong>data</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – 2D image array (in mJy/beam or equivalent).</p></li>
+<li><p><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – FITS header (used for <code class="docutils literal notranslate"><span class="pre">BMAJ</span></code>, <code class="docutils literal notranslate"><span class="pre">BMIN</span></code>, <code class="docutils literal notranslate"><span class="pre">RESTFRQ</span></code>).</p></li>
+<li><p><strong>incl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Inclination in degrees.</p></li>
+<li><p><strong>pa</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Position angle in degrees.</p></li>
+<li><p><strong>pixel_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Arcsec per pixel.</p></li>
+<li><p><strong>cx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centroid x in pixels.</p></li>
+<li><p><strong>cy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centroid y in pixels.</p></li>
+<li><p><strong>limit_arcsec</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Maximum radius for the returned profile.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -513,7 +517,7 @@ temperature profile, and 1-sigma uncertainty, all clipped to
 <code class="docutils literal notranslate"><span class="pre">limit_arcsec</span></code>.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple[numpy.ndarray, numpy.ndarray, numpy.ndarray]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)">numpy.ndarray</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -529,21 +533,21 @@ of <span class="math notranslate nohighlight">\(\max(b_{\rm maj}, 3\,\delta_{\rm
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>numpy.ndarray</em>) – 2D image array.</p></li>
-<li><p><strong>header</strong> (<em>dict</em>) – FITS header.</p></li>
-<li><p><strong>pixel_scale</strong> (<em>float</em>) – Arcsec per pixel.</p></li>
-<li><p><strong>cx</strong> (<em>float</em>) – Centroid x in pixels.</p></li>
-<li><p><strong>cy</strong> (<em>float</em>) – Centroid y in pixels.</p></li>
-<li><p><strong>incl</strong> (<em>float</em>) – Inclination in degrees.</p></li>
-<li><p><strong>pa</strong> (<em>float</em>) – Position angle in degrees.</p></li>
-<li><p><strong>rmin</strong> (<em>float</em>) – Inner radius in arcseconds (bins below this are skipped).</p></li>
+<li><p><strong>data</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – 2D image array.</p></li>
+<li><p><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – FITS header.</p></li>
+<li><p><strong>pixel_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Arcsec per pixel.</p></li>
+<li><p><strong>cx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centroid x in pixels.</p></li>
+<li><p><strong>cy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centroid y in pixels.</p></li>
+<li><p><strong>incl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Inclination in degrees.</p></li>
+<li><p><strong>pa</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Position angle in degrees.</p></li>
+<li><p><strong>rmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Inner radius in arcseconds (bins below this are skipped).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Estimated outer radius in arcseconds, clipped to [0.10, 8.0].</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -557,15 +561,15 @@ Generated when <code class="docutils literal notranslate"><span class="pre">--de
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>image</strong> (<em>numpy.ndarray</em>) – 2D image array.</p></li>
-<li><p><strong>cx</strong> (<em>float</em>) – Centroid x in pixels.</p></li>
-<li><p><strong>cy</strong> (<em>float</em>) – Centroid y in pixels.</p></li>
-<li><p><strong>incl</strong> (<em>float</em>) – Inclination in degrees.</p></li>
-<li><p><strong>pa</strong> (<em>float</em>) – Position angle in degrees.</p></li>
-<li><p><strong>rout_arcsec</strong> (<em>float</em>) – Outer radius in arcseconds.</p></li>
-<li><p><strong>pixel_scale</strong> (<em>float</em>) – Arcsec per pixel.</p></li>
-<li><p><strong>out_png</strong> (<em>str</em>) – Output file path.</p></li>
-<li><p><strong>title</strong> (<em>str</em>) – Plot title string.</p></li>
+<li><p><strong>image</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – 2D image array.</p></li>
+<li><p><strong>cx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centroid x in pixels.</p></li>
+<li><p><strong>cy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centroid y in pixels.</p></li>
+<li><p><strong>incl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Inclination in degrees.</p></li>
+<li><p><strong>pa</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Position angle in degrees.</p></li>
+<li><p><strong>rout_arcsec</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Outer radius in arcseconds.</p></li>
+<li><p><strong>pixel_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Arcsec per pixel.</p></li>
+<li><p><strong>out_png</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Output file path.</p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Plot title string.</p></li>
 </ul>
 </dd>
 </dl>
@@ -582,13 +586,13 @@ Generated when <code class="docutils literal notranslate"><span class="pre">--de
 <code class="docutils literal notranslate"><span class="pre">±DDD:MM:SS.sss</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>deg</strong> (<em>float</em>) – Decimal degrees.</p>
+<dd class="field-odd"><p><strong>deg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Decimal degrees.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Sexagesimal string.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -601,16 +605,16 @@ Uses <code class="docutils literal notranslate"><span class="pre">astropy.wcs.WC
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>header</strong> (<em>dict</em>) – FITS header containing WCS keywords.</p></li>
-<li><p><strong>cx</strong> (<em>float</em>) – Column (x) coordinate in pixels.</p></li>
-<li><p><strong>cy</strong> (<em>float</em>) – Row (y) coordinate in pixels.</p></li>
+<li><p><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – FITS header containing WCS keywords.</p></li>
+<li><p><strong>cx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Column (x) coordinate in pixels.</p></li>
+<li><p><strong>cy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Row (y) coordinate in pixels.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(ra_deg,</span> <span class="pre">dec_deg)</span></code> in decimal degrees (ICRS).</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple[float, float]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -622,16 +626,16 @@ Uses <code class="docutils literal notranslate"><span class="pre">astropy.wcs.WC
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>header</strong> (<em>dict</em>) – FITS header.</p></li>
-<li><p><strong>ra_deg</strong> (<em>float</em>) – Right ascension in decimal degrees.</p></li>
-<li><p><strong>dec_deg</strong> (<em>float</em>) – Declination in decimal degrees.</p></li>
+<li><p><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – FITS header.</p></li>
+<li><p><strong>ra_deg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Right ascension in decimal degrees.</p></li>
+<li><p><strong>dec_deg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Declination in decimal degrees.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y)</span></code> pixel coordinates.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple[float, float]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -643,14 +647,14 @@ Uses <code class="docutils literal notranslate"><span class="pre">astropy.wcs.WC
 (ISO-T format) or <code class="docutils literal notranslate"><span class="pre">MJD-OBS</span></code> (Modified Julian Date).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>header</strong> (<em>dict</em>) – FITS header.</p>
+<dd class="field-odd"><p><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – FITS header.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Observation epoch as an <code class="xref py py-class docutils literal notranslate"><span class="pre">astropy.time.Time</span></code> object,
+<dd class="field-even"><p>Observation epoch as an <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.time.Time.html#astropy.time.Time" title="(in Astropy v8.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">astropy.time.Time</span></code></a> object,
 or <code class="docutils literal notranslate"><span class="pre">None</span></code> if neither keyword is present or parseable.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>astropy.time.Time or None</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.time.Time.html#astropy.time.Time" title="(in Astropy v8.0)">astropy.time.Time</a> or None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -671,9 +675,9 @@ if the library is unavailable or no match is found.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ra_deg</strong> (<em>float</em>) – Right ascension in decimal degrees (ICRS).</p></li>
-<li><p><strong>dec_deg</strong> (<em>float</em>) – Declination in decimal degrees (ICRS).</p></li>
-<li><p><strong>search_radius_arcsec</strong> (<em>float</em>) – Cone search radius. Default: 3.0.</p></li>
+<li><p><strong>ra_deg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Right ascension in decimal degrees (ICRS).</p></li>
+<li><p><strong>dec_deg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Declination in decimal degrees (ICRS).</p></li>
+<li><p><strong>search_radius_arcsec</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Cone search radius. Default: 3.0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -681,7 +685,7 @@ if the library is unavailable or no match is found.</p>
 nearest matched Gaia source, or <code class="docutils literal notranslate"><span class="pre">(None,</span> <span class="pre">None,</span> <span class="pre">None)</span></code>.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple[float, float, float] or tuple[None, None, None]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>] or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[None, None, None]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -697,18 +701,18 @@ by <code class="docutils literal notranslate"><span class="pre">dt_yr</span></co
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ra_deg</strong> (<em>float</em>) – Original right ascension in decimal degrees.</p></li>
-<li><p><strong>dec_deg</strong> (<em>float</em>) – Original declination in decimal degrees.</p></li>
-<li><p><strong>pmra_masyr</strong> (<em>float</em>) – Proper motion in RA (mas/yr), including cos(δ) factor.</p></li>
-<li><p><strong>pmdec_masyr</strong> (<em>float</em>) – Proper motion in Dec (mas/yr).</p></li>
-<li><p><strong>dt_yr</strong> (<em>float</em>) – Time baseline in years.</p></li>
+<li><p><strong>ra_deg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Original right ascension in decimal degrees.</p></li>
+<li><p><strong>dec_deg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Original declination in decimal degrees.</p></li>
+<li><p><strong>pmra_masyr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Proper motion in RA (mas/yr), including cos(δ) factor.</p></li>
+<li><p><strong>pmdec_masyr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Proper motion in Dec (mas/yr).</p></li>
+<li><p><strong>dt_yr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Time baseline in years.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(ra_corrected_deg,</span> <span class="pre">dec_corrected_deg)</span></code>.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple[float, float]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>]</p>
 </dd>
 </dl>
 </dd></dl>

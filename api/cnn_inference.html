@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>disco.core.cnn_inference &mdash; DISCO v1.2.5</title>
+  <title>disco.core.cnn_inference &mdash; DISCO v1.2.6</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/custom_disco.css?v=499842b1" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../_static/disco_icon.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=36f53d34"></script>
+      <script src="../_static/documentation_options.js?v=010db75e"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
@@ -88,6 +88,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../cli.html#positional-arguments">Positional Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cli.html#optional-arguments">Optional Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cli.html#confirmation-prompt">Confirmation Prompt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html#grouping-group">Grouping (<code class="docutils literal notranslate"><span class="pre">--group</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html#geometry-reference-ref">Geometry reference (<code class="docutils literal notranslate"><span class="pre">--ref</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cli.html#usage-examples">Usage Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cli.html#cnn-model-loading">CNN Model Loading</a></li>
 </ul>
@@ -213,6 +215,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="cli_module.html"><code class="docutils literal notranslate"><span class="pre">disco.cli</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="cli_module.html#disco.cli.discover_groups"><code class="docutils literal notranslate"><span class="pre">discover_groups()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_module.html#disco.cli.resolve_geometry_ref"><code class="docutils literal notranslate"><span class="pre">resolve_geometry_ref()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli_module.html#disco.cli.run_pipeline"><code class="docutils literal notranslate"><span class="pre">run_pipeline()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli_module.html#disco.cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>
@@ -251,7 +254,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-2-5-current">Version 1.2.5 (current)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-2-6-current">Version 1.2.6 (current)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-2-5">Version 1.2.5</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../changelog.html#cnn-training">CNN / training</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../changelog.html#cli-geometry">CLI / geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../changelog.html#gui">GUI</a></li>
@@ -315,7 +319,7 @@ with batch normalisation and ReLU activations, plus a skip connection.</p>
 \[\text{out} = \text{ReLU}\!\left(x + \text{BN}(\text{Conv}(\text{ReLU}(\text{BN}(\text{Conv}(x)))))\right)\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>ch</strong> (<em>int</em>) – Number of input and output channels.</p>
+<dd class="field-odd"><p><strong>ch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of input and output channels.</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -323,13 +327,13 @@ with batch normalisation and ReLU activations, plus a skip connection.</p>
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/core/cnn_inference.html#ResBlock.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.core.cnn_inference.ResBlock.forward" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>torch.Tensor</em>) – Input feature map.</p>
+<dd class="field-odd"><p><strong>x</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.13)"><em>torch.Tensor</em></a>) – Input feature map.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Output feature map of the same shape as input.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>torch.Tensor</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.13)">torch.Tensor</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -392,7 +396,7 @@ ReLU, Dropout(0.30), Linear(512→n_out)</p></td>
 </table>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>n_out</strong> (<em>int</em>) – Number of output scalars. Default: 6. The CLI pipeline
+<dd class="field-odd"><p><strong>n_out</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of output scalars. Default: 6. The CLI pipeline
 loads the model with <code class="docutils literal notranslate"><span class="pre">n_out=5</span></code>.</p>
 </dd>
 </dl>
@@ -401,13 +405,13 @@ loads the model with <code class="docutils literal notranslate"><span class="pre
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/core/cnn_inference.html#DiscoNet.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.core.cnn_inference.DiscoNet.forward" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>torch.Tensor</em>) – Input tensor of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">3,</span> <span class="pre">H,</span> <span class="pre">W)</span></code>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.13)"><em>torch.Tensor</em></a>) – Input tensor of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">3,</span> <span class="pre">H,</span> <span class="pre">W)</span></code>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Output tensor of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">n_out)</span></code>.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>torch.Tensor</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.13)">torch.Tensor</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -492,12 +496,12 @@ through the model in <code class="docutils literal notranslate"><span class="pre
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>numpy.ndarray</em>) – 2D FITS image array (float32).</p></li>
-<li><p><strong>header</strong> (<em>dict</em>) – FITS header (used for <code class="docutils literal notranslate"><span class="pre">BMAJ</span></code>, <code class="docutils literal notranslate"><span class="pre">BMIN</span></code>, <code class="docutils literal notranslate"><span class="pre">BPA</span></code>).</p></li>
-<li><p><strong>pixel_scale</strong> (<em>float</em>) – Pixel scale in arcseconds per pixel.</p></li>
-<li><p><strong>cx</strong> (<em>float</em>) – Centroid column coordinate in pixels.</p></li>
-<li><p><strong>cy</strong> (<em>float</em>) – Centroid row coordinate in pixels.</p></li>
-<li><p><strong>search_rad</strong> (<em>float</em>) – Search radius in arcseconds defining the crop region.</p></li>
+<li><p><strong>data</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – 2D FITS image array (float32).</p></li>
+<li><p><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – FITS header (used for <code class="docutils literal notranslate"><span class="pre">BMAJ</span></code>, <code class="docutils literal notranslate"><span class="pre">BMIN</span></code>, <code class="docutils literal notranslate"><span class="pre">BPA</span></code>).</p></li>
+<li><p><strong>pixel_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Pixel scale in arcseconds per pixel.</p></li>
+<li><p><strong>cx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centroid column coordinate in pixels.</p></li>
+<li><p><strong>cy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Centroid row coordinate in pixels.</p></li>
+<li><p><strong>search_rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Search radius in arcseconds defining the crop region.</p></li>
 <li><p><strong>model</strong> (<a class="reference internal" href="#disco.core.cnn_inference.DiscoNet" title="disco.core.cnn_inference.DiscoNet"><em>DiscoNet</em></a>) – Pre-loaded DiscoNet model in evaluation mode.</p></li>
 </ul>
 </dd>
@@ -506,7 +510,7 @@ through the model in <code class="docutils literal notranslate"><span class="pre
 position angle (degrees).</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple[float, float]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>]</p>
 </dd>
 </dl>
 </dd></dl>

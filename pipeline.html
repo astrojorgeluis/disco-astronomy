@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pipeline Description &mdash; DISCO v1.2.5</title>
+  <title>Pipeline Description &mdash; DISCO v1.2.6</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom_disco.css?v=499842b1" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/disco_icon.png"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=36f53d34"></script>
+      <script src="_static/documentation_options.js?v=010db75e"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
@@ -88,6 +88,8 @@
 <li class="toctree-l2"><a class="reference internal" href="cli.html#positional-arguments">Positional Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#optional-arguments">Optional Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#confirmation-prompt">Confirmation Prompt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#grouping-group">Grouping (<code class="docutils literal notranslate"><span class="pre">--group</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#geometry-reference-ref">Geometry reference (<code class="docutils literal notranslate"><span class="pre">--ref</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#usage-examples">Usage Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#cnn-model-loading">CNN Model Loading</a></li>
 </ul>
@@ -213,6 +215,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api/cli_module.html"><code class="docutils literal notranslate"><span class="pre">disco.cli</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.discover_groups"><code class="docutils literal notranslate"><span class="pre">discover_groups()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.resolve_geometry_ref"><code class="docutils literal notranslate"><span class="pre">resolve_geometry_ref()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.run_pipeline"><code class="docutils literal notranslate"><span class="pre">run_pipeline()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>
@@ -251,7 +254,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-5-current">Version 1.2.5 (current)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-6-current">Version 1.2.6 (current)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-5">Version 1.2.5</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="changelog.html#cnn-training">CNN / training</a></li>
 <li class="toctree-l3"><a class="reference internal" href="changelog.html#cli-geometry">CLI / geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="changelog.html#gui">GUI</a></li>
@@ -302,12 +306,23 @@ bar tracks advancement through these phases.</p>
 <section id="group-discovery">
 <h2>Group Discovery<a class="headerlink" href="#group-discovery" title="Link to this heading"></a></h2>
 <p>Before any processing begins, <a class="reference internal" href="api/cli_module.html#disco.cli.discover_groups" title="disco.cli.discover_groups"><code class="xref py py-func docutils literal notranslate"><span class="pre">disco.cli.discover_groups()</span></code></a> traverses
-the working directory tree via <code class="docutils literal notranslate"><span class="pre">os.walk</span></code>, collecting all <code class="docutils literal notranslate"><span class="pre">.fits</span></code> files.
-Files within a common directory are grouped by a common stem prefix: the
-function splits each filename on the regular expression <code class="docutils literal notranslate"><span class="pre">_?[Bb]and_?\d+</span></code> to
-isolate the source identifier, then aggregates files sharing the same prefix
-into a group dictionary containing the group name, sorted list of file paths,
-and designated output directory.</p>
+the working directory tree via <code class="docutils literal notranslate"><span class="pre">os.walk</span></code>. Grouping is selected with
+<code class="docutils literal notranslate"><span class="pre">--group</span></code> (default <code class="docutils literal notranslate"><span class="pre">file</span></code>):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">file</span></code> — each FITS file is its own group.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dir</span></code> — all FITS that sit <strong>directly</strong> in the same folder form one
+group; a walk still visits nested folders as separate groups (one
+subdirectory per object).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> — legacy heuristic: split each stem on
+<code class="docutils literal notranslate"><span class="pre">_?[Bb]and_?\d+</span></code> and aggregate files that share the prefix
+(<code class="docutils literal notranslate"><span class="pre">Object_Band6.fits</span></code> → group <code class="docutils literal notranslate"><span class="pre">Object</span></code>). Tokens such as <code class="docutils literal notranslate"><span class="pre">B6_</span></code> or
+<code class="docutils literal notranslate"><span class="pre">priism_b6</span></code> do <strong>not</strong> match.</p></li>
+</ul>
+<p>Each group dictionary contains the group name, sorted file paths, and
+output directory.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--ref</span></code> (optional) pins which file in the group is used for DiscoNet +
+hybrid geometry. Without it, the reference image is still the highest
+<span class="math notranslate nohighlight">\(\mathrm{SNR}/\Omega_{\mathrm{beam}}^{3/2}\)</span>.</p>
 <p>Target selection from command-line identifiers is performed by matching each
 supplied string against the resolved directory path components and filenames of
 each discovered group. Groups that partially match (via substring containment)

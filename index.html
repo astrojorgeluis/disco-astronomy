@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DISCO — Deprojection Image Software for Circumstellar Objects &mdash; DISCO v1.2.5</title>
+  <title>DISCO — Deprojection Image Software for Circumstellar Objects &mdash; DISCO v1.2.6</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom_disco.css?v=499842b1" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/disco_icon.png"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=36f53d34"></script>
+      <script src="_static/documentation_options.js?v=010db75e"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
@@ -86,6 +86,8 @@
 <li class="toctree-l2"><a class="reference internal" href="cli.html#positional-arguments">Positional Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#optional-arguments">Optional Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#confirmation-prompt">Confirmation Prompt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#grouping-group">Grouping (<code class="docutils literal notranslate"><span class="pre">--group</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#geometry-reference-ref">Geometry reference (<code class="docutils literal notranslate"><span class="pre">--ref</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#usage-examples">Usage Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#cnn-model-loading">CNN Model Loading</a></li>
 </ul>
@@ -211,6 +213,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api/cli_module.html"><code class="docutils literal notranslate"><span class="pre">disco.cli</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.discover_groups"><code class="docutils literal notranslate"><span class="pre">discover_groups()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.resolve_geometry_ref"><code class="docutils literal notranslate"><span class="pre">resolve_geometry_ref()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.run_pipeline"><code class="docutils literal notranslate"><span class="pre">run_pipeline()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>
@@ -249,7 +252,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-5-current">Version 1.2.5 (current)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-6-current">Version 1.2.6 (current)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-5">Version 1.2.5</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="changelog.html#cnn-training">CNN / training</a></li>
 <li class="toctree-l3"><a class="reference internal" href="changelog.html#cli-geometry">CLI / geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="changelog.html#gui">GUI</a></li>
@@ -300,7 +304,7 @@
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><strong>DISCO</strong> (v1.2.5) is an open-source Python package for the analysis and physical
+<p><strong>DISCO</strong> (v1.2.6) is an open-source Python package for the analysis and physical
 characterisation of protoplanetary disk observations from ALMA FITS data.
 This software is currently in active development.</p>
 </div>
@@ -369,14 +373,14 @@ The <strong>CLI</strong> is designed for reproducible, automated pipelines.</p>
 <p>If you use DISCO in published work, please cite this repository and acknowledge <strong>Jorge Luis Guzmán-Lazo</strong>, who developed the software within the <a class="reference external" href="https://www.milenioyems.cl/">YEMS Millennium Nucleus</a> under the supervision of <strong>Sebastián Pérez</strong> and <strong>Camilo González-Ruilova</strong>.</p>
 <p><strong>Contact:</strong> <a class="reference external" href="mailto:jorge&#46;guzman&#46;l&#37;&#52;&#48;usach&#46;cl">jorge<span>&#46;</span>guzman<span>&#46;</span>l<span>&#64;</span>usach<span>&#46;</span>cl</a></p>
 <p>If you use DISCO in your research, please cite the associated Zenodo record:</p>
-<p>Guzmán-Lazo, J. L. (2026). DISCO: Deprojection Image Software for Circumstellar Objects (Version v1.2.5) [Computer software]. Zenodo. <a class="reference external" href="https://doi.org/10.5281/zenodo.19999239">https://doi.org/10.5281/zenodo.19999239</a></p>
+<p>Guzmán-Lazo, J. L. (2026). DISCO: Deprojection Image Software for Circumstellar Objects (Version v1.2.6) [Computer software]. Zenodo. <a class="reference external" href="https://doi.org/10.5281/zenodo.19999239">https://doi.org/10.5281/zenodo.19999239</a></p>
 <div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@software</span><span class="p">{</span><span class="nl">guzman_lazo_2026_19999239</span><span class="p">,</span>
 <span class="w">  </span><span class="na">author</span><span class="w">       </span><span class="p">=</span><span class="w"> </span><span class="s">{Guzmán-Lazo, Jorge Luis}</span><span class="p">,</span>
 <span class="w">  </span><span class="na">title</span><span class="w">        </span><span class="p">=</span><span class="w"> </span><span class="s">{DISCO: Deprojection Image Software for Circumstellar Objects}</span><span class="p">,</span>
 <span class="w">  </span><span class="na">month</span><span class="w">        </span><span class="p">=</span><span class="w"> </span><span class="nv">aug</span><span class="p">,</span>
 <span class="w">  </span><span class="na">year</span><span class="w">         </span><span class="p">=</span><span class="w"> </span><span class="m">2026</span><span class="p">,</span>
 <span class="w">  </span><span class="na">publisher</span><span class="w">    </span><span class="p">=</span><span class="w"> </span><span class="s">{Zenodo}</span><span class="p">,</span>
-<span class="w">  </span><span class="na">version</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="s">{v1.2.5}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">version</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="s">{v1.2.6}</span><span class="p">,</span>
 <span class="w">  </span><span class="na">doi</span><span class="w">          </span><span class="p">=</span><span class="w"> </span><span class="s">{10.5281/zenodo.19999239}</span><span class="p">,</span>
 <span class="w">  </span><span class="na">url</span><span class="w">          </span><span class="p">=</span><span class="w"> </span><span class="s">{https://doi.org/10.5281/zenodo.19999239}</span><span class="p">,</span>
 <span class="p">}</span>
@@ -425,6 +429,8 @@ The <strong>CLI</strong> is designed for reproducible, automated pipelines.</p>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#positional-arguments">Positional Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#optional-arguments">Optional Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#confirmation-prompt">Confirmation Prompt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#grouping-group">Grouping (<code class="docutils literal notranslate"><span class="pre">--group</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#geometry-reference-ref">Geometry reference (<code class="docutils literal notranslate"><span class="pre">--ref</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#usage-examples">Usage Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#cnn-model-loading">CNN Model Loading</a></li>
 </ul>
@@ -476,6 +482,7 @@ The <strong>CLI</strong> is designed for reproducible, automated pipelines.</p>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api/cli_module.html"><code class="docutils literal notranslate"><span class="pre">disco.cli</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.discover_groups"><code class="docutils literal notranslate"><span class="pre">discover_groups()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.resolve_geometry_ref"><code class="docutils literal notranslate"><span class="pre">resolve_geometry_ref()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.run_pipeline"><code class="docutils literal notranslate"><span class="pre">run_pipeline()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>

@@ -74,14 +74,11 @@ another broad path.
 
    cd /path/to/your/fits/
 
-   # Process a single named object (matches FITS files containing "AS209")
+   # Process a named object (each matching FITS separately by default)
    disco-start AS209
 
-   # Process multiple named objects in a single run
-   disco-start AS209 Elias29 DoAr25
-
-   # Process all FITS files within a directory subtree
-   disco-start path/to/group/
+   # One folder = one source; take geometry from the robust map
+   disco-start path/to/AS209/ --group dir --ref robust0.fits
 
    # Provide a direct path to a FITS file
    disco-start path/to/disk.fits
@@ -95,12 +92,12 @@ another broad path.
    # Specify a custom homogenisation beam size and enable debug output
    disco-start AS209 Elias29 --homobeam on --beam 0.15 --debug on
 
-The pipeline discovers FITS files, groups them by common prefix
-(distinguishing multi-band observations), and processes each group through a
-five-phase sequence: FITS ingestion, geometry optimisation, uncertainty
-estimation, radial profile extraction, and result serialisation. See
-:ref:`pipeline` for a detailed description of each phase, and :ref:`cli`
-for the full argument reference.
+The pipeline discovers FITS files and groups them according to ``--group``
+(default ``file``: one FITS per group). Use ``--group dir`` when several
+maps of the **same** object live in one folder. See :ref:`cli` for
+``--group`` / ``--ref``. Each group runs a five-phase sequence: FITS
+ingestion, geometry optimisation, uncertainty estimation, radial profile
+extraction, and result serialisation. See :ref:`pipeline` for each phase.
 
 Before scanning, the CLI prints a warning with the current working directory
 and asks for confirmation (``Are you sure you want to continue? [y/N]``).

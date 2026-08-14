@@ -92,10 +92,10 @@ CLI Pipeline (``disco-start <identifier ...>``)
 
 The CLI pipeline (implemented in :mod:`disco.cli`) operates entirely
 server-side without any browser interaction. It discovers FITS files
-in the current working directory, groups them by source prefix and
-spectral band, and processes each group through a five-phase sequence.
-The CNN model is loaded once at startup and reused across all groups.
-Results are written to disk as PNG figures and, optionally, CSV files.
+under the working directory (or paths you pass), groups them according to
+``--group`` (default: one file per group), and processes each group through
+a five-phase sequence. The CNN model is loaded once at startup and reused
+across all groups. Results are written to disk as PNG figures and, optionally, CSV files.
 
 GUI Server (``disco-start gui``)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

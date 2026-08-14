@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Command-Line Interface &mdash; DISCO v1.2.5</title>
+  <title>Command-Line Interface &mdash; DISCO v1.2.6</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom_disco.css?v=499842b1" />
@@ -15,9 +15,10 @@
     <link rel="shortcut icon" href="_static/disco_icon.png"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=36f53d34"></script>
+      <script src="_static/documentation_options.js?v=010db75e"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -87,6 +88,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#positional-arguments">Positional Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#optional-arguments">Optional Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#confirmation-prompt">Confirmation Prompt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#grouping-group">Grouping (<code class="docutils literal notranslate"><span class="pre">--group</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#geometry-reference-ref">Geometry reference (<code class="docutils literal notranslate"><span class="pre">--ref</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#usage-examples">Usage Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#cnn-model-loading">CNN Model Loading</a></li>
 </ul>
@@ -212,6 +215,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api/cli_module.html"><code class="docutils literal notranslate"><span class="pre">disco.cli</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.discover_groups"><code class="docutils literal notranslate"><span class="pre">discover_groups()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.resolve_geometry_ref"><code class="docutils literal notranslate"><span class="pre">resolve_geometry_ref()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.run_pipeline"><code class="docutils literal notranslate"><span class="pre">run_pipeline()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>
@@ -250,7 +254,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-5-current">Version 1.2.5 (current)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-6-current">Version 1.2.6 (current)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-5">Version 1.2.5</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="changelog.html#cnn-training">CNN / training</a></li>
 <li class="toctree-l3"><a class="reference internal" href="changelog.html#cli-geometry">CLI / geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="changelog.html#gui">GUI</a></li>
@@ -305,7 +310,8 @@ declared in <code class="docutils literal notranslate"><span class="pre">pyproje
 either to the GUI server or to the CLI pipeline (see <a class="reference internal" href="architecture.html#architecture"><span class="std std-ref">Architecture</span></a>).</p>
 <section id="synopsis">
 <h2>Synopsis<a class="headerlink" href="#synopsis" title="Link to this heading"></a></h2>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: disco-start [-h] [--rout ROUT] [--rmin RMIN] [--incl INCL] [--pa PA]
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: disco-start [-h] [--group {file,dir,name}] [--ref REF]
+                   [--rout ROUT] [--rmin RMIN] [--incl INCL] [--pa PA]
                    [--beam BEAM] [--homobeam {on,off}] [--csv {on,off}]
                    [--debug {on,off}] [-y] [identifier ...]
 </pre></div>
@@ -349,6 +355,25 @@ If omitted, all FITS files in the working directory tree are processed.</p></td>
 </tr>
 </thead>
 <tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--group</span> <span class="pre">{file,dir,name}</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">file</span></code></p></td>
+<td><p>How to group FITS files. <code class="docutils literal notranslate"><span class="pre">file</span></code> (default): each FITS is its own
+group — safest for a mixed folder. <code class="docutils literal notranslate"><span class="pre">dir</span></code>: all FITS <em>directly</em> in
+the same folder are one group (nested directories stay separate).
+Use this for one object with several bands or methods.
+<code class="docutils literal notranslate"><span class="pre">name</span></code>: legacy split on <code class="docutils literal notranslate"><span class="pre">BandN</span></code> / <code class="docutils literal notranslate"><span class="pre">_Band6</span></code> in the filename
+(<code class="docutils literal notranslate"><span class="pre">B6_</span></code> / <code class="docutils literal notranslate"><span class="pre">priism_b6</span></code> are not split). Homogenisation applies
+<strong>inside</strong> a group only.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--ref</span> <span class="pre">REF</span></code></p></td>
+<td><p>auto</p></td>
+<td><p>Geometry reference inside each group (CNN + hybrid, Rout, centre).
+Accepts a filename, a unique substring, or a path; must match
+<strong>exactly one</strong> file in the group. Default without <code class="docutils literal notranslate"><span class="pre">--ref</span></code> is the
+highest <span class="math notranslate nohighlight">\(\mathrm{SNR}/\Omega_{\mathrm{beam}}^{3/2}\)</span>. If both
+<code class="docutils literal notranslate"><span class="pre">--incl</span></code> and <code class="docutils literal notranslate"><span class="pre">--pa</span></code> are set, those angles override the fit;
+<code class="docutils literal notranslate"><span class="pre">--ref</span></code> still selects the map for centre / Rout.</p></td>
+</tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--rout</span> <span class="pre">ROUT</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></td>
 <td><p>Force the outer disk radius in arcseconds.
@@ -406,8 +431,12 @@ centre and outer radius overlay.</p></td>
 <section id="confirmation-prompt">
 <h2>Confirmation Prompt<a class="headerlink" href="#confirmation-prompt" title="Link to this heading"></a></h2>
 <p>Before discovering FITS files, the CLI prints a warning with the current
-working directory and asks:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Are you sure you want to continue? [y/N]:
+working directory and the grouping mode, then asks:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>WARNING: DISCO will now scan for and process FITS files.
+Current directory: /path/to/your/fits
+Grouping mode (--group): file
+------------------------------------------------------------
+Are you sure you want to continue? [y/N]:
 </pre></div>
 </div>
 <p>Answer <code class="docutils literal notranslate"><span class="pre">y</span></code> or <code class="docutils literal notranslate"><span class="pre">yes</span></code> to proceed, or anything else to cancel. The prompt
@@ -415,28 +444,99 @@ is intentional so users confirm before FITS scanning begins. Prefer running
 the CLI from the directory that contains your science FITS (or pass explicit
 paths); a bare <code class="docutils literal notranslate"><span class="pre">disco-start</span></code> walks the current directory tree.</p>
 </section>
+<section id="grouping-group">
+<h2>Grouping (<code class="docutils literal notranslate"><span class="pre">--group</span></code>)<a class="headerlink" href="#grouping-group" title="Link to this heading"></a></h2>
+<p>A <em>group</em> shares one geometry solution and, if <code class="docutils literal notranslate"><span class="pre">--homobeam</span> <span class="pre">on</span></code>, one
+homogenisation beam. DISCO does <strong>not</strong> infer your folder layout: you
+choose the mode.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 18.0%" />
+<col style="width: 42.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">--group</span></code></p></th>
+<th class="head"><p>Meaning</p></th>
+<th class="head"><p>When to use</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">file</span></code> (default)</p></td>
+<td><p>Each <code class="docutils literal notranslate"><span class="pre">.fits</span></code> file is its own group.</p></td>
+<td><p>Safest. A flat folder of unrelated sources, or you do not want
+mixed maps homogenised together.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dir</span></code></p></td>
+<td><p>All FITS <strong>directly</strong> in the same folder are one group. Nested
+directories stay separate (<code class="docutils literal notranslate"><span class="pre">AS209/*.fits</span></code> vs
+<code class="docutils literal notranslate"><span class="pre">HD163296/*.fits</span></code>).</p></td>
+<td><p>One object per folder, with several bands or methods
+(<code class="docutils literal notranslate"><span class="pre">robust0</span></code>, PRIISM, Band 6/7, …).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">name</span></code></p></td>
+<td><p>Legacy: inside each folder, split stems on <code class="docutils literal notranslate"><span class="pre">BandN</span></code> /
+<code class="docutils literal notranslate"><span class="pre">_Band6</span></code> / <code class="docutils literal notranslate"><span class="pre">band7</span></code>. Tokens such as <code class="docutils literal notranslate"><span class="pre">B6_</span></code> or <code class="docutils literal notranslate"><span class="pre">priism_b6</span></code>
+are <strong>not</strong> split.</p></td>
+<td><p>Old <code class="docutils literal notranslate"><span class="pre">Object_Band6.fits</span></code> naming only.</p></td>
+</tr>
+</tbody>
+</table>
+<p>v1.2.5 always used the <code class="docutils literal notranslate"><span class="pre">name</span></code> heuristic. From <strong>v1.2.6</strong> the default is
+<code class="docutils literal notranslate"><span class="pre">file</span></code> so unrelated cubes in one directory are not treated as one
+source. Name filters still apply on top: <code class="docutils literal notranslate"><span class="pre">disco-start</span> <span class="pre">AS209</span> <span class="pre">--group</span> <span class="pre">dir</span></code>
+keeps groups whose paths or filenames contain <code class="docutils literal notranslate"><span class="pre">AS209</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Each FITS separately (default)</span>
+disco-start<span class="w"> </span>/data/batch/<span class="w"> </span>--group<span class="w"> </span>file
+
+<span class="c1"># One object folder with Band 6, Band 7, PRIISM, robust 0, …</span>
+disco-start<span class="w"> </span>/data/AS209/<span class="w"> </span>--group<span class="w"> </span>dir<span class="w"> </span>--ref<span class="w"> </span>robust0.fits
+
+<span class="c1"># Parent directory: one subdirectory per source</span>
+disco-start<span class="w"> </span>/data/sample/<span class="w"> </span>--group<span class="w"> </span>dir
+
+<span class="c1"># Legacy Object_Band6.fits naming (v1.2.5 behaviour)</span>
+disco-start<span class="w"> </span>/data/fits/<span class="w"> </span>--group<span class="w"> </span>name
+</pre></div>
+</div>
+</section>
+<section id="geometry-reference-ref">
+<h2>Geometry reference (<code class="docutils literal notranslate"><span class="pre">--ref</span></code>)<a class="headerlink" href="#geometry-reference-ref" title="Link to this heading"></a></h2>
+<p>In a <strong>multi-file group</strong>, DiscoNet + hybrid (and Rout / centre) run on
+<strong>one</strong> map. Without <code class="docutils literal notranslate"><span class="pre">--ref</span></code>, that map is the highest
+<span class="math notranslate nohighlight">\(\mathrm{SNR}/\Omega_{\mathrm{beam}}^{3/2}\)</span>. Cropped restorations
+(PRIISM, super-resolution) can win that score even when they are a poor
+CNN prior.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--ref</span></code> pins the geometry image inside <strong>each</strong> group:</p>
+<ul class="simple">
+<li><p>basename — <code class="docutils literal notranslate"><span class="pre">--ref</span> <span class="pre">robust0.fits</span></code></p></li>
+<li><p>unique substring — <code class="docutils literal notranslate"><span class="pre">--ref</span> <span class="pre">Band6</span></code> (error if 0 or 2+ files match)</p></li>
+<li><p>path — <code class="docutils literal notranslate"><span class="pre">--ref</span> <span class="pre">/data/AS209/robust0.fits</span></code></p></li>
+</ul>
+<p>Other files in the group still get homogenisation (if enabled) and
+profiles <strong>using that geometry</strong>. If both <code class="docutils literal notranslate"><span class="pre">--incl</span></code> and <code class="docutils literal notranslate"><span class="pre">--pa</span></code> are
+set, those angles override the fit; <code class="docutils literal notranslate"><span class="pre">--ref</span></code> still selects the map for
+centre / Rout. The CLI logs <code class="docutils literal notranslate"><span class="pre">[INFO]</span> <span class="pre">Geometry</span> <span class="pre">reference:</span> <span class="pre">&lt;filename&gt;</span></code>.</p>
+</section>
 <section id="usage-examples">
 <h2>Usage Examples<a class="headerlink" href="#usage-examples" title="Link to this heading"></a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prefer: cd into the folder with your FITS first</span>
 <span class="nb">cd</span><span class="w"> </span>/path/to/your/fits/
 
-<span class="c1"># Process all FITS files discovered in the working directory</span>
-disco-start
+<span class="c1"># Each FITS separately (default since v1.2.6)</span>
+disco-start<span class="w"> </span>--group<span class="w"> </span>file
 
 <span class="c1"># Process a single object by name prefix</span>
-disco-start<span class="w"> </span>AS209
+disco-start<span class="w"> </span>AS209<span class="w"> </span>--group<span class="w"> </span>file
 
-<span class="c1"># Process multiple objects simultaneously</span>
-disco-start<span class="w"> </span>AS209<span class="w"> </span>Elias29<span class="w"> </span>DoAr25
-
-<span class="c1"># Process a specific directory group</span>
-disco-start<span class="w"> </span>path/to/group/
+<span class="c1"># One folder = one source (multi-band / multi-method)</span>
+disco-start<span class="w"> </span>path/to/AS209/<span class="w"> </span>--group<span class="w"> </span>dir<span class="w"> </span>--ref<span class="w"> </span>robust0.fits
 
 <span class="c1"># Process a FITS file directly</span>
 disco-start<span class="w"> </span>path/to/disk.fits
 
 <span class="c1"># Force inclination and PA, export CSV, enable debug output</span>
-disco-start<span class="w"> </span>AS209<span class="w"> </span>--incl<span class="w"> </span><span class="m">35</span>.0<span class="w"> </span>--pa<span class="w"> </span><span class="m">120</span>.0<span class="w"> </span>--csv<span class="w"> </span>on<span class="w"> </span>--debug<span class="w"> </span>on
+disco-start<span class="w"> </span>AS209<span class="w"> </span>--incl<span class="w"> </span><span class="m">35</span>.0<span class="w"> </span>--pa<span class="w"> </span><span class="m">120</span>.0<span class="w"> </span>--csv<span class="w"> </span>on<span class="w"> </span>--debug<span class="w"> </span>on<span class="w"> </span>--group<span class="w"> </span>dir
 
 <span class="c1"># Set outer radius and disable beam homogenisation</span>
 disco-start<span class="w"> </span>AS209<span class="w"> </span>--rout<span class="w"> </span><span class="m">1</span>.2<span class="w"> </span>--homobeam<span class="w"> </span>off

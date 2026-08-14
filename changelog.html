@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Changelog &mdash; DISCO v1.2.5</title>
+  <title>Changelog &mdash; DISCO v1.2.6</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom_disco.css?v=499842b1" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/disco_icon.png"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=36f53d34"></script>
+      <script src="_static/documentation_options.js?v=010db75e"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
@@ -87,6 +87,8 @@
 <li class="toctree-l2"><a class="reference internal" href="cli.html#positional-arguments">Positional Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#optional-arguments">Optional Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#confirmation-prompt">Confirmation Prompt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#grouping-group">Grouping (<code class="docutils literal notranslate"><span class="pre">--group</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#geometry-reference-ref">Geometry reference (<code class="docutils literal notranslate"><span class="pre">--ref</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#usage-examples">Usage Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#cnn-model-loading">CNN Model Loading</a></li>
 </ul>
@@ -212,6 +214,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api/cli_module.html"><code class="docutils literal notranslate"><span class="pre">disco.cli</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.discover_groups"><code class="docutils literal notranslate"><span class="pre">discover_groups()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.resolve_geometry_ref"><code class="docutils literal notranslate"><span class="pre">resolve_geometry_ref()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.run_pipeline"><code class="docutils literal notranslate"><span class="pre">run_pipeline()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>
@@ -250,7 +253,8 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#version-1-2-5-current">Version 1.2.5 (current)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#version-1-2-6-current">Version 1.2.6 (current)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-1-2-5">Version 1.2.5</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#cnn-training">CNN / training</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#cli-geometry">CLI / geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#gui">GUI</a></li>
@@ -295,8 +299,25 @@
              
   <section id="changelog">
 <span id="id1"></span><h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading"></a></h1>
-<section id="version-1-2-5-current">
-<h2>Version 1.2.5 (current)<a class="headerlink" href="#version-1-2-5-current" title="Link to this heading"></a></h2>
+<section id="version-1-2-6-current">
+<h2>Version 1.2.6 (current)<a class="headerlink" href="#version-1-2-6-current" title="Link to this heading"></a></h2>
+<p>CLI grouping is explicit: <code class="docutils literal notranslate"><span class="pre">--group</span> <span class="pre">file|dir|name</span></code> and <code class="docutils literal notranslate"><span class="pre">--ref</span></code> for the
+geometry map. Default <code class="docutils literal notranslate"><span class="pre">--group</span> <span class="pre">file</span></code> no longer mixes unrelated FITS via
+the old <code class="docutils literal notranslate"><span class="pre">BandN</span></code> filename heuristic.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--group</span> <span class="pre">file</span></code> (default): one group per FITS file.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--group</span> <span class="pre">dir</span></code>: all FITS directly in the same folder are one group
+(nested directories remain separate).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--group</span> <span class="pre">name</span></code>: legacy split on <code class="docutils literal notranslate"><span class="pre">BandN</span></code> / <code class="docutils literal notranslate"><span class="pre">_Band6</span></code> in the stem.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--ref</span></code> selects the CNN + hybrid (and Rout / centre) image inside a
+group by filename, unique substring, or path; must match exactly one
+file. <code class="docutils literal notranslate"><span class="pre">--incl</span></code> + <code class="docutils literal notranslate"><span class="pre">--pa</span></code> still override fitted angles.</p></li>
+<li><p>Docs / README explain grouping and <code class="docutils literal notranslate"><span class="pre">--ref</span></code>; confirmation prompt still
+prints the grouping mode.</p></li>
+</ul>
+</section>
+<section id="version-1-2-5">
+<h2>Version 1.2.5<a class="headerlink" href="#version-1-2-5" title="Link to this heading"></a></h2>
 <p>DiscoNet synthetic training release, hybrid geometry polish, GUI refresh,
 and docs sync.</p>
 <section id="cnn-training">

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quick Start &mdash; DISCO v1.2.5</title>
+  <title>Quick Start &mdash; DISCO v1.2.6</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom_disco.css?v=499842b1" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/disco_icon.png"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=36f53d34"></script>
+      <script src="_static/documentation_options.js?v=010db75e"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
@@ -87,6 +87,8 @@
 <li class="toctree-l2"><a class="reference internal" href="cli.html#positional-arguments">Positional Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#optional-arguments">Optional Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#confirmation-prompt">Confirmation Prompt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#grouping-group">Grouping (<code class="docutils literal notranslate"><span class="pre">--group</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#geometry-reference-ref">Geometry reference (<code class="docutils literal notranslate"><span class="pre">--ref</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#usage-examples">Usage Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html#cnn-model-loading">CNN Model Loading</a></li>
 </ul>
@@ -212,6 +214,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api/cli_module.html"><code class="docutils literal notranslate"><span class="pre">disco.cli</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.discover_groups"><code class="docutils literal notranslate"><span class="pre">discover_groups()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.resolve_geometry_ref"><code class="docutils literal notranslate"><span class="pre">resolve_geometry_ref()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.run_pipeline"><code class="docutils literal notranslate"><span class="pre">run_pipeline()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/cli_module.html#disco.cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>
@@ -250,7 +253,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-5-current">Version 1.2.5 (current)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-6-current">Version 1.2.6 (current)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-2-5">Version 1.2.5</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="changelog.html#cnn-training">CNN / training</a></li>
 <li class="toctree-l3"><a class="reference internal" href="changelog.html#cli-geometry">CLI / geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="changelog.html#gui">GUI</a></li>
@@ -349,14 +353,11 @@ current working directory tree — avoid running it from your home folder or
 another broad path.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/path/to/your/fits/
 
-<span class="c1"># Process a single named object (matches FITS files containing &quot;AS209&quot;)</span>
+<span class="c1"># Process a named object (each matching FITS separately by default)</span>
 disco-start<span class="w"> </span>AS209
 
-<span class="c1"># Process multiple named objects in a single run</span>
-disco-start<span class="w"> </span>AS209<span class="w"> </span>Elias29<span class="w"> </span>DoAr25
-
-<span class="c1"># Process all FITS files within a directory subtree</span>
-disco-start<span class="w"> </span>path/to/group/
+<span class="c1"># One folder = one source; take geometry from the robust map</span>
+disco-start<span class="w"> </span>path/to/AS209/<span class="w"> </span>--group<span class="w"> </span>dir<span class="w"> </span>--ref<span class="w"> </span>robust0.fits
 
 <span class="c1"># Provide a direct path to a FITS file</span>
 disco-start<span class="w"> </span>path/to/disk.fits
@@ -371,12 +372,12 @@ disco-start<span class="w"> </span>AS209<span class="w"> </span>--rout<span clas
 disco-start<span class="w"> </span>AS209<span class="w"> </span>Elias29<span class="w"> </span>--homobeam<span class="w"> </span>on<span class="w"> </span>--beam<span class="w"> </span><span class="m">0</span>.15<span class="w"> </span>--debug<span class="w"> </span>on
 </pre></div>
 </div>
-<p>The pipeline discovers FITS files, groups them by common prefix
-(distinguishing multi-band observations), and processes each group through a
-five-phase sequence: FITS ingestion, geometry optimisation, uncertainty
-estimation, radial profile extraction, and result serialisation. See
-<a class="reference internal" href="pipeline.html#pipeline"><span class="std std-ref">Pipeline Description</span></a> for a detailed description of each phase, and <a class="reference internal" href="cli.html#cli"><span class="std std-ref">Command-Line Interface</span></a>
-for the full argument reference.</p>
+<p>The pipeline discovers FITS files and groups them according to <code class="docutils literal notranslate"><span class="pre">--group</span></code>
+(default <code class="docutils literal notranslate"><span class="pre">file</span></code>: one FITS per group). Use <code class="docutils literal notranslate"><span class="pre">--group</span> <span class="pre">dir</span></code> when several
+maps of the <strong>same</strong> object live in one folder. See <a class="reference internal" href="cli.html#cli"><span class="std std-ref">Command-Line Interface</span></a> for
+<code class="docutils literal notranslate"><span class="pre">--group</span></code> / <code class="docutils literal notranslate"><span class="pre">--ref</span></code>. Each group runs a five-phase sequence: FITS
+ingestion, geometry optimisation, uncertainty estimation, radial profile
+extraction, and result serialisation. See <a class="reference internal" href="pipeline.html#pipeline"><span class="std std-ref">Pipeline Description</span></a> for each phase.</p>
 <p>Before scanning, the CLI prints a warning with the current working directory
 and asks for confirmation (<code class="docutils literal notranslate"><span class="pre">Are</span> <span class="pre">you</span> <span class="pre">sure</span> <span class="pre">you</span> <span class="pre">want</span> <span class="pre">to</span> <span class="pre">continue?</span> <span class="pre">[y/N]</span></code>).
 Answer <code class="docutils literal notranslate"><span class="pre">y</span></code> / <code class="docutils literal notranslate"><span class="pre">yes</span></code> to proceed. This prompt is intentional — do not skip

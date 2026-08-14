@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>disco.cli &mdash; DISCO v1.2.5</title>
+  <title>disco.cli &mdash; DISCO v1.2.6</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/custom_disco.css?v=499842b1" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../_static/disco_icon.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=36f53d34"></script>
+      <script src="../_static/documentation_options.js?v=010db75e"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
@@ -87,6 +87,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../cli.html#positional-arguments">Positional Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cli.html#optional-arguments">Optional Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cli.html#confirmation-prompt">Confirmation Prompt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html#grouping-group">Grouping (<code class="docutils literal notranslate"><span class="pre">--group</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html#geometry-reference-ref">Geometry reference (<code class="docutils literal notranslate"><span class="pre">--ref</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cli.html#usage-examples">Usage Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cli.html#cnn-model-loading">CNN Model Loading</a></li>
 </ul>
@@ -212,6 +214,7 @@
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">disco.cli</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#disco.cli.discover_groups"><code class="docutils literal notranslate"><span class="pre">discover_groups()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#disco.cli.resolve_geometry_ref"><code class="docutils literal notranslate"><span class="pre">resolve_geometry_ref()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#disco.cli.run_pipeline"><code class="docutils literal notranslate"><span class="pre">run_pipeline()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#disco.cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>
@@ -250,7 +253,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-2-5-current">Version 1.2.5 (current)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-2-6-current">Version 1.2.6 (current)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-2-5">Version 1.2.5</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../changelog.html#cnn-training">CNN / training</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../changelog.html#cli-geometry">CLI / geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../changelog.html#gui">GUI</a></li>
@@ -302,17 +306,16 @@ argument.</p>
 <hr class="docutils" />
 <dl class="py function">
 <dt class="sig sig-object py" id="disco.cli.discover_groups">
-<span class="sig-prename descclassname"><span class="pre">disco.cli.</span></span><span class="sig-name descname"><span class="pre">discover_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/cli.html#discover_groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.cli.discover_groups" title="Link to this definition"></a></dt>
-<dd><p>Traverse the directory tree rooted at <code class="docutils literal notranslate"><span class="pre">base_dir</span></code> and group discovered
-FITS files by their common source prefix.</p>
-<p>For each directory containing FITS files, filenames are split on the
-pattern <code class="docutils literal notranslate"><span class="pre">_?[Bb]and_?\d+</span></code> to extract a source prefix. Files sharing the
-same prefix are aggregated into a group. The group name is prefixed with
-the parent directory name to disambiguate sources at different directory
-levels.</p>
+<span class="sig-prename descclassname"><span class="pre">disco.cli.</span></span><span class="sig-name descname"><span class="pre">discover_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'file'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/cli.html#discover_groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.cli.discover_groups" title="Link to this definition"></a></dt>
+<dd><p>Traverse the directory tree rooted at <code class="docutils literal notranslate"><span class="pre">base_dir</span></code> and group FITS files.</p>
+<p><code class="docutils literal notranslate"><span class="pre">mode</span></code> is <code class="docutils literal notranslate"><span class="pre">file</span></code> (one group per FITS, default), <code class="docutils literal notranslate"><span class="pre">dir</span></code> (all FITS
+directly in the same folder), or <code class="docutils literal notranslate"><span class="pre">name</span></code> (legacy <code class="docutils literal notranslate"><span class="pre">BandN</span></code> prefix split).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>base_dir</strong> (<em>str</em>) – Root directory to search.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base_dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Root directory to search.</p></li>
+<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Grouping mode (<code class="docutils literal notranslate"><span class="pre">file</span></code>, <code class="docutils literal notranslate"><span class="pre">dir</span></code>, or <code class="docutils literal notranslate"><span class="pre">name</span></code>).</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>List of group dictionaries, each with keys:
@@ -320,9 +323,17 @@ levels.</p>
 <code class="docutils literal notranslate"><span class="pre">&quot;output_dir&quot;</span></code> (str).</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list[dict]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a>]</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="disco.cli.resolve_geometry_ref">
+<span class="sig-prename descclassname"><span class="pre">disco.cli.</span></span><span class="sig-name descname"><span class="pre">resolve_geometry_ref</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disco/cli.html#resolve_geometry_ref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disco.cli.resolve_geometry_ref" title="Link to this definition"></a></dt>
+<dd><p>Return the unique index in <code class="docutils literal notranslate"><span class="pre">temp_data</span></code> matching <code class="docutils literal notranslate"><span class="pre">--ref</span></code> (path,
+basename, or unique substring). Raises <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> if the match
+count is not exactly one.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -332,14 +343,14 @@ levels.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>files_to_process</strong> (<em>list</em>) – Ordered list of FITS file paths.</p></li>
-<li><p><strong>group_name</strong> (<em>str</em>) – Human-readable group identifier (used in output
+<li><p><strong>files_to_process</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – Ordered list of FITS file paths.</p></li>
+<li><p><strong>group_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Human-readable group identifier (used in output
 filenames).</p></li>
-<li><p><strong>output_dir</strong> (<em>str</em>) – Directory where output files are written.</p></li>
-<li><p><strong>args</strong> (<em>argparse.Namespace</em>) – Parsed command-line arguments. Relevant
+<li><p><strong>output_dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Directory where output files are written.</p></li>
+<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.Namespace" title="(in Python v3.14)"><em>argparse.Namespace</em></a>) – Parsed command-line arguments. Relevant
 attributes: <code class="docutils literal notranslate"><span class="pre">rout</span></code>, <code class="docutils literal notranslate"><span class="pre">rmin</span></code>, <code class="docutils literal notranslate"><span class="pre">incl</span></code>,
 <code class="docutils literal notranslate"><span class="pre">pa</span></code>, <code class="docutils literal notranslate"><span class="pre">beam</span></code>, <code class="docutils literal notranslate"><span class="pre">homobeam</span></code>, <code class="docutils literal notranslate"><span class="pre">csv</span></code>,
-<code class="docutils literal notranslate"><span class="pre">debug</span></code>, <code class="docutils literal notranslate"><span class="pre">yes</span></code>.</p></li>
+<code class="docutils literal notranslate"><span class="pre">debug</span></code>, <code class="docutils literal notranslate"><span class="pre">yes</span></code>, <code class="docutils literal notranslate"><span class="pre">group</span></code>, <code class="docutils literal notranslate"><span class="pre">ref</span></code>.</p></li>
 <li><p><strong>cnn_model</strong> (<a class="reference internal" href="cnn_inference.html#disco.core.cnn_inference.DiscoNet" title="disco.core.cnn_inference.DiscoNet"><em>DiscoNet</em></a><em> | </em><em>None</em>) – Pre-loaded DiscoNet model, or <code class="docutils literal notranslate"><span class="pre">None</span></code>
 to use analytical-only geometry.</p></li>
 </ul>

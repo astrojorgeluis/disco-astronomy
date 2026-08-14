@@ -11,12 +11,24 @@ Group Discovery
 ---------------
 
 Before any processing begins, :func:`disco.cli.discover_groups` traverses
-the working directory tree via ``os.walk``, collecting all ``.fits`` files.
-Files within a common directory are grouped by a common stem prefix: the
-function splits each filename on the regular expression ``_?[Bb]and_?\d+`` to
-isolate the source identifier, then aggregates files sharing the same prefix
-into a group dictionary containing the group name, sorted list of file paths,
-and designated output directory.
+the working directory tree via ``os.walk``. Grouping is selected with
+``--group`` (default ``file``):
+
+* ``file`` — each FITS file is its own group.
+* ``dir`` — all FITS that sit **directly** in the same folder form one
+  group; a walk still visits nested folders as separate groups (one
+  subdirectory per object).
+* ``name`` — legacy heuristic: split each stem on
+  ``_?[Bb]and_?\d+`` and aggregate files that share the prefix
+  (``Object_Band6.fits`` → group ``Object``). Tokens such as ``B6_`` or
+  ``priism_b6`` do **not** match.
+
+Each group dictionary contains the group name, sorted file paths, and
+output directory.
+
+``--ref`` (optional) pins which file in the group is used for DiscoNet +
+hybrid geometry. Without it, the reference image is still the highest
+:math:`\mathrm{SNR}/\Omega_{\mathrm{beam}}^{3/2}`.
 
 Target selection from command-line identifiers is performed by matching each
 supplied string against the resolved directory path components and filenames of
